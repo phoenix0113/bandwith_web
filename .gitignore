@@ -1,0 +1,6 @@
+.env
+node_modules
+data/
+firebase-credentials.json
+_redirects
+test.txt

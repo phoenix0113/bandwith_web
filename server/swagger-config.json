@@ -1,0 +1,544 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Teleport API"
+  },
+  "schemes": ["http"],
+  "servers": [
+    {
+      "url": "/api"
+    }
+  ],
+  "paths": {
+    "/channels": {
+      "get": {
+        "summary": "Get all channels",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetChannelsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create channel",
+        "requestBody": {
+          "in": "body",
+          "name": "body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChannelInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentInput"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update channel",
+        "requestBody": {
+          "in": "body",
+          "name": "body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateChannelRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OutputData"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/channels/{_id}": {
+      "get": {
+        "summary": "Get concrete channel",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "_id",
+            "required": true,
+            "scheme": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetChannelResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete channel",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "_id",
+            "required": true,
+            "scheme": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OutputData",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/fragments": {
+      "get": {
+        "summary": "Get fragments of the channel",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "credentials",
+            "schema": {
+              "$ref": "#/components/schemas/GetFragmentsRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetFragmentsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create fragment",
+        "requestBody": {
+          "in": "body",
+          "name": "body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FragmentInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentInput"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update fragment",
+        "requestBody": {
+          "in": "body",
+          "name": "body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFragmentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OutputData"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fragments/{_id}": {
+      "get": {
+        "summary": "Get concrete fragment",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "_id",
+            "required": true,
+            "scheme": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetFragmentResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete fragment",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "_id",
+            "required": true,
+            "scheme": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OutputData",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "NotFoundError": {
+        "description": "Not found"
+      },
+      "UnknownError": {
+        "description": "Unknown error"
+      }
+    },
+    "schemas": {
+      "OutputData": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "DocumentInput": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "5eb56bd5db7ba8001b734997"
+          }
+        },
+        "required": ["id"]
+      },
+      "ChannelInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "channel name"
+          },
+          "placeholder": {
+            "type": "string",
+            "example": "file path"
+          },
+          "watermark": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "example": "file path"
+              },
+              "size": {
+                "type": "object",
+                "properties": {
+                  "width": {
+                    "type": "number"
+                  },
+                  "height": {
+                    "type": "number"
+                  }
+                }
+              },
+              "coordinates": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "number"
+                  },
+                  "y": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "required": ["name"]
+      },
+      "CreateChannelRequest": {
+        "type": "object",
+        "properties": {
+          "channel": {
+            "$ref": "#/components/schemas/ChannelInput"
+          }
+        },
+        "required": ["channel"]
+      },
+      "GetFragmentsRequest": {
+        "type": "object",
+        "properties": {
+          "channelId": {
+            "type": "string",
+            "example": "5eb56bd5db7ba8001b734997"
+          }
+        },
+        "required": ["channelId"]
+      },
+      "UpdateChannelRequest": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CreateChannelRequest",
+            "type": "object"
+          },
+          {
+            "$ref": "#/components/schemas/DocumentInput",
+            "type": "object"
+          }
+        ]
+      },
+      "GetChannelsResponse": {
+        "type": "object",
+        "properties": {
+          "channels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChannelOutput",
+              "type": "object"
+            }
+          }
+        }
+      },
+      "GetChannelResponse": {
+        "type": "object",
+        "properties": {
+          "channel": {
+            "$ref": "#/components/schemas/ChannelOutput"
+          }
+        }
+      },
+      "ChannelOutput": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ChannelInput",
+            "type": "object"
+          },
+          {
+            "$ref": "#/components/schemas/DocumentInput",
+            "type": "object"
+          }
+        ]
+      },
+      "FragmentInput": {
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string",
+            "example": "5f96910a7f17c51ee41531b1"
+          },
+          "path": {
+            "type": "string",
+            "example": "file path"
+          },
+          "startDate": {
+            "type": "number",
+            "description": "Unix timestamp"
+          },
+          "finishDate": {
+            "type": "number",
+            "description": "Unix timestamp"
+          },
+          "countDownStart": {
+            "type": "number"
+          },
+          "text": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string"
+              },
+              "fontSize": {
+                "type": "number"
+              },
+              "coordinates": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "number"
+                  },
+                  "y": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "required": ["channel", "path", "startDate"]
+      },
+      "CreateFragmentRequest": {
+        "type": "object",
+        "properties": {
+          "fragment": {
+            "$ref": "#/components/schemas/FragmentInput"
+          }
+        },
+        "required": ["fragment"]
+      },
+      "UpdateFragmentRequest": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CreateFragmentRequest",
+            "type": "object"
+          },
+          {
+            "$ref": "#/components/schemas/DocumentInput",
+            "type": "object"
+          }
+        ]
+      },
+      "GetFragmentsResponse": {
+        "type": "object",
+        "properties": {
+          "channels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FragmentOutput",
+              "type": "object"
+            }
+          }
+        }
+      },
+      "GetFragmentResponse": {
+        "type": "object",
+        "properties": {
+          "channel": {
+            "$ref": "#/components/schemas/FragmentOutput"
+          }
+        }
+      },
+      "FragmentOutput": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FragmentInput",
+            "type": "object"
+          },
+          {
+            "$ref": "#/components/schemas/DocumentInput",
+            "type": "object"
+          }
+        ]
+      }
+    }
+  }
+}

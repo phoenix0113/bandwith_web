@@ -1,0 +1,11 @@
+@import "~antd/dist/antd.css";
+@import "~react-swipe-to-delete-component/dist/swipe-to-delete.css";
+
+@import "../assets/fonts/font.css";
+
+@import "./notifications.scss";
+
+.swipe-to-delete {
+  overflow: unset !important;
+}
+

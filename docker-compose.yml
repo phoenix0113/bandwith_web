@@ -1,0 +1,36 @@
+version: '3'
+networks:
+  teleport-network:
+    driver: bridge
+services:
+  teleport-mongodb:
+    image: mongo:latest
+    container_name: teleport-mongodb
+    restart: unless-stopped
+    expose:
+      - 27017
+    volumes:
+      - ./data/mongodb:/data/db:rw
+      - ./data/mongoconfigdb:/data/configdb:rw
+    networks:
+      - teleport-network
+
+  teleport:
+    build:
+      context: ./
+      dockerfile: ./server/Dockerfile
+    restart: unless-stopped
+    container_name: teleport
+    env_file: .env
+    hostname: teleport
+    volumes:
+      - ./logs:/root/server/logs:rw
+    networks:
+      - teleport-network
+    ports:
+      - '1380:80'
+      - '44422:22'
+    depends_on:
+      - teleport-mongodb
+    links:
+      - teleport-mongodb

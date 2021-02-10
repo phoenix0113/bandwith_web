@@ -1,0 +1,241 @@
+import { spawn } from 'child_process';
+import { dir } from 'tmp-promise';
+import { CloudApi, API_OPERATION, ListRecordingItem } from 'avcore';
+import { CallRecording, ICallRecording } from '../models';
+import {
+  CreateCallRecordingRequest,
+  Document,
+  PipeId,
+  PublishRecordingRequest,
+  GetRecordResponse,
+  GetAllRecordsQuery,
+  GetAllRecordsResponse,
+} from '../../../client/src/shared/interfaces';
+import { conf } from '../config';
+import { CallInput } from '../../../client/src/shared/socket';
+import { SocketServer } from './socket-server';
+import { StorageHandler } from './storage';
+
+export class CallRecordingService {
+  static cloudApi: CloudApi = new CloudApi(conf.cloud.url, conf.cloud.token);
+
+  static async removeStreamRecords({ pipeId }: PipeId) {
+    try {
+      const api = await CallRecordingService.cloudApi.create(
+        API_OPERATION.RECORDING
+      );
+      await api.deleteStreamRecordings({ stream: pipeId });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async createCallRecording({
+    pipeId,
+    callId,
+  }: CreateCallRecordingRequest) {
+    try {
+      const list = await CallRecordingService.getListRecordingByPipeId({
+        pipeId,
+      });
+
+      const rec = new CallRecording({ pipeId, list, callId });
+      await rec.save();
+
+      return { _id: rec._id.toString() };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async getListRecordingByPipeId({
+    pipeId,
+  }: PipeId): Promise<ListRecordingItem[]> {
+    const api = await CallRecordingService.cloudApi.create(
+      API_OPERATION.RECORDING
+    );
+
+    const { list } = await api.streamRecordings({ stream: pipeId });
+
+    return list;
+  }
+
+  static async publishRecording(
+    { callId, participants }: PublishRecordingRequest,
+    user: string
+  ) {
+    try {
+      const rec = await CallRecording.findOneAndUpdate(
+        { callId },
+        { $set: { user, participants } },
+        {
+          new: true,
+        }
+      );
+
+      const recordTimer = SocketServer.hangRecords.get(callId);
+      if (recordTimer) {
+        clearTimeout(recordTimer);
+      }
+
+      if (rec) {
+        CallRecordingService.replaceRecording(rec);
+      }
+
+      return { _id: rec?._id.toString() };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async removeRecordingFromStorage(filePath: string) {
+    const api = await CallRecordingService.cloudApi.create(
+      API_OPERATION.RECORDING
+    );
+
+    await api.deleteRecording({ filePath });
+  }
+
+  static async replaceRecording(rec: ICallRecording) {
+    const list = await CallRecordingService.getListRecordingByPipeId({
+      pipeId: rec.pipeId,
+    });
+
+    const [fileName] = list[0].fullKey.split('.');
+    const mkvToRemove = list[0].key;
+
+    const d = await dir({ unsafeCleanup: true });
+    const tempOutput = `${d.path}/out.mp4`;
+
+    await CallRecordingService.convertToMp4(list[0].url, tempOutput);
+
+    await StorageHandler.get().upload(
+      tempOutput,
+      `${fileName}.mp4`,
+      'video/mp4'
+    );
+    d.cleanup();
+
+    await CallRecordingService.removeRecordingFromStorage(mkvToRemove);
+
+    const list1 = await CallRecordingService.getListRecordingByPipeId({
+      pipeId: rec.pipeId,
+    });
+
+    rec.list = list1;
+    await rec.save();
+  }
+
+  static async convertToMp4(input: string, output: string) {
+    const options: string[] = [
+      '-ss',
+      conf.ffmpeg.recordCutTime,
+      '-i',
+      input,
+      '-c:v',
+      'copy',
+      '-c:a',
+      'aac',
+      output,
+    ];
+
+    await CallRecordingService.excecuteConv(conf.ffmpeg.path, options);
+  }
+
+  static async excecuteConv(ffmpeg: string, options: string[]): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const p = spawn(ffmpeg, options, {
+        detached: false,
+      });
+
+      console.log(`${p.pid}:`, conf.ffmpeg.path, options.join(' '));
+      // p.stderr.pipe(createWriteStream(`/root/server/${Date.now()}.log`));
+
+      p.on('error', (err) => {
+        console.error(err);
+        reject(err);
+      });
+
+      p.on('exit', () => {
+        resolve();
+      });
+    });
+  }
+
+  static async getRecordingById({ _id }: Document): Promise<GetRecordResponse> {
+    const recording = await CallRecording.findById(_id)
+      .populate({
+        path: 'user',
+        select: '-password -email -firebaseToken',
+      })
+      .populate({
+        path: 'participants',
+        select: '-password -email -firebaseToken',
+      })
+      .lean();
+
+    if (!recording) {
+      throw { status: 400, message: 'No such recording' };
+    }
+
+    const signedUrl = await StorageHandler.get().signedUrl(
+      recording.list[0].fullKey
+    );
+
+    recording.list[0].url = signedUrl;
+
+    return { ...JSON.parse(JSON.stringify(recording)) };
+  }
+
+  static async deleteRecording({ callId }: CallInput) {
+    try {
+      const record = await CallRecording.findOne({ callId });
+
+      if (!record) {
+        throw { status: 400, message: 'Recording not found' };
+      }
+
+      await record.remove();
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async getAllRecordings({
+    limit,
+    offset,
+  }: GetAllRecordsQuery): Promise<GetAllRecordsResponse> {
+    try {
+      const amount = await CallRecording.countDocuments();
+
+      const recordings = await CallRecording.find()
+        .sort({ date: 'desc' })
+        .skip((offset && +offset) || 0)
+        .limit((limit && +limit) || 0)
+        .populate({
+          path: 'user',
+          select: '-password -email -firebaseToken',
+        })
+        .populate({
+          path: 'participants',
+          select: '-password -email -firebaseToken',
+        });
+
+      await Promise.all(
+        recordings.map(async (recordItem) => {
+          const signedUrl = await StorageHandler.get().signedUrl(
+            recordItem.list[0].fullKey
+          );
+
+          recordItem.list[0].url = signedUrl;
+
+          await recordItem.save();
+        })
+      );
+
+      return { recordings: Object.assign([], recordings), amount };
+    } catch (err) {
+      throw err;
+    }
+  }
+}

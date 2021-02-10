@@ -1,0 +1,13 @@
+{
+  "prettier.jsxSingleQuote": true,
+  "prettier.singleQuote": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[javascript]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.formatOnSave": true,
+  // if your vscode can't pick typescript 4.1+ version automatically, install in globally and put the full path to it in here
+  // then select it from dropdown https://stackoverflow.com/questions/39668731/what-typescript-version-is-visual-studio-code-using-how-to-update-it
+  "typescript.tsdk": "C:/Users/AntaraSoft-1.7/AppData/Roaming/npm/node_modules/typescript/lib"
+}

@@ -1,0 +1,40 @@
+.registration-page, .login-page {
+  .ant-input-affix-wrapper,
+  .ant-input-affix-wrapper:hover {
+    background-color: #E2E9EF;
+    border-radius: 6px;
+    height: 50px;
+    width: 100%;
+    padding: 4px 25px;
+    border: 2px solid #0F1A23;
+  }
+
+  .ant-input {
+    background-color: #E2E9EF !important;
+    color: #0F1A23;
+    font-size: 14px;
+    line-height: 31.24px;
+  }
+
+  .ant-input-affix-wrapper:focus, .ant-input-affix-wrapper-focused {
+    border-color: #0F1A23;
+    box-shadow: none;
+  }
+
+  .ant-input[type=password] {
+    font-size: 36px;
+  }
+
+  .ant-input[type=password]:placeholder-shown {
+    font-size: 14px;
+  }
+
+  .ant-form-item-has-error .ant-input, .ant-form-item-has-error .ant-input-affix-wrapper, .ant-form-item-has-error .ant-input:hover, .ant-form-item-has-error .ant-input-affix-wrapper:hover {
+    background-color: #E2E9EF;
+  }
+
+  .ant-input-prefix {
+    margin-right: 28px;
+    margin-left: 0px;
+  }
+}
