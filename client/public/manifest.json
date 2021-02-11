@@ -3,12 +3,12 @@
   "name": "Bandwith App",
   "icons": [
     {
-      "src": "/static/js/assets/logos/512x512_bg.png",
+      "src": "./assets/logo.png",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "/static/js/assets/logos/512x512_bg.png",
+      "src": "./assets/logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
