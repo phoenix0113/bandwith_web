@@ -1,11 +1,13 @@
 export const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID as string;
 export const FACEBOOK_CLIENT_ID = process.env.REACT_APP_FACEBOOK_CLIENT_ID as string;
 
-// const { origin } = window.location;
-// export const SERVER_BASE_URL = origin.includes("localhost") ? "http://localhost:1380" : origin;
-export const SERVER_BASE_URL = "https://teleport-dev.codeda.com";
-// export const SERVER_BASE_URL = "https://teleport.wtf";
-// export const SERVER_BASE_URL = "http://127.0.0.1:1380";
+const servers = {
+  DEV_URL: "https://bandwith.codeda.com",
+  LOCAL_DOCKER_URL: "http://localhost:1380",
+};
+
+const { origin } = window.location;
+export const SERVER_BASE_URL = origin.includes("localhost") ? servers.DEV_URL : origin;
 
 console.log(`> Using ${SERVER_BASE_URL} server`);
 
