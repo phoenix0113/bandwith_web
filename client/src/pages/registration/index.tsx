@@ -2,7 +2,7 @@ import { useHistory } from "react-router-dom";
 import { Form, Input } from "antd";
 import md5 from "md5";
 
-import logo from "../../assets/images/teleport.svg";
+import logo from "../../assets/images/Bandwith.svg";
 import backIcon from "../../assets/images/auth/back.svg";
 import profileIcon from "../../assets/images/auth/profile-outline.svg";
 import emailIcon from "../../assets/images/auth/email.svg";

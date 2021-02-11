@@ -1,5 +1,5 @@
-import declineCallIcon from "../../../assets/images/call/cancel.svg";
-import acceptCallIcon from "../../../assets/images/call/accept.svg";
+import declineCallIcon from "../../../assets/images/DeclineCall.svg";
+import acceptCallIcon from "../../../assets/images/AcceptCall.svg";
 
 import {
   IcommingCallWrapper, CallUser, UserName, UserStatus, CallToolbar, CallToolbarItem,

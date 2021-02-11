@@ -97,8 +97,10 @@ class OutgoingCallMobxService extends AVCoreCall {
   }
 
   private handleCallCallback = (data: LobbyCallResponse | ErrorData) => {
-    if ("errorId" in data) {
-      this.resetService();
+    if (!data || "errorId" in data) {
+      this.leaveCall(() => {
+        this.resetService();
+      });
     } else {
       console.log("> Call participant data: ", toJS(data));
       this.callParticipantData = {

@@ -1,7 +1,7 @@
 import { LogoutOutlined } from "@ant-design/icons";
 
-import callIcon from "../../assets/images/home/call.svg";
-import logo from "../../assets/images/teleport.svg";
+import callIcon from "../../assets/images/MakeCall.svg";
+import logo from "../../assets/images/Bandwith.svg";
 
 import {
   NavigationBar, CenterItem, PageWrapper, LeftItem, RightItem, COLORS,

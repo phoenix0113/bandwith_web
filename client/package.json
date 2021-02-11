@@ -1,5 +1,5 @@
 {
-  "name": "teleport-client",
+  "name": "bandwith-client",
   "dependencies": {
     "@ant-design/icons": "^4.2.2",
     "antd": "^4.6.1",

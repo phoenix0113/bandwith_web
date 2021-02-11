@@ -13,11 +13,11 @@ import { CallPageToolbar, CommonImgWrapper } from "../../../components/styled";
 import tempProfileIcon from "../../../assets/images/call/default_profile_image.png";
 import { GlobalStorage, GlobalStorageContext } from "../../../services/global";
 
-import commentsIcon from "../../../assets/images/call/comments.svg";
-import shareIcon from "../../../assets/images/call/share.svg";
+import commentsIcon from "../../../assets/images/Comments.svg";
+import shareIcon from "../../../assets/images/Share.svg";
 import addIcon from "../../../assets/images/feed/feedAddIcon.svg";
 import backToFeedIcon from "../../../assets/images/call/ExitLive.svg";
-import teleportLogo from "../../../assets/images/teleport.svg";
+import bandwithLogo from "../../../assets/images/Bandwith.svg";
 import playIcon from "../../../assets/images/feed/play.svg";
 
 interface IProps {
@@ -154,7 +154,7 @@ export const FeedVideoComponent = observer(({
           ref={playerRef}
           src={recording.list[0].url}
           onClick={changePlaybackStatus}
-          poster={teleportLogo}
+          poster={bandwithLogo}
         />
       )}
 

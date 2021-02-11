@@ -8,7 +8,7 @@ import { PlayerComponent } from "../../../components/Call/Main/Player";
 
 import liveIcon from "../../../assets/images/call/live.svg";
 import exitLiveIcon from "../../../assets/images/call/ExitLive.svg";
-import commentsIcon from "../../../assets/images/call/comments.svg";
+import commentsIcon from "../../../assets/images/Comments.svg";
 
 import {
   CallPageWrapper, CommonImgWrapper, CallPageNavigation,

@@ -129,11 +129,11 @@ export const StyledTextArea = styled(TextArea)`
 `;
 
 export const SendButton = styled.img`
-  width: 20px;
-  height: 18.33px;
+  width: 40px;
+  height: 25px;
   position: absolute;
-  bottom: 11px;
-  right: 11px;
+  bottom: 8px;
+  right: 8px;
 `;
 
 export const AllLoadedText = styled.div`

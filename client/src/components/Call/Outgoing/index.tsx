@@ -1,7 +1,7 @@
 import Loader from "react-loader-spinner";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
-import cancelIcon from "../../../assets/images/call/cancel.svg";
+import cancelIcon from "../../../assets/images/DeclineCall.svg";
 
 import { TimerComponent } from "../../Timer";
 import { NavigationBar, CenterItem, PageWrapper, COLORS } from "../../styled";

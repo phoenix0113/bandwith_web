@@ -22,8 +22,8 @@ import volumeOnIcon from "../../../assets/images/call/VolumeOn.svg";
 import endCallIcon from "../../../assets/images/call/EndCall.svg";
 import switchCameraIcon from "../../../assets/images/call/switch-camera.svg";
 import recordingIcon from "../../../assets/images/call/rec.svg";
-import commentsIcon from "../../../assets/images/call/comments.svg";
-import shareIcon from "../../../assets/images/call/share.svg";
+import commentsIcon from "../../../assets/images/Comments.svg";
+import shareIcon from "../../../assets/images/Share.svg";
 
 import { CallParticipantData } from "../../../interfaces/call";
 import { NAVIGATOR_SHARE_ERROR, SERVER_BASE_URL } from "../../../utils/constants";

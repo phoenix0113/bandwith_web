@@ -1,11 +1,12 @@
 import styled from "styled-components";
-import { COLORS } from "../../components/styled";
+import { BANDWITH_COLORS, COLORS } from "../../components/styled";
 
 export const WelcomeWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
+  background-color: ${BANDWITH_COLORS.BLACK};
 `;
 
 export const HeaderWrapper = styled.div`
@@ -13,27 +14,27 @@ export const HeaderWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 0 42px;
+  flex: 1;
 `;
 
-export const HeaderTitle = styled.div`
-  font-size: 24px;
-  font-style: normal;
-  font-weight: 800;
-  line-height: 28px;
-  letter-spacing: 0px;
-  text-align: center;
-  color: ${COLORS.MAIN_LIGHT};
+interface HeaderImageProps {
+  margin?: string;
+  width: string;
+}
+export const HeaderImage = styled.img<HeaderImageProps>`
+  margin: ${({ margin }) => margin || 0};
+  width: ${({ width }) => width};
 `;
 
 export const HeaderContent = styled.div`
-  font-weight: 400;
-  font-size: 12px;
+  font-size: 18px;
   font-style: normal;
   font-weight: 400;
-  line-height: 16px;
-  letter-spacing: 0px;
+  line-height: 26px;
+  letter-spacing: 0.7289999723434448px;
   text-align: center;
-  color: ${COLORS.MAIN_LIGHT};
+  color: ${BANDWITH_COLORS.WHITE};
+  text-transform: uppercase;
 `;
 
 export const ContentToolbox = styled.div`

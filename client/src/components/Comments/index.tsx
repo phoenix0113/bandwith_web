@@ -10,7 +10,7 @@ import {
   InputWrapper, StyledTextArea, SendButton, AllLoadedText,
 } from "./styled";
 
-import sendImg from "../../assets/images/send.svg";
+import sendImg from "../../assets/images/SendComment.svg";
 import { showInfoNotification } from "../../utils/notification";
 import { CommentsStorageContext } from "../../services/comments";
 

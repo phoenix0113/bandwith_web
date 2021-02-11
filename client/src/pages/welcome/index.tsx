@@ -9,18 +9,15 @@ import { authWithGoogle } from "../../axios/routes/user";
 import { GlobalStorage } from "../../services/global";
 
 import {
-  AuthPageTopBlock, AuthPageBottomBlock, AuthPageBlockContent,
-  AuthPageContentWrapper, WelcomeLogo, COLORS,
-} from "../../components/styled";
-
-import {
-  WelcomeWrapper, ContentToolbox, HeaderTitle,
+  WelcomeWrapper, ContentToolbox, HeaderContent, HeaderImage,
   HeaderWrapper, LoginButton, RegistrationButton, ContinueWithIcon,
 } from "./styled";
-import logo from "../../assets/images/teleport.svg";
-import GoogleIcon from "../../assets/images/welcome/ContinueWithGoogle.svg";
+import logo from "../../assets/images/Bandwith.svg";
+import GoogleIcon from "../../assets/images/ContinueWithGoogle.svg";
+import HandIcon from "../../assets/images/Hand.svg";
 
 import { vibrate } from "../../utils/vibration";
+import { showErrorNotification } from "../../utils/notification";
 
 const WelcomePage = (): JSX.Element => {
   const history = useHistory();
@@ -34,62 +31,49 @@ const WelcomePage = (): JSX.Element => {
         GlobalStorage.login(token);
       } catch (err) {
         GlobalStorage.setAction("error");
-        notification.open({
-          message: "Google Error",
-          description: err.message,
-          icon: <InfoCircleOutlined style={{ color: COLORS.RED }} />,
-        });
+        showErrorNotification("Google error");
       }
     }
   };
 
   return (
     <WelcomeWrapper>
-      <AuthPageTopBlock>
-        <AuthPageBlockContent>
-          <WelcomeLogo alt="Logo" src={logo} />
-        </AuthPageBlockContent>
-      </AuthPageTopBlock>
-      <AuthPageBottomBlock>
-        <AuthPageBlockContent>
-          <AuthPageContentWrapper>
-            <HeaderWrapper>
-              <HeaderTitle>Record and Publish Random Video Calls</HeaderTitle>
-            </HeaderWrapper>
-            <ContentToolbox>
-              <LoginButton onClick={() => {
+      <HeaderWrapper>
+        <HeaderImage width="50%" margin="20% 0 30% 0" alt="Logo" src={logo} />
+        <HeaderImage width="33%" alt="LogoHand" src={HandIcon} style={{ margin: "30px" }} />
+        <HeaderContent>in order to use the application you need to log in</HeaderContent>
+      </HeaderWrapper>
+      <ContentToolbox>
+        <LoginButton onClick={() => {
+          vibrate("click");
+          history.push(Routes.LOGIN);
+        }}
+        >
+          Login
+        </LoginButton>
+        <RegistrationButton onClick={() => {
+          vibrate("click");
+          history.push(Routes.REGISTRATION);
+        }}
+        >
+          Register
+        </RegistrationButton>
+        <GoogleLogin
+          render={(renderProps) => (
+            <ContinueWithIcon
+              onClick={() => {
                 vibrate("click");
-                history.push(Routes.LOGIN);
+                renderProps.onClick();
               }}
-              >
-                Login
-              </LoginButton>
-              <RegistrationButton onClick={() => {
-                vibrate("click");
-                history.push(Routes.REGISTRATION);
-              }}
-              >
-                Register
-              </RegistrationButton>
-              <GoogleLogin
-                render={(renderProps) => (
-                  <ContinueWithIcon
-                    onClick={() => {
-                      vibrate("click");
-                      renderProps.onClick();
-                    }}
-                    src={GoogleIcon}
-                    alt="Google"
-                  />
-                )}
-                clientId={GOOGLE_CLIENT_ID}
-                onSuccess={googleResponse}
-                cookiePolicy="single_host_origin"
-              />
-            </ContentToolbox>
-          </AuthPageContentWrapper>
-        </AuthPageBlockContent>
-      </AuthPageBottomBlock>
+              src={GoogleIcon}
+              alt="Google"
+            />
+          )}
+          clientId={GOOGLE_CLIENT_ID}
+          onSuccess={googleResponse}
+          cookiePolicy="single_host_origin"
+        />
+      </ContentToolbox>
     </WelcomeWrapper>
   );
 };

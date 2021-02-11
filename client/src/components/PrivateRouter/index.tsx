@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { observer } from "mobx-react";
-import { Route, RouteComponentProps, useHistory, useLocation } from "react-router-dom";
+import { Redirect, Route, RouteComponentProps, useHistory, useLocation } from "react-router-dom";
 
 import { Routes } from "../../utils/routes";
 
@@ -48,7 +48,7 @@ export const PrivateRouterComponent = observer(({ Component, path, exact }: IPro
 
   if (!token && !isAuthRoute(path)) {
     onAuthCallback = { search, path };
-    history.push(Routes.WELCOME);
+    return <Redirect to={Routes.WELCOME} />;
   }
 
   if (token && isAuthRoute(path)) {
@@ -59,21 +59,21 @@ export const PrivateRouterComponent = observer(({ Component, path, exact }: IPro
       });
       onAuthCallback = null;
     } else {
-      history.push(Routes.HOME);
+      return <Redirect to={Routes.HOME} />;
     }
   }
 
   if (
     incommingStatus === IncommingCallStatus.INCOMMING
     && path !== Routes.INCOMMING_CALL) {
-    history.replace(Routes.INCOMMING_CALL);
+    return <Redirect to={Routes.INCOMMING_CALL} />;
   }
 
   if (
     outgoingStatus === OutgoingCallStatus.WAITING_FOR_PARTICIPANT
     && path !== Routes.OUTGOING_CALL
   ) {
-    history.replace(Routes.OUTGOING_CALL);
+    return <Redirect to={Routes.OUTGOING_CALL} />;
   }
 
   return (

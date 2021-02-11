@@ -12,6 +12,11 @@ export const COLORS = {
   ALTERNATIVE: "#0AFFEF",
 };
 
+export const BANDWITH_COLORS = {
+  BLACK: "#0B0B0B",
+  WHITE: "#fff",
+};
+
 export const Z_INDEX = {
   HIGHEST: 9999,
   HIGH: 999,
