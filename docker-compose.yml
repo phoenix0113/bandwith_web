@@ -1,11 +1,11 @@
 version: '3'
 networks:
-  teleport-network:
+  bandwith-network:
     driver: bridge
 services:
-  teleport-mongodb:
+  bandwith-mongodb:
     image: mongo:latest
-    container_name: teleport-mongodb
+    container_name: bandwith-mongodb
     restart: unless-stopped
     expose:
       - 27017
@@ -13,24 +13,24 @@ services:
       - ./data/mongodb:/data/db:rw
       - ./data/mongoconfigdb:/data/configdb:rw
     networks:
-      - teleport-network
+      - bandwith-network
 
-  teleport:
+  bandwith:
     build:
       context: ./
       dockerfile: ./server/Dockerfile
     restart: unless-stopped
-    container_name: teleport
+    container_name: bandwith
     env_file: .env
-    hostname: teleport
+    hostname: bandwith
     volumes:
       - ./logs:/root/server/logs:rw
     networks:
-      - teleport-network
+      - bandwith-network
     ports:
       - '1380:80'
       - '44422:22'
     depends_on:
-      - teleport-mongodb
+      - bandwith-mongodb
     links:
-      - teleport-mongodb
+      - bandwith-mongodb
