@@ -43,6 +43,7 @@ import {
   JoinRecordingCommentsRoomRequest,
   LeaveRecordingCommentsRoomRequest,
   AppStatus,
+  CallDetectorStatus,
   // @ts-ignore
 } from '../../../client/src/shared/socket';
 import {
@@ -796,6 +797,15 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     const callRoom = SocketServer.callRoom(appStatus.callId);
 
     socket.to(callRoom).emit(ACTIONS.APP_STATUS, appStatus);
+  }
+
+  async [ACTIONS.CALL_DETECTOR_STATUS](
+    callDetectorStatus: CallDetectorStatus,
+    socket: Socket
+  ) {
+    const callRoom = SocketServer.callRoom(callDetectorStatus.callId);
+
+    socket.to(callRoom).emit(ACTIONS.CALL_DETECTOR_STATUS, callDetectorStatus);
   }
 
   async [ACTIONS.MIXER_LAYOUT]({

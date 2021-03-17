@@ -387,14 +387,19 @@ export class AVCoreCall {
   }
 
   protected trackParticipantAppStatuses = (): void => {
-    GlobalStorage.socket.on(ACTIONS.APP_STATUS, ({ appStatus, callDetectorStatus }) => {
-      logger.log("info", "avcoreCall.ts", `> APP_STATUS event: appStatus: ${appStatus}. CallDetectorStatus: ${callDetectorStatus}`, true);
+    GlobalStorage.socket.on(ACTIONS.APP_STATUS, ({ appStatus }) => {
+      logger.log("info", "avcoreCall.ts", `> APP_STATUS event: ${appStatus}`, true);
       this.participantAppStatus = appStatus;
+    });
+
+    GlobalStorage.socket.on(ACTIONS.CALL_DETECTOR_STATUS, ({ callDetectorStatus }) => {
+      logger.log("info", "avcoreCall.ts", `> CALL_DETECTOR_STATUS event: ${callDetectorStatus}`, true);
       this.participantCallDetectorStatus = callDetectorStatus;
     });
   }
 
   protected stopTrackingParticipantAppStatuses = (): void => {
     GlobalStorage.socket.off(ACTIONS.APP_STATUS);
+    GlobalStorage.socket.off(ACTIONS.CALL_DETECTOR_STATUS);
   }
 }
