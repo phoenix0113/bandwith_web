@@ -13,16 +13,32 @@ const getOverlayText = (
   if (participantAppStatus === "background" || participantCallStatus === "Connected" || participantAppStatus === "inactive") {
     return "Participant minimized an app";
   }
+
   if (participantCallStatus === "Incoming") {
     return "Participats audio is taken by incoming call";
   }
-  return "Participants is loading...";
+
+  return "Participant's app send unexpected status";
 };
 
 export const PartipantAppStatusComponent = ({
   participantAppStatus, participantCallStatus,
-}: IProps): JSX.Element => (
-  <ParticipantStatusOverlay>
-    {getOverlayText(participantAppStatus, participantCallStatus)}
-  </ParticipantStatusOverlay>
-);
+}: IProps): JSX.Element => {
+  if (!participantAppStatus && !participantCallStatus) {
+    return null;
+  }
+
+  if (participantAppStatus === "active" && participantCallStatus !== "Incoming") {
+    return null;
+  }
+
+  if (participantCallStatus === "Disconnected") {
+    return null;
+  }
+
+  return (
+    <ParticipantStatusOverlay>
+      {getOverlayText(participantAppStatus, participantCallStatus)}
+    </ParticipantStatusOverlay>
+  );
+};

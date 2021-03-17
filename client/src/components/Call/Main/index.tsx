@@ -98,12 +98,10 @@ export const MainCallComponent = observer(({
         </CallParticipant>
         <CallParticipant>
           <PlayerComponent muted={!volume} stream={remoteStream} playback={playback} />
-          {participantCallStatus && participantAppStatus !== "active" && (
-            <PartipantAppStatusComponent
-              participantAppStatus={participantAppStatus}
-              participantCallStatus={participantCallStatus}
-            />
-          )}
+          <PartipantAppStatusComponent
+            participantAppStatus={participantAppStatus}
+            participantCallStatus={participantCallStatus}
+          />
         </CallParticipant>
       </CallWraper>
 
