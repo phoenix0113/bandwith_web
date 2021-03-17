@@ -10,11 +10,11 @@ const getOverlayText = (
   participantAppStatus: AppStatusType,
   participantCallStatus: CallDetectorStatusType,
 ): string => {
-  if (participantAppStatus === "background" || participantCallStatus === "Connected" || participantAppStatus === "inactive") {
+  if (participantAppStatus === "background" || participantAppStatus === "inactive") {
     return "Participant minimized an app";
   }
 
-  if (participantCallStatus === "Incoming") {
+  if (participantCallStatus === "Incoming" || participantCallStatus === "Connected") {
     return "Participats audio is taken by incoming call";
   }
 
@@ -28,11 +28,7 @@ export const PartipantAppStatusComponent = ({
     return null;
   }
 
-  if (participantAppStatus === "active" && participantCallStatus !== "Incoming") {
-    return null;
-  }
-
-  if (participantCallStatus === "Disconnected") {
+  if (participantAppStatus === "active" && participantCallStatus !== "Incoming" && participantCallStatus !== "Connected") {
     return null;
   }
 
