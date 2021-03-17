@@ -98,7 +98,7 @@ export const MainCallComponent = observer(({
         </CallParticipant>
         <CallParticipant>
           <PlayerComponent muted={!volume} stream={remoteStream} playback={playback} />
-          {participantAppStatus !== "active" && (
+          {participantCallStatus && participantAppStatus !== "active" && (
             <PartipantAppStatusComponent
               participantAppStatus={participantAppStatus}
               participantCallStatus={participantCallStatus}

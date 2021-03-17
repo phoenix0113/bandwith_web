@@ -47,6 +47,7 @@ export const CallWraper = styled.div`
 
 export const CallParticipant = styled.div`
   height: 50%;
+  position: relative;
 `;
 
 export const ParticipantStatusOverlay = styled.div`
