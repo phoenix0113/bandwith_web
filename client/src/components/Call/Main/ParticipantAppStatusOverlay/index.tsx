@@ -28,6 +28,10 @@ export const PartipantAppStatusComponent = ({
     return null;
   }
 
+  if (!participantAppStatus && participantCallStatus !== "Incoming" && participantCallStatus !== "Connected") {
+    return null;
+  }
+
   if (participantAppStatus === "active" && participantCallStatus !== "Incoming" && participantCallStatus !== "Connected") {
     return null;
   }
