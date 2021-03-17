@@ -23,6 +23,8 @@ const IncommingCallPage = observer((): JSX.Element => {
     playback,
     callId,
     resetIncommingCall,
+    participantAppStatus,
+    participantCallDetectorStatus,
   } = useContext(IncommingCallStorageContext);
 
   switch (status) {
@@ -52,6 +54,8 @@ const IncommingCallPage = observer((): JSX.Element => {
           callParticipantData={callParticipantData}
           callId={callId}
           playback={playback}
+          participantAppStatus={participantAppStatus}
+          participantCallStatus={participantCallDetectorStatus}
         />
       );
     default:

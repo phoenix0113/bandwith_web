@@ -153,6 +153,7 @@ class OutgoingCallMobxService extends AVCoreCall {
     this.status = OutgoingCallStatus.ANSWERED_BY_PARTICIPANT;
 
     this.trackViewers();
+    this.trackParticipantAppStatuses();
     this.startStreaming();
   }
 
@@ -185,6 +186,7 @@ class OutgoingCallMobxService extends AVCoreCall {
       logger.log("info", "outgoingCall.ts", `You left the call room with id ${this.callId}`, true);
 
       this.stopTrackingViewers();
+      this.stopTrackingParticipantAppStatuses();
       GlobalStorage.socket.off(ACTIONS.STREAM_START);
       GlobalStorage.socket.off(ACTIONS.STREAM_CHANGE);
       GlobalStorage.socket.off(ACTIONS.JOIN_CALL);

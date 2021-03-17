@@ -7,7 +7,10 @@ import { xor } from "lodash";
 import { GlobalStorage } from "./global";
 import { logger } from "./logger";
 
-import { ACTIONS, CLIENT_ONLY_ACTIONS, Kinds, LAYOUT, MixerLayoutData } from "../shared/socket";
+import {
+  ACTIONS, CLIENT_ONLY_ACTIONS, Kinds, LAYOUT,
+  MixerLayoutData, AppStatusType, CallDetectorStatusType,
+} from "../shared/socket";
 import { showErrorNotification } from "../utils/notification";
 
 export enum CallType {
@@ -39,6 +42,10 @@ export class AVCoreCall {
   @observable remoteStream: MediaStream = null;
 
   private oldAudioTracks: Array<MediaStreamTrack> = [];
+
+  @observable participantAppStatus: AppStatusType = null;
+
+  @observable participantCallDetectorStatus: CallDetectorStatusType = null;
 
   constructor(type: CallType) {
     this.callType = type;
@@ -377,5 +384,17 @@ export class AVCoreCall {
       console.log("> Mixer layout has been sent: ", layoutData);
       logger.log("info", "avcoreCall.ts", `Mixer layout has been sent: ${JSON.stringify(layoutData)}`);
     });
+  }
+
+  protected trackParticipantAppStatuses = (): void => {
+    GlobalStorage.socket.on(ACTIONS.APP_STATUS, ({ appStatus, callDetectorStatus }) => {
+      logger.log("info", "avcoreCall.ts", `> APP_STATUS event: appStatus: ${appStatus}. CallDetectorStatus: ${callDetectorStatus}`, true);
+      this.participantAppStatus = appStatus;
+      this.participantCallDetectorStatus = callDetectorStatus;
+    });
+  }
+
+  protected stopTrackingParticipantAppStatuses = (): void => {
+    GlobalStorage.socket.off(ACTIONS.APP_STATUS);
   }
 }

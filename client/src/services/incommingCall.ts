@@ -106,6 +106,7 @@ class IncommingCallMobxService extends AVCoreCall {
     this.setStatusAndNotify(IncommingCallStatus.ACCEPT, async () => {
       logger.log("info", "incommingCall.ts", "You acceped call. Starting a stream and init viewers tracker. ACCEPT status was sent", true, true);
       this.trackViewers();
+      this.trackParticipantAppStatuses();
       this.startStreaming();
     });
   }
@@ -169,6 +170,7 @@ class IncommingCallMobxService extends AVCoreCall {
       logger.log("info", "incommingCall.ts", `You left the call room with id ${this.callId}`, true);
 
       this.stopTrackingViewers();
+      this.stopTrackingParticipantAppStatuses();
       GlobalStorage.socket.off(ACTIONS.STREAM_START);
       GlobalStorage.socket.off(ACTIONS.STREAM_CHANGE);
       GlobalStorage.socket.off(ACTIONS.CALL_STATUS_FROM_INITIATOR);

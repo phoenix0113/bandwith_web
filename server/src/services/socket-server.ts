@@ -42,6 +42,7 @@ import {
   SendMissedCallNotificationRequest,
   JoinRecordingCommentsRoomRequest,
   LeaveRecordingCommentsRoomRequest,
+  AppStatus,
   // @ts-ignore
 } from '../../../client/src/shared/socket';
 import {
@@ -789,6 +790,12 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
       status,
       socketId,
     });
+  }
+
+  async [ACTIONS.APP_STATUS](appStatus: AppStatus, socket: Socket) {
+    const callRoom = SocketServer.callRoom(appStatus.callId);
+
+    socket.to(callRoom).emit(ACTIONS.APP_STATUS, appStatus);
   }
 
   async [ACTIONS.MIXER_LAYOUT]({

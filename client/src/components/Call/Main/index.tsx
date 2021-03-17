@@ -7,7 +7,11 @@ import { GlobalStorageContext } from "../../../services/global";
 
 import { PlayerComponent } from "./Player";
 import { CommentsComponent } from "../../Comments";
-import { CallWraper, CallPageBottomNavigation, BottomNavigationItem, ItemText, CallParticipant } from "./styled";
+import { PartipantAppStatusComponent } from "./ParticipantAppStatusOverlay";
+import {
+  CallWraper, CallPageBottomNavigation, BottomNavigationItem,
+  ItemText, CallParticipant,
+} from "./styled";
 import {
   CallPageWrapper, CommonImgWrapper, CallPageNavigation,
   NavigationCenterContent, ContentBottom, ContentTop, CallPageToolbar,
@@ -29,6 +33,7 @@ import { CallParticipantData } from "../../../interfaces/call";
 import { NAVIGATOR_SHARE_ERROR, SERVER_BASE_URL } from "../../../utils/constants";
 import { Params, Routes } from "../../../utils/routes";
 import { showErrorNotification } from "../../../utils/notification";
+import { AppStatusType, CallDetectorStatusType } from "../../../shared/socket";
 
 interface IProps {
   endCallHandler: () => void,
@@ -38,10 +43,13 @@ interface IProps {
   callParticipantData: CallParticipantData;
   playback?: ConferenceApi,
   callId: string,
+  participantAppStatus: AppStatusType;
+  participantCallStatus: CallDetectorStatusType;
 }
 
 export const MainCallComponent = observer(({
-  endCallHandler, localStream, remoteStream, type, callParticipantData, playback, callId,
+  endCallHandler, localStream, remoteStream, type, callParticipantData,
+  playback, callId, participantAppStatus, participantCallStatus,
 }: IProps): JSX.Element => {
   const {
     camera, volume, micro, toggleMedia, toggleCameraMode, profile,
@@ -69,6 +77,8 @@ export const MainCallComponent = observer(({
     setOpenedComments(false);
   };
 
+  console.log(`> [MainCallComponent] participants app statuses: AppStatus: ${participantAppStatus}. CallStatus: ${participantCallStatus}`);
+
   return (
     <CallPageWrapper>
       <CommentsComponent visible={openedComments} id={callId} hide={hideComments} />
@@ -88,6 +98,12 @@ export const MainCallComponent = observer(({
         </CallParticipant>
         <CallParticipant>
           <PlayerComponent muted={!volume} stream={remoteStream} playback={playback} />
+          {participantAppStatus !== "active" && (
+            <PartipantAppStatusComponent
+              participantAppStatus={participantAppStatus}
+              participantCallStatus={participantCallStatus}
+            />
+          )}
         </CallParticipant>
       </CallWraper>
 

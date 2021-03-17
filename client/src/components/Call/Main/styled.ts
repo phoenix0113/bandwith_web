@@ -48,3 +48,20 @@ export const CallWraper = styled.div`
 export const CallParticipant = styled.div`
   height: 50%;
 `;
+
+export const ParticipantStatusOverlay = styled.div`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: ${COLORS.BLACK};
+  opacity: 0.75;
+  color: ${COLORS.WHITE};
+  font-size: 16px;
+  line-height: 21px;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
