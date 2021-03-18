@@ -173,6 +173,7 @@ class IncommingCallMobxService extends AVCoreCall {
       this.stopTrackingParticipantAppStatuses();
       GlobalStorage.socket.off(ACTIONS.STREAM_START);
       GlobalStorage.socket.off(ACTIONS.STREAM_CHANGE);
+      GlobalStorage.socket.off(ACTIONS.STREAM_STOP);
       GlobalStorage.socket.off(ACTIONS.CALL_STATUS_FROM_INITIATOR);
 
       logger.log("info", "incommingCall.ts", "All listeners and trackers were cleaned", true);

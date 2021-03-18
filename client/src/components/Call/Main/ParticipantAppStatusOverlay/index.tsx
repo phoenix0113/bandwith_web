@@ -11,11 +11,11 @@ const getOverlayText = (
   participantCallStatus: CallDetectorStatusType,
 ): string => {
   if (participantAppStatus === "background" || participantAppStatus === "inactive") {
-    return "Participant minimized an app";
+    return "Participant minimized the app";
   }
 
   if (participantCallStatus === "Incoming" || participantCallStatus === "Connected") {
-    return "Participats audio is taken by incoming call";
+    return "Participant's audio is taken by phone call";
   }
 
   return "Participant's app send unexpected status";

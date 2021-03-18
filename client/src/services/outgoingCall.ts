@@ -189,6 +189,7 @@ class OutgoingCallMobxService extends AVCoreCall {
       this.stopTrackingParticipantAppStatuses();
       GlobalStorage.socket.off(ACTIONS.STREAM_START);
       GlobalStorage.socket.off(ACTIONS.STREAM_CHANGE);
+      GlobalStorage.socket.off(ACTIONS.STREAM_STOP);
       GlobalStorage.socket.off(ACTIONS.JOIN_CALL);
       GlobalStorage.socket.off(ACTIONS.CALL_STATUS_FROM_RECEIVER);
 

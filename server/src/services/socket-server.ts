@@ -81,6 +81,9 @@ interface CallSockets {
   participants: Array<string>;
   viewers: Array<string>;
 }
+
+const DISCONNECT_FROM_CALL_TIMEOUT = 1000 * 120; // user has 2 minutes to reconnect
+
 export class SocketServer implements Record<ACTIONS, ApiRequest> {
   private readonly io: Server;
   private lobby: Map<DatabaseId, Socket> = new Map();
@@ -88,6 +91,7 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
   mixers: Map<string, StreamMixer> = new Map();
   private activeCallUsers: Map<CallId, number> = new Map();
   static hangRecords: Map<string, NodeJS.Timeout> = new Map();
+  disconnectFromCallTimeouts: Map<DatabaseId, NodeJS.Timeout> = new Map();
 
   constructor(server) {
     const socketServer = this;
@@ -178,15 +182,25 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
         }
 
         SocketServer.socketLog('disconnecting', socket, socket.rooms);
-        for (const roomId in socket.rooms) {
-          if (roomId.startsWith(SocketServer.callRoom())) {
-            const callId: string = roomId.substr(
-              SocketServer.callRoom().length
-            );
-            await socketServer[ACTIONS.LEAVE_CALL]({ callId }, socket);
-            console.log(ACTIONS.LEAVE_CALL, 'by disconnecting');
-          }
-        }
+
+        console.info(
+          '> onDisconnectingHandler timeout was created. It can be cleared in 2 minutes if client socket will be reconnected'
+        );
+
+        this.disconnectFromCallTimeouts.set(
+          socket.self_id,
+          setTimeout(this.onDisconnectingHandler, DISCONNECT_FROM_CALL_TIMEOUT)
+        );
+
+        // for (const roomId in socket.rooms) {
+        //   if (roomId.startsWith(SocketServer.callRoom())) {
+        //     const callId: string = roomId.substr(
+        //       SocketServer.callRoom().length
+        //     );
+        //     await socketServer[ACTIONS.LEAVE_CALL]({ callId }, socket);
+        //     console.log(ACTIONS.LEAVE_CALL, 'by disconnecting');
+        //   }
+        // }
       });
       socket.on('disconnect', async () => {
         SocketServer.socketLog(
@@ -196,6 +210,21 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
         );
       });
     });
+  }
+  async onDisconnectingHandler(socket: Socket) {
+    console.info(
+      "> onDisconnectingHandler timeout handler. It can't be cleared anymore"
+    );
+
+    this.disconnectFromCallTimeouts.delete(socket.self_id);
+
+    for (const roomId in socket.rooms) {
+      if (roomId.startsWith(SocketServer.callRoom())) {
+        const callId: string = roomId.substr(SocketServer.callRoom().length);
+        await SocketServer[ACTIONS.LEAVE_CALL]({ callId }, socket);
+        console.log(ACTIONS.LEAVE_CALL, 'by disconnecting');
+      }
+    }
   }
   static trowError(errorId: ERROR, message?: string): never {
     throw { errorId, message };
@@ -215,6 +244,13 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     socket.self_image = self_image;
     socket.status = 'online';
     this.sendNewUserStatusToLobby(socket);
+
+    const timer = this.disconnectFromCallTimeouts.get(self_id);
+    if (timer) {
+      console.log('> onDisconnectingHandler timeout was cleared');
+      clearTimeout(timer);
+      this.disconnectFromCallTimeouts.delete(self_id);
+    }
 
     const onlineUsers: Array<string> = [];
     const busyUsers: Array<string> = [];
