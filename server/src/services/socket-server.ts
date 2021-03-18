@@ -73,6 +73,7 @@ interface Socket extends SocketClient {
   self_id: string;
   self_image: string;
   status: UserStatus;
+  currentCallId?: string;
 }
 
 type DatabaseId = string;
@@ -82,9 +83,14 @@ interface CallSockets {
   viewers: Array<string>;
 }
 
+interface DisconnectData {
+  timeout: NodeJS.Timeout;
+  callId: string;
+}
+
 // const DISCONNECT_FROM_CALL_TIMEOUT = 1000 * 120; // user has 2 minutes to reconnect
 const DISCONNECT_FROM_CALL_TIMEOUT = 1000 * 30; // test
-const disconnectFromCallTimeouts: Map<DatabaseId, NodeJS.Timeout> = new Map();
+const disconnectFromCallTimeouts: Map<DatabaseId, DisconnectData> = new Map();
 
 export class SocketServer implements Record<ACTIONS, ApiRequest> {
   private readonly io: Server;
@@ -184,27 +190,30 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
 
         SocketServer.socketLog('disconnecting', socket, socket.rooms);
 
-        console.info(
-          '> onDisconnectingHandler timeout was created. It can be cleared in 2 minutes if client socket will be reconnected'
-        );
+        if (socket.currentCallId) {
+          console.log(
+            `> Socket was in the call room. Creating onDisconnectingHandler timeout that can be cleared in ${
+              DISCONNECT_FROM_CALL_TIMEOUT / 1000
+            } seconds`
+          );
 
-        disconnectFromCallTimeouts.set(
-          socket.self_id,
-          setTimeout(
-            () => this.onDisconnectingHandler(socket),
-            DISCONNECT_FROM_CALL_TIMEOUT
-          )
-        );
-
-        // for (const roomId in socket.rooms) {
-        //   if (roomId.startsWith(SocketServer.callRoom())) {
-        //     const callId: string = roomId.substr(
-        //       SocketServer.callRoom().length
-        //     );
-        //     await socketServer[ACTIONS.LEAVE_CALL]({ callId }, socket);
-        //     console.log(ACTIONS.LEAVE_CALL, 'by disconnecting');
-        //   }
-        // }
+          disconnectFromCallTimeouts.set(socket.self_id, {
+            callId: socket.currentCallId,
+            timeout: setTimeout(
+              () =>
+                this.onDisconnectingHandler(
+                  socket,
+                  socket.self_id,
+                  socket.currentCallId!
+                ),
+              DISCONNECT_FROM_CALL_TIMEOUT
+            ),
+          });
+        } else {
+          console.log(
+            "> Socket wasn't it the call. No need to call LEAVE_CALL or setup timeout"
+          );
+        }
       });
       socket.on('disconnect', async () => {
         SocketServer.socketLog(
@@ -215,23 +224,28 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
       });
     });
   }
-  async onDisconnectingHandler(socket: Socket) {
+  async onDisconnectingHandler(socket: Socket, selfId: string, callId: string) {
     console.info(
       "> onDisconnectingHandler timeout handler. It can't be cleared anymore"
     );
 
-    disconnectFromCallTimeouts.delete(socket.self_id);
+    disconnectFromCallTimeouts.delete(selfId);
 
-    console.log(socket);
+    console.log(
+      `> [onDisconnectingHandler] Call LEAVE_CALL (${callId}) for ${selfId}`
+    );
 
-    for (const roomId in socket.rooms) {
-      console.log('Room id: ', roomId);
-      if (roomId.startsWith(SocketServer.callRoom())) {
-        const callId: string = roomId.substr(SocketServer.callRoom().length);
-        await SocketServer[ACTIONS.LEAVE_CALL]({ callId }, socket);
-        console.log(ACTIONS.LEAVE_CALL, 'by disconnecting');
-      }
-    }
+    await SocketServer[ACTIONS.LEAVE_CALL]({ callId }, socket);
+    console.log(ACTIONS.LEAVE_CALL, 'by disconnecting');
+
+    // for (const roomId in socket.rooms) {
+    //   console.log('Room id: ', roomId);
+    //   if (roomId.startsWith(SocketServer.callRoom())) {
+    //     const callId: string = roomId.substr(SocketServer.callRoom().length);
+    //     await SocketServer[ACTIONS.LEAVE_CALL]({ callId }, socket);
+    //     console.log(ACTIONS.LEAVE_CALL, 'by disconnecting');
+    //   }
+    // }
   }
   static trowError(errorId: ERROR, message?: string): never {
     throw { errorId, message };
@@ -252,11 +266,33 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     socket.status = 'online';
     this.sendNewUserStatusToLobby(socket);
 
-    const timer = disconnectFromCallTimeouts.get(self_id);
-    if (timer) {
+    const disconnectTimeoutData = disconnectFromCallTimeouts.get(self_id);
+    if (disconnectTimeoutData) {
       console.log('> onDisconnectingHandler timeout was cleared');
-      clearTimeout(timer);
+      clearTimeout(disconnectTimeoutData.timeout);
+
+      const callRoom = SocketServer.callRoom(disconnectTimeoutData.callId);
+
+      socket.join(callRoom);
+      socket.status = 'busy';
+      socket.currentCallId = disconnectTimeoutData.callId;
+
+      console.log(`> Rejoined call room ${callRoom}`);
+
+      // TODO: check what happens with participants
+      // const callSockets = this.calls.get(callRoom);
+      // if (callSockets) {
+      //   callSockets.participants.push(socket.id);
+      //   console.log(
+      //     `> Participant joined the room ${callId}. CallSockets participants count: ${callSockets.participants.length}, viewers: ${callSockets.viewers.length}`
+      //   );
+      // } else {
+      //   this.calls.set(callRoom, { participants: [socket.id], viewers: [] });
+      //   console.log(`> Created new room for CallSockets ${callId}`);
+      // }
+
       disconnectFromCallTimeouts.delete(self_id);
+      this.sendNewUserStatusToLobby(socket);
     }
 
     const onlineUsers: Array<string> = [];
@@ -501,6 +537,8 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     socket: Socket
   ): Promise<void> {
     socket.status = 'busy';
+    socket.currentCallId = callId;
+
     this.sendNewUserStatusToLobby(socket);
 
     const callRoom = SocketServer.callRoom(callId);
@@ -663,6 +701,8 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
   }
   [ACTIONS.LEAVE_CALL]({ callId }: CallInput, socket: Socket): void {
     socket.status = 'online';
+    socket.currentCallId = undefined;
+
     this.sendNewUserStatusToLobby(socket);
 
     const callRoom = SocketServer.callRoom(callId);
