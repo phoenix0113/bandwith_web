@@ -202,6 +202,7 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
             timeout: setTimeout(
               () =>
                 this.onDisconnectingHandler(
+                  socketServer,
                   socket,
                   socket.self_id,
                   socket.currentCallId!
@@ -224,7 +225,12 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
       });
     });
   }
-  async onDisconnectingHandler(socket: Socket, selfId: string, callId: string) {
+  async onDisconnectingHandler(
+    socketServer: SocketServer,
+    socket: Socket,
+    selfId: string,
+    callId: string
+  ) {
     console.info(
       "> onDisconnectingHandler timeout handler. It can't be cleared anymore"
     );
@@ -235,7 +241,11 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
       `> [onDisconnectingHandler] Call LEAVE_CALL (${callId}) for ${selfId}`
     );
 
-    await SocketServer[ACTIONS.LEAVE_CALL]({ callId }, socket);
+    console.log(socketServer);
+
+    await socketServer[ACTIONS.LEAVE_CALL]({ callId }, socket);
+
+    // await socketServer.leaveCall({{ callId }, socket});
     console.log(ACTIONS.LEAVE_CALL, 'by disconnecting');
 
     // for (const roomId in socket.rooms) {
