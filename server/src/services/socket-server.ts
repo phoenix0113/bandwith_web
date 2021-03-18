@@ -82,7 +82,8 @@ interface CallSockets {
   viewers: Array<string>;
 }
 
-const DISCONNECT_FROM_CALL_TIMEOUT = 1000 * 120; // user has 2 minutes to reconnect
+// const DISCONNECT_FROM_CALL_TIMEOUT = 1000 * 120; // user has 2 minutes to reconnect
+const DISCONNECT_FROM_CALL_TIMEOUT = 1000 * 30; // test
 const disconnectFromCallTimeouts: Map<DatabaseId, NodeJS.Timeout> = new Map();
 
 export class SocketServer implements Record<ACTIONS, ApiRequest> {
@@ -221,7 +222,10 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
 
     disconnectFromCallTimeouts.delete(socket.self_id);
 
+    console.log(socket);
+
     for (const roomId in socket.rooms) {
+      console.log('Room id: ', roomId);
       if (roomId.startsWith(SocketServer.callRoom())) {
         const callId: string = roomId.substr(SocketServer.callRoom().length);
         await SocketServer[ACTIONS.LEAVE_CALL]({ callId }, socket);
