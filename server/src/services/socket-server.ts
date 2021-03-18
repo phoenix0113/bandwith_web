@@ -189,7 +189,10 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
 
         disconnectFromCallTimeouts.set(
           socket.self_id,
-          setTimeout(this.onDisconnectingHandler, DISCONNECT_FROM_CALL_TIMEOUT)
+          setTimeout(
+            () => this.onDisconnectingHandler(socket),
+            DISCONNECT_FROM_CALL_TIMEOUT
+          )
         );
 
         // for (const roomId in socket.rooms) {
