@@ -37,21 +37,30 @@ class OutgoingCallMobxService extends AVCoreCall {
         if (userId) {
           GlobalStorage.callSpecificUser(callId, userId, (data) => {
             this.handleCallCallback(data);
+            runInAction(() => {
+              this.callId = callId;
+              GlobalStorage.playAudio();
+              this.status = OutgoingCallStatus.WAITING_FOR_PARTICIPANT;
+            });
           });
         } else {
           GlobalStorage.callRandomUser(callId, (data, error) => {
             if (error) {
-              this.resetService();
+              this.leaveCall(() => {
+                this.resetService();
+              });
+            } else {
+              this.handleCallCallback(data);
+              runInAction(() => {
+                this.callId = callId;
+                if (!error) {
+                  GlobalStorage.playAudio();
+                }
+                this.status = OutgoingCallStatus.WAITING_FOR_PARTICIPANT;
+              });
             }
-            this.handleCallCallback(data);
           });
         }
-
-        runInAction(() => {
-          this.callId = callId;
-          GlobalStorage.playAudio();
-          this.status = OutgoingCallStatus.WAITING_FOR_PARTICIPANT;
-        });
       },
     );
 
@@ -97,14 +106,14 @@ class OutgoingCallMobxService extends AVCoreCall {
 
     GlobalStorage.socket.on(CLIENT_ONLY_ACTIONS.PARTICIPANT_DISCONNECTED, (data) => {
       console.log(`> Participant ${data.userId} was disconnected from the call ${data.callId} due to long absence`);
-      showInfoNotification("Participant was disconnected from call due to log absence");
+      showInfoNotification("Participant was disconnected from call due to long absence");
       this.closeSubscribedStream();
       this.onReceiversFinish();
     });
 
     GlobalStorage.socket.on(CLIENT_ONLY_ACTIONS.SELF_DISCONNECTED, (data) => {
       console.log(`> You was disconnected from the call ${data.callId} due to long absence`);
-      showInfoNotification("You was disconnected from call due to log absence");
+      showInfoNotification("You was disconnected from call due to long absence");
 
       this.closeSubscribedStream();
 

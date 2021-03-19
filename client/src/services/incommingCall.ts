@@ -98,13 +98,13 @@ class IncommingCallMobxService extends AVCoreCall {
 
     GlobalStorage.socket.on(CLIENT_ONLY_ACTIONS.PARTICIPANT_DISCONNECTED, ({ userId, callId }) => {
       console.log(`> Participant ${userId} was disconnected from the call ${callId} due to long absence`);
-      showInfoNotification("Participant was disconnected from call due to log absence");
+      showInfoNotification("Participant was disconnected from call due to long absence");
       this.onInitiatorsFinished();
     });
 
     GlobalStorage.socket.on(CLIENT_ONLY_ACTIONS.SELF_DISCONNECTED, ({ callId }) => {
       console.log(`> You was disconnected from the call ${callId} due to long absence`);
-      showInfoNotification("You was disconnected from call due to log absence");
+      showInfoNotification("You was disconnected from call due to long absence");
 
       this.closeSubscribedStream();
 
