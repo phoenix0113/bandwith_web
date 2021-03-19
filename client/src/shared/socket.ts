@@ -95,6 +95,7 @@ export type JoinLobbyRequest = SelfData
 export interface JoinLobbyResponse {
   onlineUsers: Array<string>;
   busyUsers: Array<string>;
+  callReconnection?: boolean;
 }
 
 export interface MakeLobbyCallRequest {

@@ -365,9 +365,12 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     socket.status = 'online';
     this.sendNewUserStatusToLobby(socket);
 
+    let callReconnectionTrigger = false;
+
     const disconnectTimeoutData = disconnectFromCallTimeouts.get(self_id);
     if (disconnectTimeoutData) {
       console.log('> disconnectTimeoutData: ', disconnectTimeoutData);
+      callReconnectionTrigger = true;
 
       if (disconnectTimeoutData.disconnected) {
         // You've already been disconnected
@@ -414,7 +417,11 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
       `> ${socket.id} joined room ${LOBBY_ROOM} with creds: ${socket.self_id}|${socket.self_name}`
     );
 
-    return { onlineUsers, busyUsers };
+    return {
+      onlineUsers,
+      busyUsers,
+      callReconnection: callReconnectionTrigger,
+    };
   }
 
   [ACTIONS.MAKE_LOBBY_CALL](
