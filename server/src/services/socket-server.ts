@@ -44,6 +44,8 @@ import {
   LeaveRecordingCommentsRoomRequest,
   AppStatus,
   CallDetectorStatus,
+  ParticipantDisconnectedEventData,
+  SelfDisconnectedEventData,
   // @ts-ignore
 } from '../../../client/src/shared/socket';
 import {
@@ -85,7 +87,11 @@ interface CallSockets {
 
 interface DisconnectData {
   timeout: NodeJS.Timeout;
-  callId: string;
+  oldSocketData: {
+    callId: string;
+    streams?: { [stream: string]: Kinds };
+  };
+  disconnected: boolean;
 }
 
 // const DISCONNECT_FROM_CALL_TIMEOUT = 1000 * 120; // user has 2 minutes to reconnect
@@ -109,6 +115,9 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
       if (query) {
         const { socketId } = queryParse(query);
         if (socketId) {
+          console.log(
+            `> Specified from client id was used for socket: ${socketId}`
+          );
           return socketId.toString();
         }
       }
@@ -198,7 +207,10 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
           );
 
           disconnectFromCallTimeouts.set(socket.self_id, {
-            callId: socket.currentCallId,
+            oldSocketData: {
+              streams: socket.streams,
+              callId: socket.currentCallId,
+            },
             timeout: setTimeout(
               () =>
                 this.onDisconnectingHandler(
@@ -209,6 +221,7 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
                 ),
               DISCONNECT_FROM_CALL_TIMEOUT
             ),
+            disconnected: false,
           });
         } else {
           console.log(
@@ -235,27 +248,103 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
       "> onDisconnectingHandler timeout handler. It can't be cleared anymore"
     );
 
-    disconnectFromCallTimeouts.delete(selfId);
+    // update `disconnected = true` to be able to notify this user that they were disconnected
+    const disconnectData = disconnectFromCallTimeouts.get(selfId);
+    disconnectData!.disconnected = true;
+    disconnectFromCallTimeouts.set(selfId, disconnectData!);
+    console.log('> disconnectData: ', disconnectData);
 
     console.log(
       `> [onDisconnectingHandler] Call LEAVE_CALL (${callId}) for ${selfId}`
     );
 
-    console.log(socketServer);
+    // await socketServer[ACTIONS.LEAVE_CALL]({ callId }, socket);
 
-    await socketServer[ACTIONS.LEAVE_CALL]({ callId }, socket);
+    socket.status = 'offline';
+    socket.currentCallId = undefined;
 
-    // await socketServer.leaveCall({{ callId }, socket});
+    socketServer.sendNewUserStatusToLobby(socket);
+
+    const callRoom = SocketServer.callRoom(callId);
+
+    const eventData: ParticipantDisconnectedEventData = {
+      callId,
+      socketId: socket.id,
+      userId: selfId,
+    };
+
+    socketServer.io
+      .to(callRoom)
+      .emit(CLIENT_ONLY_ACTIONS.PARTICIPANT_DISCONNECTED, eventData);
+
+    // TODO: check this old logic from LEAVE_CALL
+    const callSockets = this.calls.get(callRoom);
+    if (callSockets) {
+      const index = callSockets.participants.indexOf(socket.id);
+      if (index !== -1) {
+        callSockets.participants.splice(index, 1);
+
+        console.log(
+          `> Participant has left the room. CallSockets participants count: ${callSockets.participants.length}, viewers: ${callSockets.viewers.length}`
+        );
+        if (callSockets.participants.length === 0) {
+          console.log(
+            `> Room ${callRoom} is about to be removed. Notifying viewers`
+          );
+          socketServer.io
+            .to(callRoom)
+            .emit(CLIENT_ONLY_ACTIONS.LIVE_CALL_ENDED);
+
+          socketServer.calls.delete(callRoom);
+        }
+      } else {
+        const viewerIndex = callSockets.viewers.indexOf(socket.id);
+        if (viewerIndex !== -1) {
+          callSockets.viewers.splice(index, 1);
+          console.log(
+            `> Viewer has left the room. CallSockets participants count: ${callSockets.participants.length}, viewers: ${callSockets.viewers.length}`
+          );
+
+          const eventData: ViewerJoinedEventData = {
+            participant_id: socket.self_id,
+            participant_image: socket.self_image,
+            participant_name: socket.self_name,
+          };
+
+          socket.to(callRoom).emit(CLIENT_ONLY_ACTIONS.VIEWER_LEFT, eventData);
+          if (callRoom in socket.rooms) {
+            socket.leave(callRoom);
+          }
+          // viewers don't have streams or affect call flow so we don't want to execure any further logic
+          return;
+        }
+      }
+    }
+
+    if (callRoom in socket.rooms) {
+      socket.leave(callRoom);
+      const data: SocketClientCallData = {
+        socketId: socket.id,
+        callId,
+      };
+      for (const stream in socket.streams) {
+        socketServer[ACTIONS.STREAM_STOP]({ callId, stream }, socket);
+      }
+      socket.to(callRoom).emit(ACTIONS.LEAVE_CALL, data);
+      SocketServer.socketLog('broadcast', socket, ACTIONS.LEAVE_CALL, data);
+    }
+    const { participants } = socketServer[ACTIONS.CALL_PARTICIPANTS]({
+      callId,
+    });
+    if (!participants || !participants.length) {
+      console.log('closing call', callId);
+      socketServer
+        .closeCallMixer({ callId })
+        .then(() => {})
+        .catch(() => {});
+    }
+
     console.log(ACTIONS.LEAVE_CALL, 'by disconnecting');
-
-    // for (const roomId in socket.rooms) {
-    //   console.log('Room id: ', roomId);
-    //   if (roomId.startsWith(SocketServer.callRoom())) {
-    //     const callId: string = roomId.substr(SocketServer.callRoom().length);
-    //     await SocketServer[ACTIONS.LEAVE_CALL]({ callId }, socket);
-    //     console.log(ACTIONS.LEAVE_CALL, 'by disconnecting');
-    //   }
-    // }
   }
   static trowError(errorId: ERROR, message?: string): never {
     throw { errorId, message };
@@ -278,31 +367,37 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
 
     const disconnectTimeoutData = disconnectFromCallTimeouts.get(self_id);
     if (disconnectTimeoutData) {
-      console.log('> onDisconnectingHandler timeout was cleared');
-      clearTimeout(disconnectTimeoutData.timeout);
+      console.log('> disconnectTimeoutData: ', disconnectTimeoutData);
 
-      const callRoom = SocketServer.callRoom(disconnectTimeoutData.callId);
+      if (disconnectTimeoutData.disconnected) {
+        // You've already been disconnected
 
-      socket.join(callRoom);
-      socket.status = 'busy';
-      socket.currentCallId = disconnectTimeoutData.callId;
+        console.log(
+          `> Current socket's user was already disconnected from the call ${disconnectTimeoutData.oldSocketData.callId}. Notifying him through new socket`
+        );
+        const eventData: SelfDisconnectedEventData = {
+          callId: disconnectTimeoutData.oldSocketData.callId,
+        };
 
-      console.log(`> Rejoined call room ${callRoom}`);
+        socket.emit(CLIENT_ONLY_ACTIONS.SELF_DISCONNECTED, eventData);
+      } else {
+        clearTimeout(disconnectTimeoutData.timeout);
+        console.log('> onDisconnectingHandler timeout was cleared');
 
-      // TODO: check what happens with participants
-      // const callSockets = this.calls.get(callRoom);
-      // if (callSockets) {
-      //   callSockets.participants.push(socket.id);
-      //   console.log(
-      //     `> Participant joined the room ${callId}. CallSockets participants count: ${callSockets.participants.length}, viewers: ${callSockets.viewers.length}`
-      //   );
-      // } else {
-      //   this.calls.set(callRoom, { participants: [socket.id], viewers: [] });
-      //   console.log(`> Created new room for CallSockets ${callId}`);
-      // }
+        const callRoom = SocketServer.callRoom(
+          disconnectTimeoutData.oldSocketData.callId
+        );
 
-      disconnectFromCallTimeouts.delete(self_id);
-      this.sendNewUserStatusToLobby(socket);
+        socket.join(callRoom);
+        socket.status = 'busy';
+        socket.currentCallId = disconnectTimeoutData.oldSocketData.callId;
+        socket.streams = disconnectTimeoutData.oldSocketData.streams;
+
+        console.log(`> Rejoined call room ${callRoom} with new socket`);
+
+        disconnectFromCallTimeouts.delete(self_id);
+        this.sendNewUserStatusToLobby(socket);
+      }
     }
 
     const onlineUsers: Array<string> = [];

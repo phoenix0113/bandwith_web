@@ -195,7 +195,7 @@ class GlobalMobxService {
   @action joinLobby = () => {
     this.socket = SocketIO(SERVER_BASE_URL, {
       transports: ["websocket"],
-      query: `auth_token=${this.token}`,
+      query: `auth_token=${this.token}&socketId=${this.profile._id}-socket`,
     }) as CallSocket;
 
     this.socket.on("connect", () => {
