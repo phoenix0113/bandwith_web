@@ -97,10 +97,20 @@ class OutgoingCallMobxService extends AVCoreCall {
 
     GlobalStorage.socket.on(CLIENT_ONLY_ACTIONS.PARTICIPANT_DISCONNECTED, (data) => {
       console.log(`> Participant ${data.userId} was disconnected from the call ${data.callId} due to long absence`);
+      showInfoNotification("Participant was disconnected from call due to log absence");
+      this.closeSubscribedStream();
+      this.onReceiversFinish();
     });
 
     GlobalStorage.socket.on(CLIENT_ONLY_ACTIONS.SELF_DISCONNECTED, (data) => {
       console.log(`> You was disconnected from the call ${data.callId} due to long absence`);
+      showInfoNotification("You was disconnected from call due to log absence");
+
+      this.closeSubscribedStream();
+
+      // TODO: check if this is safe to call this function that includes
+      // already called on server events in socket.emit
+      this.onReceiversFinish();
     });
   }
 
@@ -200,6 +210,8 @@ class OutgoingCallMobxService extends AVCoreCall {
       GlobalStorage.socket.off(ACTIONS.STREAM_STOP);
       GlobalStorage.socket.off(ACTIONS.JOIN_CALL);
       GlobalStorage.socket.off(ACTIONS.CALL_STATUS_FROM_RECEIVER);
+      GlobalStorage.socket.off(CLIENT_ONLY_ACTIONS.SELF_DISCONNECTED);
+      GlobalStorage.socket.off(CLIENT_ONLY_ACTIONS.PARTICIPANT_DISCONNECTED);
 
       logger.log("info", "outgoingCall.ts", "All listeners and trackers were cleaned", true, true);
 

@@ -11,6 +11,7 @@ import { CallParticipantData, IncommingCallStatus, OutgoingCallStatus } from "..
 
 import { vibrate } from "../utils/vibration";
 import { logger } from "./logger";
+import { showInfoNotification } from "../utils/notification";
 
 class IncommingCallMobxService extends AVCoreCall {
   @observable status: IncommingCallStatus = null;
@@ -97,10 +98,19 @@ class IncommingCallMobxService extends AVCoreCall {
 
     GlobalStorage.socket.on(CLIENT_ONLY_ACTIONS.PARTICIPANT_DISCONNECTED, ({ userId, callId }) => {
       console.log(`> Participant ${userId} was disconnected from the call ${callId} due to long absence`);
+      showInfoNotification("Participant was disconnected from call due to log absence");
+      this.onInitiatorsFinished();
     });
 
     GlobalStorage.socket.on(CLIENT_ONLY_ACTIONS.SELF_DISCONNECTED, ({ callId }) => {
       console.log(`> You was disconnected from the call ${callId} due to long absence`);
+      showInfoNotification("You was disconnected from call due to log absence");
+
+      this.closeSubscribedStream();
+
+      // TODO: check if this is safe to call this function that
+      // includes already called on server events in socket.emit
+      this.onInitiatorsFinished();
     });
   }
 
@@ -183,6 +193,8 @@ class IncommingCallMobxService extends AVCoreCall {
       GlobalStorage.socket.off(ACTIONS.STREAM_CHANGE);
       GlobalStorage.socket.off(ACTIONS.STREAM_STOP);
       GlobalStorage.socket.off(ACTIONS.CALL_STATUS_FROM_INITIATOR);
+      GlobalStorage.socket.off(CLIENT_ONLY_ACTIONS.SELF_DISCONNECTED);
+      GlobalStorage.socket.off(CLIENT_ONLY_ACTIONS.PARTICIPANT_DISCONNECTED);
 
       logger.log("info", "incommingCall.ts", "All listeners and trackers were cleaned", true);
 

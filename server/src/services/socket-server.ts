@@ -365,12 +365,9 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     socket.status = 'online';
     this.sendNewUserStatusToLobby(socket);
 
-    let callReconnectionTrigger = false;
-
     const disconnectTimeoutData = disconnectFromCallTimeouts.get(self_id);
     if (disconnectTimeoutData) {
       console.log('> disconnectTimeoutData: ', disconnectTimeoutData);
-      callReconnectionTrigger = true;
 
       if (disconnectTimeoutData.disconnected) {
         // You've already been disconnected
@@ -420,7 +417,6 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     return {
       onlineUsers,
       busyUsers,
-      callReconnection: callReconnectionTrigger,
     };
   }
 
