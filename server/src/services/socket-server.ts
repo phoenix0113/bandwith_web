@@ -94,8 +94,9 @@ interface DisconnectData {
   disconnected: boolean;
 }
 
-// const DISCONNECT_FROM_CALL_TIMEOUT = 1000 * 120; // user has 2 minutes to reconnect
-const DISCONNECT_FROM_CALL_TIMEOUT = 1000 * 30; // test
+const disconnectTimeoutSeconds = conf.callDisconnectTimeout || 120;
+const DISCONNECT_FROM_CALL_TIMEOUT = Number(disconnectTimeoutSeconds) * 1000; // user has 2 minutes to reconnect by default
+
 const disconnectFromCallTimeouts: Map<DatabaseId, DisconnectData> = new Map();
 
 export class SocketServer implements Record<ACTIONS, ApiRequest> {

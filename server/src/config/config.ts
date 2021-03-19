@@ -35,6 +35,7 @@ export const conf = {
     path: 'ffmpeg',
     recordCutTime: '00:00:05.500',
   },
+  callDisconnectTimeout: getEnvStr('CALL_DISCONNECT_TIMEOUT_SECONDS'),
 };
 
 function getEnvStr(key: string, _default?: string): string {
