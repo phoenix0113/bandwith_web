@@ -5,7 +5,7 @@ import { observable, makeObservable, action, runInAction, toJS } from "mobx";
 import { AVCoreCall, CallType } from "./avcoreCall";
 import { GlobalStorage, LobbyCallResponse } from "./global";
 
-import { ACTIONS, ErrorData } from "../shared/socket";
+import { ACTIONS, CLIENT_ONLY_ACTIONS, ErrorData } from "../shared/socket";
 import { CallParticipantData, IncommingCallStatus, OutgoingCallStatus } from "../interfaces/call";
 
 import { vibrate } from "../utils/vibration";
@@ -93,6 +93,14 @@ class OutgoingCallMobxService extends AVCoreCall {
         default:
           throw new Error("> Unexpected call status");
       }
+    });
+
+    GlobalStorage.socket.on(CLIENT_ONLY_ACTIONS.PARTICIPANT_DISCONNECTED, (data) => {
+      console.log(`> Participant ${data.userId} was disconnected from the call ${data.callId} due to long absence`);
+    });
+
+    GlobalStorage.socket.on(CLIENT_ONLY_ACTIONS.SELF_DISCONNECTED, (data) => {
+      console.log(`> You was disconnected from the call ${data.callId} due to long absence`);
     });
   }
 
