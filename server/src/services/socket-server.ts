@@ -46,6 +46,7 @@ import {
   CallDetectorStatus,
   ParticipantDisconnectedEventData,
   SelfDisconnectedEventData,
+  CallFinishedEventData,
   // @ts-ignore
 } from '../../../client/src/shared/socket';
 import {
@@ -389,16 +390,35 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
           disconnectTimeoutData.oldSocketData.callId
         );
 
-        socket.join(callRoom);
-        socket.status = 'busy';
-        socket.currentCallId = disconnectTimeoutData.oldSocketData.callId;
-        socket.streams = disconnectTimeoutData.oldSocketData.streams;
+        const callSockets = this.calls.get(callRoom);
 
-        console.log(`> Rejoined call room ${callRoom} with new socket`);
+        if (!callSockets || callSockets.participants.length === 0) {
+          console.log(
+            '> All participants already left. Notifying socket about call being finished'
+          );
 
-        disconnectFromCallTimeouts.delete(self_id);
-        this.sendNewUserStatusToLobby(socket);
+          const eventData: CallFinishedEventData = {
+            callId: disconnectTimeoutData.oldSocketData.callId,
+          };
+
+          socket.emit(CLIENT_ONLY_ACTIONS.SELF_DISCONNECTED, eventData);
+        } else {
+          callSockets.participants.push(socket.id);
+          console.log(
+            `> Joined callSockets of room ${disconnectTimeoutData.oldSocketData.callId}. CallSockets participants count: ${callSockets.participants.length}, viewers: ${callSockets.viewers.length}`
+          );
+
+          socket.join(callRoom);
+          socket.status = 'busy';
+          socket.currentCallId = disconnectTimeoutData.oldSocketData.callId;
+          socket.streams = disconnectTimeoutData.oldSocketData.streams;
+
+          console.log(`> Rejoined call room ${callRoom} with new socket`);
+
+          this.sendNewUserStatusToLobby(socket);
+        }
       }
+      disconnectFromCallTimeouts.delete(self_id);
     }
 
     const onlineUsers: Array<string> = [];
