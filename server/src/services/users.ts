@@ -112,6 +112,7 @@ export class UsersService {
     return user;
   }
 
+  // TODO: if this function will ever be used, need to specify platform to return valid secret and id
   static getOAuthCreds() {
     const { google, facebook } = conf.oauth;
 
@@ -123,16 +124,23 @@ export class UsersService {
 
   static async oauthGoogle({
     tokenId,
+    isIos,
   }: OAuthGoogleRequest): Promise<AuthResponse> {
     const {
-      google: { client_id },
+      google: { client_id, ios_client_id },
       unsetField,
     } = conf.oauth;
 
-    const gClient = new OAuth2Client(client_id);
+    const targetClientId = isIos ? ios_client_id : client_id;
+
+    console.log(
+      `> Using ${targetClientId} for google oauth (request's isIos: ${isIos})`
+    );
+
+    const gClient = new OAuth2Client(targetClientId);
     const result = await gClient.verifyIdToken({
       idToken: tokenId,
-      audience: client_id,
+      audience: targetClientId,
     });
 
     const {

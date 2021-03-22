@@ -17,6 +17,8 @@ export const conf = {
     google: {
       client_id: getEnvStr('GOOGLE_CLIENT_ID'),
       client_secret: getEnvStr('GOOGLE_CLIENT_SECRET'),
+      ios_client_id: getEnvStr('GOOGLE_CLIENT_ID_IOS'),
+      ios_client_secret: getEnvStr('GOOGLE_CLIENT_SECRET_IOS'),
     },
     facebook: {
       client_id: getEnvStr('FACEBOOK_CLIENT_ID'),
