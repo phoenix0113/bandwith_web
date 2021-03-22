@@ -392,7 +392,13 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
 
         const callSockets = this.calls.get(callRoom);
 
-        if (!callSockets || callSockets.participants.length === 0) {
+        // TODO: callSocket[callId] should be destroyed at some point to prevent memory leaks
+        console.log('callSockets: ', callSockets);
+        if (
+          !callSockets ||
+          (callSockets.participants.length === 1 &&
+            callSockets.participants[0] === socket.id)
+        ) {
           console.log(
             '> All participants already left. Notifying socket about call being finished'
           );
@@ -401,13 +407,10 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
             callId: disconnectTimeoutData.oldSocketData.callId,
           };
 
-          socket.emit(CLIENT_ONLY_ACTIONS.SELF_DISCONNECTED, eventData);
-        } else {
-          callSockets.participants.push(socket.id);
-          console.log(
-            `> Joined callSockets of room ${disconnectTimeoutData.oldSocketData.callId}. CallSockets participants count: ${callSockets.participants.length}, viewers: ${callSockets.viewers.length}`
-          );
+          socket.emit(CLIENT_ONLY_ACTIONS.CALL_ALREADY_FINISHED, eventData);
 
+          // TODO: clear `callSocket` and notify viewers
+        } else {
           socket.join(callRoom);
           socket.status = 'busy';
           socket.currentCallId = disconnectTimeoutData.oldSocketData.callId;
