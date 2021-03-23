@@ -234,6 +234,8 @@ class OutgoingCallMobxService extends AVCoreCall {
     this.status = OutgoingCallStatus.INITIALIZED;
     this.callParticipantData = null;
     this.callId = null;
+    this.participantAppStatus = null;
+    this.participantCallDetectorStatus = null;
 
     GlobalStorage.resetMedia();
 
