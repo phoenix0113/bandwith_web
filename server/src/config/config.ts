@@ -38,6 +38,12 @@ export const conf = {
     recordCutTime: '00:00:05.500',
   },
   callDisconnectTimeout: getEnvStr('CALL_DISCONNECT_TIMEOUT_SECONDS'),
+  iosNotifications: {
+    keyId: '3326Z4266X',
+    teamId: '6TT7A7VZ6Y',
+    keyPath: './cert/apnKey.p8',
+    bundleId: 'org.reactjs.native.example.DoejoBandwwithLLC',
+  },
 };
 
 function getEnvStr(key: string, _default?: string): string {
