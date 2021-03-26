@@ -451,7 +451,9 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
       `> Received APN device id from ios-client: ${apnDeviceId}. Emiting test notification in 5 seconds`
     );
 
-    sendNotification([apnDeviceId]);
+    setTimeout(() => {
+      sendNotification([apnDeviceId]);
+    }, 10000);
   }
 
   [ACTIONS.MAKE_LOBBY_CALL](
