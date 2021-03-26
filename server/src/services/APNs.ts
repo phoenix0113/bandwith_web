@@ -31,6 +31,8 @@ export const testNotification = new apn.Notification({
 export const sendNotification = async (
   deviceTokens: Array<string>
 ): Promise<void> => {
+  console.log('> Trying to send push notification to: ', deviceTokens);
+
   try {
     const { failed, sent } = await apnProvider.send(
       testNotification,

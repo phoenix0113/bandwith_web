@@ -47,6 +47,7 @@ import {
   ParticipantDisconnectedEventData,
   SelfDisconnectedEventData,
   CallFinishedEventData,
+  SendAPNDeviceIdRequest,
   // @ts-ignore
 } from '../../../client/src/shared/socket';
 import {
@@ -68,6 +69,7 @@ import {
   CallRecordingService,
 } from '../services';
 import { Comment } from '../../../client/src/shared/interfaces';
+import { sendNotification } from '../services/APNs';
 
 type ApiRequest = (json: {}, socket?: Socket) => {} | void;
 interface Socket extends SocketClient {
@@ -442,6 +444,14 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
       onlineUsers,
       busyUsers,
     };
+  }
+
+  [ACTIONS.SEND_APN_DEVICE_ID]({ apnDeviceId }: SendAPNDeviceIdRequest): void {
+    console.log(
+      `> Received APN device id from ios-client: ${apnDeviceId}. Emiting test notification in 5 seconds`
+    );
+
+    sendNotification([apnDeviceId]);
   }
 
   [ACTIONS.MAKE_LOBBY_CALL](
