@@ -5,7 +5,7 @@ import { conf } from '../config/config';
 
 const apnOptions: apn.ProviderOptions = {
   token: {
-    key: path.join(__dirname, conf.iosNotifications.keyPath),
+    key: path.join(__dirname, '../../cert/apnKey.p8'),
     keyId: conf.iosNotifications.keyId,
     teamId: conf.iosNotifications.teamId,
   },

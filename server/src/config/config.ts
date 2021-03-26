@@ -41,7 +41,6 @@ export const conf = {
   iosNotifications: {
     keyId: '3326Z4266X',
     teamId: '6TT7A7VZ6Y',
-    keyPath: './cert/apnKey.p8',
     bundleId: 'org.reactjs.native.example.DoejoBandwwithLLC',
   },
 };
