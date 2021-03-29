@@ -4,7 +4,10 @@ import path from 'path';
 
 import { CrudController } from './crudController';
 import { TypedRequest } from '../types/Request';
-import { SendLogsRequest } from '../../../client/src/shared/interfaces';
+import {
+  LogOnServerRequest,
+  SendLogsRequest,
+} from '../../../client/src/shared/interfaces';
 
 export class LogsController extends CrudController {
   static async writeLog(req: TypedRequest<SendLogsRequest>, res: Response) {
@@ -18,5 +21,9 @@ export class LogsController extends CrudController {
       console.log('> Log file was updated');
       res.send({ success: true });
     });
+  }
+
+  static async showLog(req: TypedRequest<LogOnServerRequest>, res: Response) {
+    console.log('[CLIENT] ', req.body.log);
   }
 }

@@ -3,7 +3,7 @@ import { format } from "date-fns";
 // eslint-disable-next-line import/no-cycle
 import { GlobalStorage } from "./global";
 
-import { sendLogs } from "../axios/routes/logs";
+import { logOnServerRequest, sendLogs } from "../axios/routes/logs";
 import { showErrorNotification, showInfoNotification } from "../utils/notification";
 import { SEND_LOGS_THRESHOLD } from "../utils/constants";
 
@@ -75,6 +75,16 @@ class LoggerService {
     } catch (err) {
       console.log(err);
       showErrorNotification(err.message);
+    }
+  }
+
+  public logOnServer = async (message: string): Promise<void> => {
+    try {
+      await logOnServerRequest({
+        log: message,
+      });
+    } catch (err) {
+      console.log(err);
     }
   }
 }
