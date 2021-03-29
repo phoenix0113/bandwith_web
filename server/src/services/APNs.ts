@@ -9,7 +9,7 @@ const apnOptions: apn.ProviderOptions = {
     keyId: conf.iosNotifications.keyId,
     teamId: conf.iosNotifications.teamId,
   },
-  production: false,
+  production: true,
 };
 
 console.log('> initializing APN with following options: ', apnOptions);
