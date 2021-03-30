@@ -27,6 +27,7 @@ export enum ACTIONS {
   JOIN_RECORDING_COMMENTS_ROOM="joinRecordingCommentsRoom",
   LEAVE_RECORDING_COMMENTS_ROOM="leaveRecordingCommentsRoom",
   SEND_APN_DEVICE_ID="sendApnDeviceId",
+  MAKE_APN_CALL="makeApnCall",
 }
 
 /**
@@ -105,9 +106,7 @@ export interface MakeLobbyCallRequest {
   isRandomCall: boolean;
 }
 
-export interface MakeLobbyCallResponse extends ParticipantData {
-  participant_socket: string;
-}
+export type MakeLobbyCallResponse = ParticipantData;
 
 export interface LobbyCallEventData {
   caller_id: string;
@@ -126,6 +125,10 @@ export interface UserStatusEventData {
 
 export interface SendAPNDeviceIdRequest {
   apnDeviceId: string;
+}
+
+export interface APNCallRequest {
+  call_id: string;
 }
 
 /**

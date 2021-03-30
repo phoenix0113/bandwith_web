@@ -48,6 +48,7 @@ import {
   SelfDisconnectedEventData,
   CallFinishedEventData,
   SendAPNDeviceIdRequest,
+  APNCallRequest,
   // @ts-ignore
 } from '../../../client/src/shared/socket';
 import {
@@ -55,6 +56,7 @@ import {
   USER_IS_BUSY,
   NOT_ABLE_TO_FIND_PARTICIPANT,
   USER_IS_OFFLINE,
+  NO_APN_DEVICE_TOKEN_FOUND,
   // @ts-ignore
 } from '../../../client/src/shared/errors';
 // @ts-ignore
@@ -464,6 +466,30 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     }, 10000);
   }
 
+  async [ACTIONS.MAKE_APN_CALL](
+    { call_id }: APNCallRequest,
+    socket: Socket
+  ): Promise<MakeLobbyCallResponse> {
+    const targetDeviceId = await APNService.getRandomDeviceId(socket.self_id);
+
+    if (!targetDeviceId) {
+      console.log(`[APN] ${NO_APN_DEVICE_TOKEN_FOUND}. Throwing an error...`);
+      throw new Error(NO_APN_DEVICE_TOKEN_FOUND);
+    }
+
+    // TODO: send a notification with its cancellation in 15 seconds
+
+    const responseData: MakeLobbyCallResponse = {
+      participant_id: targetDeviceId.user._id,
+      participant_name: targetDeviceId.user.name,
+      participant_image: targetDeviceId.user.image,
+    };
+
+    console.log('[APN] MAKE_APN_CALL responseData: ', responseData);
+
+    return responseData;
+  }
+
   [ACTIONS.MAKE_LOBBY_CALL](
     { call_id, _id, isRandomCall }: MakeLobbyCallRequest,
     socket: Socket
@@ -510,7 +536,6 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
       participant_id: participant.self_id,
       participant_name: participant.self_name,
       participant_image: participant.self_image,
-      participant_socket: participant.id,
     };
   }
   /**

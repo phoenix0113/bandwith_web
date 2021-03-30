@@ -1,10 +1,21 @@
 import { Schema, Document, model } from 'mongoose';
 import { Omit } from '../../../client/src/shared/interfaces';
 
+export interface UserData {
+  _id: string;
+  name: string;
+  image: string;
+}
+
+export interface GetRandomDeviceResponse {
+  deviceId: string;
+  user: UserData;
+}
+
 export interface APNInterface {
   _id: string;
   deviceId: string;
-  user: string;
+  user: string | UserData;
 }
 
 export type APNRequest = Omit<APNInterface, '_id'>;

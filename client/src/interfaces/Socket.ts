@@ -39,6 +39,7 @@ import {
   ParticipantDisconnectedEventData,
   CallFinishedEventData,
   SendAPNDeviceIdRequest,
+  APNCallRequest,
 } from "../shared/socket";
 
 export interface CallSocket extends SocketIOClient.Socket {
@@ -137,6 +138,11 @@ export interface CallSocket extends SocketIOClient.Socket {
   emit(
     type: ACTIONS.MAKE_LOBBY_CALL,
     data: MakeLobbyCallRequest,
+    callback: (data: MakeLobbyCallResponse | ErrorData) => void
+  ): this
+  emit(
+    type: ACTIONS.MAKE_APN_CALL,
+    data: APNCallRequest,
     callback: (data: MakeLobbyCallResponse | ErrorData) => void
   ): this
   emit(

@@ -2,7 +2,6 @@ export interface CallParticipantData {
   name: string;
   id: string;
   image: string | null;
-  socketId: string;
   isFriend: boolean;
 }
 

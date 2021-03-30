@@ -3,7 +3,14 @@ import path from 'path';
 
 import { conf } from '../config/config';
 
-import { APN, APNRequest, APNInterface } from '../models';
+import {
+  APN,
+  APNRequest,
+  APNInterface,
+  IAPN,
+  GetRandomDeviceResponse,
+  UserData,
+} from '../models/apn';
 
 const apnOptions: apn.ProviderOptions = {
   token: {
@@ -52,6 +59,10 @@ export const sendNotification = async (
   }
 };
 
+const isUserPopulated = (obj: UserData | any): obj is UserData => {
+  return obj && obj.name && typeof obj.name === 'string';
+};
+
 export class APNService {
   static async addAPNDeviceId({ deviceId, user }: APNRequest) {
     // saves new or update existing APN deviceId when user sends his token via socket.io
@@ -96,20 +107,38 @@ export class APNService {
   }
 
   // returns device id with its user's id, that can be used to call via APN
-  static async getRandomDeviceId(callerUserId: string): Promise<APNInterface> {
+  static async getRandomDeviceId(
+    callerUserId: string
+  ): Promise<GetRandomDeviceResponse | null> {
     try {
-      const apnList = await APN.find({});
+      const apnList: Array<IAPN> = await APN.where('user').ne(callerUserId);
 
-      const otherUsersDeviceId = apnList.filter((t) => t.user !== callerUserId);
-      const randomIndex = Math.floor(Math.random() * otherUsersDeviceId.length);
+      if (!apnList) {
+        console.log('[APN] no device id found');
+        return null;
+      }
 
-      const targetDeviceId: APNInterface = {
-        _id: otherUsersDeviceId[randomIndex]._id,
-        deviceId: otherUsersDeviceId[randomIndex].deviceId,
-        user: otherUsersDeviceId[randomIndex].user,
+      console.log('[APN] Found deviceIds: ', apnList);
+
+      const randomIndex = Math.floor(Math.random() * apnList.length);
+
+      const targetAPN = apnList[randomIndex].populate({
+        path: 'user',
+        select: '_id name image',
+      });
+
+      console.log('[APN] Selected populated deviceId: ', targetAPN);
+
+      if (!isUserPopulated(targetAPN.user)) {
+        throw new Error(
+          'Something went wrong while populating APN document. Current document:'
+        );
+      }
+
+      return {
+        deviceId: targetAPN.deviceId,
+        user: targetAPN.user,
       };
-
-      return targetDeviceId;
     } catch (e) {
       throw e;
     }

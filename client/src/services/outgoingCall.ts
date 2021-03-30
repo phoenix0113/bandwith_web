@@ -134,7 +134,6 @@ class OutgoingCallMobxService extends AVCoreCall {
         id: data.participant_id,
         name: data.participant_name,
         image: data.participant_image,
-        socketId: data.participant_socket,
         isFriend: data.isFriend,
       };
     }
