@@ -4,7 +4,7 @@ import { Omit } from '../../../client/src/shared/interfaces';
 export interface UserData {
   _id: string;
   name: string;
-  image: string;
+  imageUrl: string;
 }
 
 export interface GetRandomDeviceResponse {

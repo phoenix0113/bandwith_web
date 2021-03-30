@@ -125,7 +125,7 @@ export class APNService {
       const targetAPN = await apnList[randomIndex]
         .populate({
           path: 'user',
-          select: '_id name image',
+          select: '_id name imageUrl',
         })
         .execPopulate();
 

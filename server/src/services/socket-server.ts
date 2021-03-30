@@ -482,7 +482,7 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     const responseData: MakeLobbyCallResponse = {
       participant_id: targetDeviceId.user._id,
       participant_name: targetDeviceId.user.name,
-      participant_image: targetDeviceId.user.image,
+      participant_image: targetDeviceId.user.imageUrl,
     };
 
     console.log('[APN] MAKE_APN_CALL responseData: ', responseData);
