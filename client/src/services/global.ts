@@ -25,7 +25,7 @@ import {
 
 import {
   Kinds, CLIENT_ONLY_ACTIONS, ACTIONS, LobbyCallEventData,
-  MakeLobbyCallResponse, ErrorData, UserStatus,
+  MakeLobbyCallResponse, ErrorData, UserStatus, APNCallRequest,
 } from "../shared/socket";
 import { CallSocket } from "../interfaces/Socket";
 import { ALL_USERS_ARE_UNAVAILABLE } from "../shared/errors";
@@ -303,14 +303,36 @@ class GlobalMobxService {
     callback: (data: LobbyCallResponse | ErrorData, error?: boolean) => void,
   ) => {
     if (!this.onlineUsers.length) {
-      showInfoNotification(ALL_USERS_ARE_UNAVAILABLE);
-      callback(null, true);
-      return;
+      // no users in the lobby, make call via APN
+      this.APNCall(callId, callback);
+    } else {
+      // there are online users in the lobby, prioritize them
+      const randomOnlineUser = this.onlineUsers[
+        Math.floor(Math.random() * this.onlineUsers.length)];
+
+      this.callSpecificUser(callId, randomOnlineUser, callback, true);
     }
+  }
 
-    const randomOnlineUser = this.onlineUsers[Math.floor(Math.random() * this.onlineUsers.length)];
+  public APNCall = (
+    callId: string,
+    callback: (data: LobbyCallResponse | ErrorData, error?: boolean) => void,
+  ) => {
+    const requestData: APNCallRequest = { call_id: callId };
 
-    this.callSpecificUser(callId, randomOnlineUser, callback, true);
+    this.socket.emit(ACTIONS.MAKE_APN_CALL, requestData, (data) => {
+      if ("errorId" in data) {
+        this.stopAudio();
+        showInfoNotification(data.error);
+        callback(null, true);
+      } else {
+        console.log(`> Trying to make APN call to ${data.participant_name}`);
+        callback({
+          ...data,
+          isFriend: false,
+        });
+      }
+    });
   }
 
   public callSpecificUser = (
