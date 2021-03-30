@@ -42,6 +42,7 @@ export const conf = {
     keyId: '3326Z4266X',
     teamId: '6TT7A7VZ6Y',
     bundleId: 'org.reactjs.native.example.DoejoBandwwithLLC',
+    production: getEnvStr('APN_ENVIRONMENT_PRODUCTION'),
   },
 };
 

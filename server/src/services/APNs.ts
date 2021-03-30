@@ -19,7 +19,7 @@ const apnOptions: apn.ProviderOptions = {
     keyId: conf.iosNotifications.keyId,
     teamId: conf.iosNotifications.teamId,
   },
-  production: true,
+  production: Boolean(conf.iosNotifications.production),
 };
 
 export const apnProvider = new apn.Provider(apnOptions);
@@ -39,6 +39,7 @@ export const sendNotification = async (
   });
 
   callNotification.sound = 'ringtone.mp3';
+  callNotification.collapseId = 'callId';
 
   console.log(
     '> [APN] Trying to send "APN call" push notification to: ',
