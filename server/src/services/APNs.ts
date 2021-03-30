@@ -13,14 +13,19 @@ import {
   UserData,
 } from '../models/apn';
 
+const apnProductionEnvironment =
+  conf.iosNotifications.production === 'true' ? true : false;
+
 const apnOptions: apn.ProviderOptions = {
   token: {
     key: path.join(__dirname, '../../cert/apnKey.p8'),
     keyId: conf.iosNotifications.keyId,
     teamId: conf.iosNotifications.teamId,
   },
-  production: Boolean(conf.iosNotifications.production),
+  production: apnProductionEnvironment,
 };
+
+console.log('[APN] initialized with the following config: ', apnOptions);
 
 export const apnProvider = new apn.Provider(apnOptions);
 
@@ -42,7 +47,7 @@ export const sendNotification = async (
   callNotification.collapseId = 'callId';
 
   console.log(
-    '> [APN] Trying to send "APN call" push notification to: ',
+    '[APN] Trying to send "APN call" push notification to: ',
     deviceTokens
   );
 
