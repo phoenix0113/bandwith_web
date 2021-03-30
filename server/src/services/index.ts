@@ -6,3 +6,4 @@ export * from './notifications';
 export * from './call-recording';
 export * from './room-comments';
 export * from './storage';
+export * from './APNs';

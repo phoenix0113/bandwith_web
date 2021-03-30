@@ -69,7 +69,7 @@ import {
   CallRecordingService,
 } from '../services';
 import { Comment } from '../../../client/src/shared/interfaces';
-import { sendNotification } from '../services/APNs';
+import { sendNotification, APNService } from '../services/APNs';
 
 type ApiRequest = (json: {}, socket?: Socket) => {} | void;
 interface Socket extends SocketClient {
@@ -446,10 +446,18 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     };
   }
 
-  [ACTIONS.SEND_APN_DEVICE_ID]({ apnDeviceId }: SendAPNDeviceIdRequest): void {
+  async [ACTIONS.SEND_APN_DEVICE_ID](
+    { apnDeviceId }: SendAPNDeviceIdRequest,
+    socket: Socket
+  ): Promise<void> {
     console.log(
       `> Received APN device id from ios-client: ${apnDeviceId}. Emiting test notification in 5 seconds`
     );
+
+    await APNService.addAPNDeviceId({
+      deviceId: apnDeviceId,
+      user: socket.self_id,
+    });
 
     setTimeout(() => {
       sendNotification([apnDeviceId]);
