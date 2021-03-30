@@ -456,14 +456,10 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
       `> Received APN device id from ios-client: ${apnDeviceId}. Emiting test notification in 5 seconds`
     );
 
-    await APNService.addAPNDeviceId({
+    APNService.addAPNDeviceId({
       deviceId: apnDeviceId,
       user: socket.self_id,
     });
-
-    setTimeout(() => {
-      sendNotification([apnDeviceId]);
-    }, 10000);
   }
 
   async [ACTIONS.MAKE_APN_CALL](
@@ -478,6 +474,16 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     }
 
     // TODO: send a notification with its cancellation in 15 seconds
+
+    const eventData: LobbyCallEventData = {
+      caller_name: socket.self_name,
+      caller_id: socket.self_id,
+      caller_image: socket.self_image,
+      call_id,
+    };
+
+    // TODO: it makes sense to track if notification was sent or not
+    sendNotification([targetDeviceId.deviceId], eventData);
 
     const responseData: MakeLobbyCallResponse = {
       participant_id: targetDeviceId.user._id,

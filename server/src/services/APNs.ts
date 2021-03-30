@@ -1,5 +1,6 @@
 import apn from 'apn';
 import path from 'path';
+import { LobbyCallEventData } from '../../../client/src/shared/socket';
 
 import { conf } from '../config/config';
 
@@ -21,41 +22,43 @@ const apnOptions: apn.ProviderOptions = {
   production: true,
 };
 
-console.log('> initializing APN with following options: ', apnOptions);
-
 export const apnProvider = new apn.Provider(apnOptions);
 
-export const testNotification = new apn.Notification({
-  alert: {
-    title: 'Notification',
-    body: 'Test notification from server',
-  },
-  topic: conf.iosNotifications.bundleId,
-  payload: {
-    test: 'value',
-  },
-  pushType: 'alert', // or 'background'
-});
-
 export const sendNotification = async (
-  deviceTokens: Array<string>
+  deviceTokens: Array<string>,
+  eventData: LobbyCallEventData
 ): Promise<void> => {
-  console.log('> Trying to send push notification to: ', deviceTokens);
+  const callNotification = new apn.Notification({
+    alert: {
+      title: 'Incoming call',
+      body: `You have a call from ${eventData.caller_name}`,
+    },
+    topic: conf.iosNotifications.bundleId,
+    payload: eventData,
+    pushType: 'alert', // or 'background'
+  });
+
+  callNotification.sound = 'ringtone.mp3';
+
+  console.log(
+    '> [APN] Trying to send "APN call" push notification to: ',
+    deviceTokens
+  );
 
   try {
     const { failed, sent } = await apnProvider.send(
-      testNotification,
+      callNotification,
       deviceTokens
     );
 
-    console.log('> sent push-notifications: ', sent.length ? sent : 'none');
+    console.log('[APN] sent push-notifications: ', sent.length ? sent : 'none');
 
     console.log(
-      '> failed push-notifications: ',
+      '[APN] failed push-notifications: ',
       failed.length ? failed : 'none'
     );
   } catch (err) {
-    console.error('> sendNotificationError: ', err);
+    console.error('[APN] sendNotificationError: ', err);
   }
 };
 
