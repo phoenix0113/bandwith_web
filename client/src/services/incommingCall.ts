@@ -50,7 +50,6 @@ class IncommingCallMobxService extends AVCoreCall {
         id: incommingCallData.caller_id,
         name: incommingCallData.caller_name,
         image: incommingCallData.caller_image,
-        socketId: incommingCallData.caller_socket,
         isFriend: incommingCallData.isFriend,
       };
       this.callId = incommingCallData.call_id;

@@ -112,7 +112,6 @@ export interface LobbyCallEventData {
   caller_id: string;
   caller_name: string;
   caller_image: string;
-  caller_socket: string;
   call_id: string;
 }
 

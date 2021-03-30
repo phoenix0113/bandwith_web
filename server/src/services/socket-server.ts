@@ -524,7 +524,6 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
       caller_name: socket.self_name,
       caller_id: socket.self_id,
       caller_image: socket.self_image,
-      caller_socket: socket.id,
       call_id,
     };
 
