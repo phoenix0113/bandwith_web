@@ -122,10 +122,12 @@ export class APNService {
 
       const randomIndex = Math.floor(Math.random() * apnList.length);
 
-      const targetAPN = await apnList[randomIndex].populate({
-        path: 'user',
-        select: '_id name image',
-      });
+      const targetAPN = await apnList[randomIndex]
+        .populate({
+          path: 'user',
+          select: '_id name image',
+        })
+        .execPopulate();
 
       console.log('[APN] Selected populated deviceId: ', targetAPN);
 
