@@ -28,6 +28,8 @@ export enum ACTIONS {
   LEAVE_RECORDING_COMMENTS_ROOM="leaveRecordingCommentsRoom",
   SEND_APN_DEVICE_ID="sendApnDeviceId",
   MAKE_APN_CALL="makeApnCall",
+  APN_CALL_TIMEOUT="apnCallTimeout",
+  CANCEL_APN_CALL="cancelApnCall"
 }
 
 /**
@@ -129,6 +131,12 @@ export interface SendAPNDeviceIdRequest {
 export interface APNCallRequest {
   call_id: string;
 }
+
+export interface APNCallTimeout extends APNCallRequest {
+  user_id: string;
+}
+
+export type APNCallCancel = APNCallTimeout;
 
 /**
  * Notifications (works in "lobby" room)

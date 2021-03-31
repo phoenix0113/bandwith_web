@@ -44,10 +44,48 @@ export const sendNotification = async (
   });
 
   callNotification.sound = 'ringtone.mp3';
-  callNotification.collapseId = 'callId';
+  callNotification.collapseId = eventData.call_id;
 
   console.log(
-    '[APN] Trying to send "APN call" push notification to: ',
+    `[APN] Trying to send "APN call" push notification (collapseId: ${eventData.call_id}) to: `,
+    deviceTokens
+  );
+
+  try {
+    const { failed, sent } = await apnProvider.send(
+      callNotification,
+      deviceTokens
+    );
+
+    console.log('[APN] sent push-notifications: ', sent.length ? sent : 'none');
+
+    console.log(
+      '[APN] failed push-notifications: ',
+      failed.length ? failed : 'none'
+    );
+  } catch (err) {
+    console.error('[APN] sendNotificationError: ', err);
+  }
+};
+
+export const sendCallTimeoutNotification = async (
+  deviceTokens: Array<string>,
+  callId: string,
+  callerName: string
+): Promise<void> => {
+  const callNotification = new apn.Notification({
+    alert: {
+      title: 'Missed call',
+      body: `You have a call from ${callerName}`,
+    },
+    topic: conf.iosNotifications.bundleId,
+    pushType: 'alert',
+  });
+
+  callNotification.collapseId = callId;
+
+  console.log(
+    `[APN] Trying to send "APN call TIMEOUT" push notification (collapseId: ${callId}) to: `,
     deviceTokens
   );
 
@@ -150,6 +188,23 @@ export class APNService {
         deviceId: targetAPN.deviceId,
         user: targetAPN.user,
       };
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  static async getDeviceIdByUserId(userId: string): Promise<string | null> {
+    try {
+      const apn = await APN.findOne({ user: userId });
+
+      if (!apn) {
+        console.log(`[APN] no device id found for user ${userId}`);
+        return null;
+      }
+
+      console.log(`[APN] found deviceID ${apn?.deviceId}`);
+
+      return apn.deviceId;
     } catch (e) {
       throw e;
     }

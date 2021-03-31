@@ -26,6 +26,7 @@ import {
 import {
   Kinds, CLIENT_ONLY_ACTIONS, ACTIONS, LobbyCallEventData,
   MakeLobbyCallResponse, ErrorData, UserStatus, APNCallRequest,
+  APNCallCancel, APNCallTimeout,
 } from "../shared/socket";
 import { CallSocket } from "../interfaces/Socket";
 import { ALL_USERS_ARE_UNAVAILABLE } from "../shared/errors";
@@ -50,6 +51,8 @@ export interface LobbyCallEventDataExtended extends LobbyCallEventData {
 
 export interface LobbyCallResponse extends MakeLobbyCallResponse {
   isFriend: boolean;
+  onTimeoutHandler?: (callId: string, userId: string) => void;
+  onCancelHandler?: (callId: string, userId: string) => void;
 }
 
 class GlobalMobxService {
@@ -330,8 +333,28 @@ class GlobalMobxService {
         callback({
           ...data,
           isFriend: false,
+          onCancelHandler: this.cancelAPNCallHandler,
+          onTimeoutHandler: this.APNCallTimeoutHandler,
         });
       }
+    });
+  }
+
+  private cancelAPNCallHandler = (callId: string, userId: string) => {
+    console.log("> Cancelling APN call...");
+
+    const requestData: APNCallCancel = { call_id: callId, user_id: userId };
+    this.socket.emit(ACTIONS.CANCEL_APN_CALL, requestData, () => {
+      console.log("> CANCEL_APN_CALL event success");
+    });
+  }
+
+  private APNCallTimeoutHandler = (callId: string, userId: string) => {
+    console.log("> APN call timeout...");
+
+    const requestData: APNCallTimeout = { call_id: callId, user_id: userId };
+    this.socket.emit(ACTIONS.APN_CALL_TIMEOUT, requestData, () => {
+      console.log("> APN_CALL_TIMEOUT event success");
     });
   }
 

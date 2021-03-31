@@ -40,6 +40,8 @@ import {
   CallFinishedEventData,
   SendAPNDeviceIdRequest,
   APNCallRequest,
+  APNCallCancel,
+  APNCallTimeout,
 } from "../shared/socket";
 
 export interface CallSocket extends SocketIOClient.Socket {
@@ -144,6 +146,16 @@ export interface CallSocket extends SocketIOClient.Socket {
     type: ACTIONS.MAKE_APN_CALL,
     data: APNCallRequest,
     callback: (data: MakeLobbyCallResponse | ErrorData) => void
+  ): this
+  emit(
+    type: ACTIONS.CANCEL_APN_CALL,
+    data: APNCallCancel,
+    callback: () => void
+  ): this
+  emit(
+    type: ACTIONS.APN_CALL_TIMEOUT,
+    data: APNCallTimeout,
+    callback: () => void
   ): this
   emit(
     type: ACTIONS.SEND_INVITATION,

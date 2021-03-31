@@ -49,6 +49,8 @@ import {
   CallFinishedEventData,
   SendAPNDeviceIdRequest,
   APNCallRequest,
+  APNCallCancel,
+  APNCallTimeout,
   // @ts-ignore
 } from '../../../client/src/shared/socket';
 import {
@@ -71,7 +73,11 @@ import {
   CallRecordingService,
 } from '../services';
 import { Comment } from '../../../client/src/shared/interfaces';
-import { sendNotification, APNService } from '../services/APNs';
+import {
+  sendNotification,
+  APNService,
+  sendCallTimeoutNotification,
+} from '../services/APNs';
 
 type ApiRequest = (json: {}, socket?: Socket) => {} | void;
 interface Socket extends SocketClient {
@@ -466,14 +472,12 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     { call_id }: APNCallRequest,
     socket: Socket
   ): Promise<MakeLobbyCallResponse> {
-    const targetDeviceId = await APNService.getRandomDeviceId(socket.self_id);
+    const targetAPNDevice = await APNService.getRandomDeviceId(socket.self_id);
 
-    if (!targetDeviceId) {
+    if (!targetAPNDevice) {
       console.log(`[APN] ${NO_APN_DEVICE_TOKEN_FOUND}. Throwing an error...`);
       throw new Error(NO_APN_DEVICE_TOKEN_FOUND);
     }
-
-    // TODO: send a notification with its cancellation in 15 seconds
 
     const eventData: LobbyCallEventData = {
       caller_name: socket.self_name,
@@ -483,17 +487,47 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     };
 
     // TODO: it makes sense to track if notification was sent or not
-    sendNotification([targetDeviceId.deviceId], eventData);
+    sendNotification([targetAPNDevice.deviceId], eventData);
 
     const responseData: MakeLobbyCallResponse = {
-      participant_id: targetDeviceId.user._id,
-      participant_name: targetDeviceId.user.name,
-      participant_image: targetDeviceId.user.imageUrl,
+      participant_id: targetAPNDevice.user._id,
+      participant_name: targetAPNDevice.user.name,
+      participant_image: targetAPNDevice.user.imageUrl,
     };
 
     console.log('[APN] MAKE_APN_CALL responseData: ', responseData);
 
     return responseData;
+  }
+
+  async [ACTIONS.CANCEL_APN_CALL](
+    { user_id, call_id }: APNCallCancel,
+    socket: Socket
+  ): Promise<void> {
+    const targetAPNDeviceId = await APNService.getDeviceIdByUserId(user_id);
+
+    if (targetAPNDeviceId) {
+      sendCallTimeoutNotification(
+        [targetAPNDeviceId],
+        call_id,
+        socket.self_name
+      );
+    }
+  }
+
+  async [ACTIONS.APN_CALL_TIMEOUT](
+    { user_id, call_id }: APNCallTimeout,
+    socket: Socket
+  ): Promise<void> {
+    const targetAPNDeviceId = await APNService.getDeviceIdByUserId(user_id);
+
+    if (targetAPNDeviceId) {
+      sendCallTimeoutNotification(
+        [targetAPNDeviceId],
+        call_id,
+        socket.self_name
+      );
+    }
   }
 
   [ACTIONS.MAKE_LOBBY_CALL](

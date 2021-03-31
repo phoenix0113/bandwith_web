@@ -20,6 +20,6 @@ export const LOAD_MORE_RECORDINGS_THRESHOLD = 3;
 
 export const SEND_LOGS_THRESHOLD = 5;
 
-export const OUTGOING_CALL_SECONDS = 15;
+export const OUTGOING_CALL_SECONDS = 30;
 
 export const NAVIGATOR_SHARE_ERROR = "Your browser doesn't support Social Share";
