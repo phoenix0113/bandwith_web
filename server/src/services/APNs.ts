@@ -76,7 +76,7 @@ export const sendCallTimeoutNotification = async (
   const callNotification = new apn.Notification({
     alert: {
       title: 'Missed call',
-      body: `You have a call from ${callerName}`,
+      body: `${callerName} called you`,
     },
     topic: conf.iosNotifications.bundleId,
     pushType: 'alert',
