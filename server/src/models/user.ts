@@ -3,6 +3,7 @@ import {
   User as UserInterface,
   Omit,
   HintTypes,
+  // @ts-ignore
 } from '../../../client/src/shared/interfaces';
 
 export interface IUser extends Omit<UserInterface, '_id'>, Document {}
@@ -23,6 +24,7 @@ const UserSchema = new Schema({
   firebaseToken: { type: String, required: false },
   imageUrl: { type: String, required: false },
   hints: [{ type: UserHintSubSchema }],
+  available: { type: Boolean, required: false, default: false },
 });
 
 UserSchema.pre('save', function <UserSchema>(next) {

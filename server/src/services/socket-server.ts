@@ -51,6 +51,7 @@ import {
   APNCallRequest,
   APNCallCancel,
   APNCallTimeout,
+  SetCallAvailabilityRequest,
   // @ts-ignore
 } from '../../../client/src/shared/socket';
 import {
@@ -85,6 +86,7 @@ interface Socket extends SocketClient {
   self_name: string;
   self_id: string;
   self_image: string;
+  available: boolean;
   status: UserStatus;
   currentCallId?: string;
 }
@@ -368,13 +370,15 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     console.error(action, socket.id, socket.request.user, ...args);
   }
   [ACTIONS.JOIN_LOBBY](
-    { self_id, self_name, self_image }: JoinLobbyRequest,
+    { self_id, self_name, self_image, available }: JoinLobbyRequest,
     socket: Socket
   ): JoinLobbyResponse {
     socket.self_name = self_name;
     socket.self_id = self_id;
     socket.self_image = self_image;
-    socket.status = 'online';
+    socket.status = available ? 'online' : 'offline';
+    // no need to update "available" status in db since it came from it via client
+    socket.available = available;
     this.sendNewUserStatusToLobby(socket);
 
     const disconnectTimeoutData = disconnectFromCallTimeouts.get(self_id);
@@ -465,6 +469,7 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     APNService.addAPNDeviceId({
       deviceId: apnDeviceId,
       user: socket.self_id,
+      available: socket.available,
     });
   }
 
@@ -528,6 +533,21 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
         socket.self_name
       );
     }
+  }
+
+  async [ACTIONS.SET_CALL_AVAILABILITY](
+    { available }: SetCallAvailabilityRequest,
+    socket: Socket
+  ): Promise<void> {
+    UsersService.updateUserAvailability(available, socket.self_id);
+    APNService.updateAvailability(available, socket.self_id);
+
+    // TODO: need to remove user from "online" in the lobbby
+    // also when user connect to the lobby, check this variable and set "online" depending on that
+
+    socket.available = available;
+    socket.status = available ? 'online' : 'offline';
+    this.sendNewUserStatusToLobby(socket);
   }
 
   [ACTIONS.MAKE_LOBBY_CALL](

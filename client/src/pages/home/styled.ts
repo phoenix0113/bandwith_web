@@ -10,6 +10,20 @@ export const HomeHeader = styled.div`
   padding: 10vh 20px;
 `;
 
+export const ToggleWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  color: lightgray;
+  padding: 5px 20px;
+  font-size: 14px;
+
+  & > * {
+    padding: 0 5px;
+  }
+`;
+
 export const HomeContent = styled.div`
   background-color: ${COLORS.MAIN_DARK};
   flex-grow: 1;

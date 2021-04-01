@@ -209,4 +209,44 @@ export class APNService {
       throw e;
     }
   }
+
+  static async updateAvailability(
+    available: boolean,
+    userId: string
+  ): Promise<boolean> {
+    try {
+      const apn = await APN.findOne({ user: userId });
+
+      if (!apn) {
+        console.log(`[APN] no APN found for user ${userId}`);
+        return false;
+      }
+
+      apn.available = available;
+      apn.save();
+
+      console.log(
+        `[APN] "available" status updated for user ${userId}. Current APN available status: ${apn.available}`
+      );
+
+      return true;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  static async resetAPNAvailability() {
+    try {
+      await APN.updateMany(
+        {},
+        { $set: { available: false } },
+        {
+          new: true,
+          multi: true,
+        }
+      );
+    } catch (err) {
+      throw err;
+    }
+  }
 }

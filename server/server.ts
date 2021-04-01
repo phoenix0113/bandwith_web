@@ -13,9 +13,10 @@ import { router } from './src/router';
 import { conf } from './src/config';
 import { PATH, API } from '../client/src/shared/routes';
 import {
+  APNService,
   SocketServer,
   StorageHandler,
-  /* UsersService */
+  UsersService,
 } from './src/services';
 
 consoleStamp(console, { pattern: 'dd/mm/yyyy HH:MM:ss.l' });
@@ -60,7 +61,8 @@ const main = async () => {
 
   await StorageHandler.init(conf.storage);
 
-  // UsersService.updateUsers();
+  UsersService.resetUsersAvailability();
+  APNService.resetAPNAvailability();
 
   const httpServer = createServer(app);
 

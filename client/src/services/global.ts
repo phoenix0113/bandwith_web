@@ -26,7 +26,7 @@ import {
 import {
   Kinds, CLIENT_ONLY_ACTIONS, ACTIONS, LobbyCallEventData,
   MakeLobbyCallResponse, ErrorData, UserStatus, APNCallRequest,
-  APNCallCancel, APNCallTimeout,
+  APNCallCancel, APNCallTimeout, JoinLobbyRequest, SetCallAvailabilityRequest,
 } from "../shared/socket";
 import { CallSocket } from "../interfaces/Socket";
 import { ALL_USERS_ARE_UNAVAILABLE } from "../shared/errors";
@@ -202,12 +202,14 @@ class GlobalMobxService {
     }) as CallSocket;
 
     this.socket.on("connect", () => {
-      this.socket.emit(ACTIONS.JOIN_LOBBY, {
+      const request: JoinLobbyRequest = {
         self_id: this.profile._id,
         self_name: this.profile.name,
         self_image: this.profile.imageUrl || null,
-      },
-      ({ onlineUsers, busyUsers }) => {
+        available: this.profile.available,
+      };
+
+      this.socket.emit(ACTIONS.JOIN_LOBBY, request, ({ onlineUsers, busyUsers }) => {
         logger.log("info", "global.ts", "You've joined the the Waiting Lobby!", true, true);
         this.onlineUsers = onlineUsers;
         this.busyUsers = busyUsers;
@@ -380,6 +382,16 @@ class GlobalMobxService {
         }
       },
     );
+  }
+
+  public toggleAvailabilityStatus = () => {
+    const request: SetCallAvailabilityRequest = {
+      available: !this.profile.available,
+    };
+
+    this.socket.emit(ACTIONS.SET_CALL_AVAILABILITY, request, () => {
+      this.profile.available = !this.profile.available;
+    });
   }
 
   /**

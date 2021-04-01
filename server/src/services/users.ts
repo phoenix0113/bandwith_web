@@ -223,6 +223,27 @@ export class UsersService {
     return user;
   }
 
+  static async updateUserAvailability(
+    available: boolean,
+    _id: string
+  ): Promise<boolean> {
+    const user = await User.findById(_id);
+
+    if (!user) {
+      throw new Error('> updateUserAvailability: no user was found');
+    }
+
+    user.available = available;
+
+    const updated = await user.save();
+
+    console.log(
+      `[APN] update "available" status for user ${_id}. Current status: ${updated.available}`
+    );
+
+    return true;
+  }
+
   static async updateUsers() {
     try {
       const hints: { type: HintTypes; seen: boolean }[] = [];
@@ -233,6 +254,21 @@ export class UsersService {
       await User.updateMany(
         {},
         { $set: { hints } },
+        {
+          new: true,
+          multi: true,
+        }
+      );
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async resetUsersAvailability() {
+    try {
+      await User.updateMany(
+        {},
+        { $set: { available: false } },
         {
           new: true,
           multi: true,

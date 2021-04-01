@@ -16,6 +16,7 @@ export interface APNInterface {
   _id: string;
   deviceId: string;
   user: string | UserData;
+  available: boolean;
 }
 
 export type APNRequest = Omit<APNInterface, '_id'>;
@@ -25,6 +26,7 @@ export interface IAPN extends Omit<APNInterface, '_id'>, Document {}
 const APNSchema = new Schema({
   deviceId: { type: String, required: true },
   user: { type: Schema.Types.ObjectId, required: true, ref: 'user' },
+  available: { type: Boolean, required: false, default: false },
 });
 
 export const APN = model<IAPN>('apn', APNSchema);
