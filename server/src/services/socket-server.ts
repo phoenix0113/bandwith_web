@@ -477,7 +477,15 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     { call_id }: APNCallRequest,
     socket: Socket
   ): Promise<MakeLobbyCallResponse> {
-    const targetAPNDevice = await APNService.getRandomDeviceId(socket.self_id);
+    const busyUsers: Array<string> = [];
+    this.lobby.forEach((value, key) => {
+      if (value.status === 'busy') busyUsers.push(key);
+    });
+
+    const targetAPNDevice = await APNService.getRandomDeviceId([
+      ...busyUsers,
+      socket.self_id,
+    ]);
 
     if (!targetAPNDevice) {
       console.log(`[APN] ${NO_APN_DEVICE_TOKEN_FOUND}. Throwing an error...`);

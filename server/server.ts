@@ -12,12 +12,7 @@ import { connectToMongo } from './src/db';
 import { router } from './src/router';
 import { conf } from './src/config';
 import { PATH, API } from '../client/src/shared/routes';
-import {
-  APNService,
-  SocketServer,
-  StorageHandler,
-  UsersService,
-} from './src/services';
+import { SocketServer, StorageHandler } from './src/services';
 
 consoleStamp(console, { pattern: 'dd/mm/yyyy HH:MM:ss.l' });
 dotenv.config();
@@ -60,9 +55,6 @@ const main = async () => {
   await connectToMongo();
 
   await StorageHandler.init(conf.storage);
-
-  UsersService.resetUsersAvailability();
-  APNService.resetAPNAvailability();
 
   const httpServer = createServer(app);
 

@@ -155,10 +155,18 @@ export class APNService {
 
   // returns device id with its user's id, that can be used to call via APN
   static async getRandomDeviceId(
-    callerUserId: string
+    excludeUsers: Array<string>
   ): Promise<GetRandomDeviceResponse | null> {
     try {
-      const apnList: Array<IAPN> = await APN.where('user').ne(callerUserId);
+      console.log(
+        '[APN] searching for a apn devices. Excluded users: ',
+        excludeUsers
+      );
+
+      const apnList: Array<IAPN> = await APN.where('user')
+        .nin(excludeUsers)
+        .where('available')
+        .ne(false);
 
       if (!apnList) {
         console.log('[APN] no device id found');
