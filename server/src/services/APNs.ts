@@ -168,7 +168,7 @@ export class APNService {
         .where('available')
         .ne(false);
 
-      if (!apnList) {
+      if (!apnList || !apnList.length) {
         console.log('[APN] no device id found');
         return null;
       }
