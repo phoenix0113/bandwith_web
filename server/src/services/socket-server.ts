@@ -944,7 +944,7 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     return eventData;
   }
   [ACTIONS.LEAVE_CALL]({ callId }: CallInput, socket: Socket): void {
-    socket.status = 'online';
+    socket.status = socket.available ? 'online' : 'offline';
     socket.currentCallId = undefined;
 
     this.sendNewUserStatusToLobby(socket);
@@ -1013,7 +1013,7 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     }
   }
   [ACTIONS.LEAVE_CALL_AS_VIEWER]({ callId }: CallInput, socket: Socket): void {
-    socket.status = 'online';
+    socket.status = socket.available ? 'online' : 'offline';
     this.sendNewUserStatusToLobby(socket);
 
     const callRoom = SocketServer.callRoom(callId);
