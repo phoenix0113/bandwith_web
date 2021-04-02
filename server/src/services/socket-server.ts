@@ -52,6 +52,7 @@ import {
   APNCallCancel,
   APNCallTimeout,
   SetCallAvailabilityRequest,
+  SetOnlineStatus,
   // @ts-ignore
 } from '../../../client/src/shared/socket';
 import {
@@ -556,6 +557,14 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     socket.available = available;
     socket.status = available ? 'online' : 'offline';
     this.sendNewUserStatusToLobby(socket);
+  }
+
+  [ACTIONS.SET_ONLINE_STATUS](
+    { onlineStatus }: SetOnlineStatus,
+    socket: Socket
+  ): void {
+    console.log(`> New status set for ${socket.self_name}: ${onlineStatus}`);
+    socket.status = onlineStatus;
   }
 
   [ACTIONS.MAKE_LOBBY_CALL](
