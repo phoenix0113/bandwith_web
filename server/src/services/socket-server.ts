@@ -565,6 +565,7 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
   ): void {
     console.log(`> New status set for ${socket.self_name}: ${onlineStatus}`);
     socket.status = onlineStatus;
+    this.sendNewUserStatusToLobby(socket);
   }
 
   [ACTIONS.MAKE_LOBBY_CALL](
