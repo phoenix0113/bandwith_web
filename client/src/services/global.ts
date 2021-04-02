@@ -269,7 +269,8 @@ class GlobalMobxService {
           const oldStatus = this.busyUsers.indexOf(user_id);
           if (oldStatus !== -1) this.busyUsers.splice(oldStatus, 1);
 
-          this.onlineUsers.push(user_id);
+          const alreadyInOnline = this.onlineUsers.indexOf(user_id);
+          if (alreadyInOnline === -1) this.onlineUsers.push(user_id);
         } else if (status === "busy") {
           const oldStatus = this.onlineUsers.indexOf(user_id);
           if (oldStatus !== -1) this.onlineUsers.splice(oldStatus, 1);
