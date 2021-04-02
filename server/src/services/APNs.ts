@@ -83,7 +83,7 @@ export const sendCallTimeoutNotification = async (
   });
 
   callNotification.collapseId = callId;
-  callNotification.contentAvailable = true;
+  callNotification.sound = 'sound';
 
   console.log(
     `[APN] Trying to send "APN call TIMEOUT" push notification (collapseId: ${callId}) to: `,
