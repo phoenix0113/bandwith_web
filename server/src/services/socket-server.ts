@@ -121,13 +121,11 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
   mixers: Map<string, StreamMixer> = new Map();
   private activeCallUsers: Map<CallId, number> = new Map();
   static hangRecords: Map<string, NodeJS.Timeout> = new Map();
+  private silentDisconnect: Array<string> = [];
 
   constructor(server) {
     const socketServer = this;
-    this.io = socketIO(server, {
-      pingTimeout: 1000,
-      pingInterval: 2000,
-    });
+    this.io = socketIO(server);
     const generateId = this.io.engine['generateId'];
     this.io.engine['generateId'] = (req) => {
       const { query } = urlParse(req.url!);
@@ -206,6 +204,16 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
       }
       socket.on('disconnecting', async () => {
         socket.status = 'offline';
+
+        /**
+         * This socket's user was already reconnected to the lobby. Remove old one silently
+         */
+        if (this.silentDisconnect.includes(socket.self_id)) {
+          console.log(
+            `> Performing silent disconnect for ${socket.self_id}|${socket.self_name}`
+          );
+          return;
+        }
 
         if (this.lobby.has(socket.self_id)) {
           console.log(
@@ -438,13 +446,13 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
           console.log(`> Rejoined call room ${callRoom} with new socket`);
 
           // notifying socket that is should reinitialize streams
-          const eventData: ShouldReinitializeStreams = {
-            callId: disconnectTimeoutData.oldSocketData.callId,
-          };
-          socket.emit(
-            CLIENT_ONLY_ACTIONS.SHOULD_REINITIALIZE_STREAMS,
-            eventData
-          );
+          // const eventData: ShouldReinitializeStreams = {
+          //   callId: disconnectTimeoutData.oldSocketData.callId,
+          // };
+          // socket.emit(
+          //   CLIENT_ONLY_ACTIONS.SHOULD_REINITIALIZE_STREAMS,
+          //   eventData
+          // );
 
           this.sendNewUserStatusToLobby(socket);
         }
@@ -460,6 +468,17 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     });
 
     socket.join(LOBBY_ROOM);
+
+    /**
+     * This can happen if 'disconnecting' fired later than new 'connection' event
+     * It can happen due to internet connection problems on the client side
+     * In this case, we want to perform 'disconnecting' silently (without removing sockets data)
+     */
+    if (this.lobby.has(self_id)) {
+      console.log(`> New silent disconnect for ${self_id}|${self_name}`);
+      this.silentDisconnect.push(self_id);
+    }
+
     this.lobby.set(self_id, socket);
 
     console.log(
