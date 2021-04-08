@@ -126,7 +126,10 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
 
   constructor(server) {
     const socketServer = this;
-    this.io = socketIO(server);
+    this.io = socketIO(server, {
+      pingInterval: 1000,
+      pingTimeout: 1000,
+    });
     const generateId = this.io.engine['generateId'];
     this.io.engine['generateId'] = (req) => {
       const { query } = urlParse(req.url!);
@@ -210,10 +213,24 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
          * This socket's user was already reconnected to the lobby. Remove old one silently
          */
         if (this.silentDisconnect.includes(socket.self_id)) {
-          console.log(
-            `> Performing silent disconnect for ${socket.self_id}|${socket.self_name}`
-          );
-          return;
+          const newSocket = this.lobby.get(socket.self_id);
+          if (newSocket?.status === 'online' || newSocket?.status === 'busy') {
+            console.log(
+              `> Performing silent disconnect for ${socket.self_id}|${socket.self_name}`
+            );
+            const index = this.silentDisconnect.indexOf(socket.self_id);
+            this.silentDisconnect.splice(index, 1);
+            return;
+          }
+
+          // if (newSocket) {
+          //   console.log('> reconnected socket rooms: ', newSocket.rooms);
+          //   newSocket.join(LOBBY_ROOM);
+          //   if (newSocket.currentCallId) {
+          //     newSocket.join(SocketServer.callRoom(newSocket.currentCallId));
+          //   }
+          //   console.log('> reconnected socket rooms: ', newSocket.rooms);
+          // }
         }
 
         if (this.lobby.has(socket.self_id)) {
@@ -477,7 +494,9 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
      */
     if (this.lobby.has(self_id)) {
       console.log(`> New silent disconnect for ${self_id}|${self_name}`);
-      this.silentDisconnect.push(self_id);
+      if (this.silentDisconnect.indexOf(self_id) === -1) {
+        this.silentDisconnect.push(self_id);
+      }
     }
 
     this.lobby.set(self_id, socket);
@@ -494,6 +513,10 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
 
   [ACTIONS.JOIN_CALL_SILENT]({ callId }: JoinCallSilent, socket: Socket): void {
     const callRoom = SocketServer.callRoom(callId);
+    socket.currentCallId = callId;
+    socket.status = 'busy';
+
+    this.sendNewUserStatusToLobby(socket);
 
     socket.join(callRoom);
 
