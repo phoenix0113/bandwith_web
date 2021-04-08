@@ -44,6 +44,7 @@ import {
   APNCallTimeout,
   SetCallAvailabilityRequest,
   SetOnlineStatus,
+  ShouldReinitializeStreams,
 } from "../shared/socket";
 
 export interface CallSocket extends SocketIOClient.Socket {
@@ -98,6 +99,10 @@ export interface CallSocket extends SocketIOClient.Socket {
   on(
     event: CLIENT_ONLY_ACTIONS.CALL_ALREADY_FINISHED,
     listener: (event: CallFinishedEventData) => void
+  ): this
+  on(
+    event: CLIENT_ONLY_ACTIONS.SHOULD_REINITIALIZE_STREAMS,
+    listener: (event: ShouldReinitializeStreams) => void
   ): this
   emit(type: ACTIONS.JOIN_CALL, data: SocketClientCallData, callback: () => void): this
   emit(

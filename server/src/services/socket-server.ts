@@ -53,6 +53,7 @@ import {
   APNCallTimeout,
   SetCallAvailabilityRequest,
   SetOnlineStatus,
+  ShouldReinitializeStreams,
   // @ts-ignore
 } from '../../../client/src/shared/socket';
 import {
@@ -432,6 +433,15 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
           socket.streams = disconnectTimeoutData.oldSocketData.streams;
 
           console.log(`> Rejoined call room ${callRoom} with new socket`);
+
+          // notifying socket that is should reinitialize streams
+          const eventData: ShouldReinitializeStreams = {
+            callId: disconnectTimeoutData.oldSocketData.callId,
+          };
+          socket.emit(
+            CLIENT_ONLY_ACTIONS.SHOULD_REINITIALIZE_STREAMS,
+            eventData
+          );
 
           this.sendNewUserStatusToLobby(socket);
         }
