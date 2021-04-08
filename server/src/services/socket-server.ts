@@ -53,7 +53,7 @@ import {
   APNCallTimeout,
   SetCallAvailabilityRequest,
   SetOnlineStatus,
-  ShouldReinitializeStreams,
+  // ShouldReinitializeStreams,
   // @ts-ignore
 } from '../../../client/src/shared/socket';
 import {
