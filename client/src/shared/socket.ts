@@ -10,6 +10,7 @@ export enum ACTIONS {
   STREAM_STOP = "streamStop",
   STREAM_CHANGE = "streamChange",
   JOIN_CALL = "joinCall",
+  JOIN_CALL_SILENT="joinCallSilent",
   LEAVE_CALL = "leaveCall",
   JOIN_CALL_AS_VIEWER = "joinCallAsViewer",
   LEAVE_CALL_AS_VIEWER = "leaveCallAsViewer",
@@ -204,6 +205,8 @@ export type SelfDisconnectedEventData = CallInput
 export type CallFinishedEventData = CallInput
 
 export type ShouldReinitializeStreams = CallInput
+
+export type JoinCallSilent = CallInput
 
 /**
  * Avcore stream management

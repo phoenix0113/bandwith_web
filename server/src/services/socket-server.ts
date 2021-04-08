@@ -53,6 +53,7 @@ import {
   APNCallTimeout,
   SetCallAvailabilityRequest,
   SetOnlineStatus,
+  JoinCallSilent,
   // ShouldReinitializeStreams,
   // @ts-ignore
 } from '../../../client/src/shared/socket';
@@ -489,6 +490,16 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
       onlineUsers,
       busyUsers,
     };
+  }
+
+  [ACTIONS.JOIN_CALL_SILENT]({ callId }: JoinCallSilent, socket: Socket): void {
+    const callRoom = SocketServer.callRoom(callId);
+
+    socket.join(callRoom);
+
+    console.log(
+      `> ${socket.self_id}|${socket.self_name} silently joined the room ${callRoom}`
+    );
   }
 
   async [ACTIONS.SEND_APN_DEVICE_ID](
