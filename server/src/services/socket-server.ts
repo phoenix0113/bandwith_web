@@ -124,7 +124,10 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
 
   constructor(server) {
     const socketServer = this;
-    this.io = socketIO(server);
+    this.io = socketIO(server, {
+      pingTimeout: 1000,
+      pingInterval: 2000,
+    });
     const generateId = this.io.engine['generateId'];
     this.io.engine['generateId'] = (req) => {
       const { query } = urlParse(req.url!);
