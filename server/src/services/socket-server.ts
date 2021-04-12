@@ -54,6 +54,7 @@ import {
   SetCallAvailabilityRequest,
   SetOnlineStatus,
   JoinCallSilent,
+  GetUserStatusesListResponse,
   // ShouldReinitializeStreams,
   // @ts-ignore
 } from '../../../client/src/shared/socket';
@@ -632,6 +633,28 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     console.log(`> New status set for ${socket.self_name}: ${onlineStatus}`);
     socket.status = onlineStatus;
     this.sendNewUserStatusToLobby(socket);
+  }
+
+  [ACTIONS.GET_LOBBY_USERS_STATUSES](
+    {},
+    socket: Socket
+  ): GetUserStatusesListResponse {
+    console.log(
+      `> returning lobby user\'s statuses to the user ${socket.self_name} on reconnection`
+    );
+
+    const onlineUsers: Array<string> = [];
+    const busyUsers: Array<string> = [];
+    this.lobby.forEach((value, key) => {
+      if (socket.self_name === value.self_id) return;
+      if (value.status === 'online') onlineUsers.push(key);
+      if (value.status === 'busy') busyUsers.push(key);
+    });
+
+    return {
+      onlineUsers,
+      busyUsers,
+    };
   }
 
   [ACTIONS.MAKE_LOBBY_CALL](

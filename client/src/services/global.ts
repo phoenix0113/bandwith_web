@@ -221,82 +221,82 @@ class GlobalMobxService {
         console.log("> Online users in the lobby: ", toJS(this.onlineUsers));
         console.log("> Busy users in the lobby: ", toJS(this.busyUsers));
       });
+    });
 
-      this.socket.on(CLIENT_ONLY_ACTIONS.LOBBY_CALL, (data) => {
-        logger.log("info", "global.ts", `You've been called by ${data.caller_name} from room with id ${data.call_id}`, true, true);
+    this.socket.on(CLIENT_ONLY_ACTIONS.LOBBY_CALL, (data) => {
+      logger.log("info", "global.ts", `You've been called by ${data.caller_name} from room with id ${data.call_id}`, true, true);
 
-        runInAction(() => {
-          this.incommingCallData = {
-            ...data,
-            isFriend: this.isContact(data.caller_id),
-          };
-        });
+      runInAction(() => {
+        this.incommingCallData = {
+          ...data,
+          isFriend: this.isContact(data.caller_id),
+        };
       });
+    });
 
-      this.socket.on(CLIENT_ONLY_ACTIONS.NOTIFICATION, (notification) => {
-        console.log(`> You've got notifications from ${notification.user.name}. Notification: `, notification);
+    this.socket.on(CLIENT_ONLY_ACTIONS.NOTIFICATION, (notification) => {
+      console.log(`> You've got notifications from ${notification.user.name}. Notification: `, notification);
 
-        switch (notification.type) {
-          case NotificationTypes.ACCEPTED_INVITATION: {
-            this.fetchUserContacts();
+      switch (notification.type) {
+        case NotificationTypes.ACCEPTED_INVITATION: {
+          this.fetchUserContacts();
 
-            // Removing invitation, if it is already accepted
-            const index = this.notifications
-              .findIndex((n) => n.type === NotificationTypes.INVITATION
-                && n.user._id === notification.user._id);
+          // Removing invitation, if it is already accepted
+          const index = this.notifications
+            .findIndex((n) => n.type === NotificationTypes.INVITATION
+              && n.user._id === notification.user._id);
 
-            runInAction(() => {
-              if (index !== -1) {
-                this.notifications.splice(index, 1);
-              }
-              this.notifications = [notification, ...this.notifications];
-            });
+          runInAction(() => {
+            if (index !== -1) {
+              this.notifications.splice(index, 1);
+            }
+            this.notifications = [notification, ...this.notifications];
+          });
 
-            break;
-          }
-          case NotificationTypes.REMOVED_FROM_CONTACTS:
-            this.fetchUserContacts();
-            break;
-          default:
-            runInAction(() => {
-              this.notifications = [notification, ...this.notifications];
-            });
+          break;
+        }
+        case NotificationTypes.REMOVED_FROM_CONTACTS:
+          this.fetchUserContacts();
+          break;
+        default:
+          runInAction(() => {
+            this.notifications = [notification, ...this.notifications];
+          });
+      }
+    });
+
+    this.socket.on(CLIENT_ONLY_ACTIONS.USER_STATUS, ({ status, user_id }) => {
+      if (status === "online") {
+        const oldStatus = this.busyUsers.indexOf(user_id);
+        if (oldStatus !== -1) this.busyUsers.splice(oldStatus, 1);
+
+        const alreadyInOnline = this.onlineUsers.indexOf(user_id);
+        if (alreadyInOnline === -1) this.onlineUsers.push(user_id);
+      } else if (status === "busy") {
+        const oldStatus = this.onlineUsers.indexOf(user_id);
+        if (oldStatus !== -1) this.onlineUsers.splice(oldStatus, 1);
+
+        this.busyUsers.push(user_id);
+      } else if (status === "offline") {
+        const oldOnlineStatus = this.onlineUsers.indexOf(user_id);
+        if (oldOnlineStatus !== -1) {
+          this.onlineUsers.splice(oldOnlineStatus, 1);
+        } else {
+          const oldBusyStatus = this.busyUsers.indexOf(user_id);
+          if (oldBusyStatus !== -1) this.busyUsers.splice(oldBusyStatus, 1);
+        }
+      }
+
+      this.contacts.forEach((c) => {
+        if (c._id === user_id) {
+          c.status = status;
         }
       });
 
-      this.socket.on(CLIENT_ONLY_ACTIONS.USER_STATUS, ({ status, user_id }) => {
-        if (status === "online") {
-          const oldStatus = this.busyUsers.indexOf(user_id);
-          if (oldStatus !== -1) this.busyUsers.splice(oldStatus, 1);
-
-          const alreadyInOnline = this.onlineUsers.indexOf(user_id);
-          if (alreadyInOnline === -1) this.onlineUsers.push(user_id);
-        } else if (status === "busy") {
-          const oldStatus = this.onlineUsers.indexOf(user_id);
-          if (oldStatus !== -1) this.onlineUsers.splice(oldStatus, 1);
-
-          this.busyUsers.push(user_id);
-        } else if (status === "offline") {
-          const oldOnlineStatus = this.onlineUsers.indexOf(user_id);
-          if (oldOnlineStatus !== -1) {
-            this.onlineUsers.splice(oldOnlineStatus, 1);
-          } else {
-            const oldBusyStatus = this.busyUsers.indexOf(user_id);
-            if (oldBusyStatus !== -1) this.busyUsers.splice(oldBusyStatus, 1);
-          }
-        }
-
-        this.contacts.forEach((c) => {
-          if (c._id === user_id) {
-            c.status = status;
-          }
-        });
-
-        // TODO: remove in production (may take a huge amount of browser's performance)
-        console.log("> Online users in lobby changed: ", toJS(this.onlineUsers));
-        console.log("> Busy users in lobby changed: ", toJS(this.busyUsers));
-        console.log("> Contacts' status changed: ", toJS(this.contacts));
-      });
+      // TODO: remove in production (may take a huge amount of browser's performance)
+      console.log("> Online users in lobby changed: ", toJS(this.onlineUsers));
+      console.log("> Busy users in lobby changed: ", toJS(this.busyUsers));
+      console.log("> Contacts' status changed: ", toJS(this.contacts));
     });
   }
 
