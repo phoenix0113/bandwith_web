@@ -202,18 +202,32 @@ export class APNService {
     }
   }
 
-  static async getDeviceIdByUserId(userId: string): Promise<string | null> {
+  static async getDeviceIdByUserId(
+    userId: string
+  ): Promise<GetRandomDeviceResponse | null> {
     try {
-      const apn = await APN.findOne({ user: userId });
+      const targetAPN = await APN.findOne({ user: userId }).populate({
+        path: 'user',
+        select: '_id name imageUrl',
+      });
 
-      if (!apn) {
+      if (!targetAPN) {
         console.log(`[APN] no device id found for user ${userId}`);
         return null;
       }
 
-      console.log(`[APN] found deviceID ${apn?.deviceId}`);
+      console.log(`[APN] found deviceID ${targetAPN?.deviceId}`);
 
-      return apn.deviceId;
+      if (!isUserPopulated(targetAPN.user)) {
+        throw new Error(
+          'Something went wrong while populating APN document. Current document:'
+        );
+      }
+
+      return {
+        deviceId: targetAPN.deviceId,
+        user: targetAPN.user,
+      };
     } catch (e) {
       throw e;
     }

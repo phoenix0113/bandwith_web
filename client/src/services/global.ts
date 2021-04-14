@@ -320,11 +320,43 @@ class GlobalMobxService {
     }
   }
 
+  public callSpecificUser = (
+    callId: string,
+    userId: string,
+    callback: (data: LobbyCallResponse | ErrorData, error?: boolean) => void,
+    isRandomCall = false,
+  ) => {
+    logger.log("info", "global.ts", `MAKE_LOBBY_CALL to ${userId} (generated callId: ${callId})`, true, true);
+
+    if (this.onlineUsers.includes(userId)) {
+      console.log("> specific call via socket");
+      this.socket.emit(
+        ACTIONS.MAKE_LOBBY_CALL, { call_id: callId, _id: userId, isRandomCall }, (data) => {
+          if ("errorId" in data) {
+            this.stopAudio();
+            showErrorNotification(data.error);
+            callback(data);
+          } else {
+            console.log(`> Trying to call to ${data.participant_name}`);
+            callback({
+              ...data,
+              isFriend: isRandomCall ? false : this.isContact(data.participant_id),
+            });
+          }
+        },
+      );
+    } else {
+      console.log("> specific call via APN");
+      this.APNCall(callId, callback, userId);
+    }
+  }
+
   public APNCall = (
     callId: string,
     callback: (data: LobbyCallResponse | ErrorData, error?: boolean) => void,
+    userId: string = null,
   ) => {
-    const requestData: APNCallRequest = { call_id: callId };
+    const requestData: APNCallRequest = { call_id: callId, user_id: userId };
 
     this.socket.emit(ACTIONS.MAKE_APN_CALL, requestData, (data) => {
       if ("errorId" in data) {
@@ -359,30 +391,6 @@ class GlobalMobxService {
     this.socket.emit(ACTIONS.APN_CALL_TIMEOUT, requestData, () => {
       console.log("> APN_CALL_TIMEOUT event success");
     });
-  }
-
-  public callSpecificUser = (
-    callId: string,
-    userId: string,
-    callback: (data: LobbyCallResponse | ErrorData, error?: boolean) => void,
-    isRandomCall = false,
-  ) => {
-    logger.log("info", "global.ts", `MAKE_LOBBY_CALL to ${userId} (generated callId: ${callId})`, true, true);
-    this.socket.emit(
-      ACTIONS.MAKE_LOBBY_CALL, { call_id: callId, _id: userId, isRandomCall }, (data) => {
-        if ("errorId" in data) {
-          this.stopAudio();
-          showErrorNotification(data.error);
-          callback(data);
-        } else {
-          console.log(`> Trying to call to ${data.participant_name}`);
-          callback({
-            ...data,
-            isFriend: isRandomCall ? false : this.isContact(data.participant_id),
-          });
-        }
-      },
-    );
   }
 
   public toggleAvailabilityStatus = () => {

@@ -64,6 +64,7 @@ import {
   NOT_ABLE_TO_FIND_PARTICIPANT,
   USER_IS_OFFLINE,
   NO_APN_DEVICE_TOKEN_FOUND,
+  USER_ENVIRONMENT_DOES_NOT_SUPPORT_APN,
   // @ts-ignore
 } from '../../../client/src/shared/errors';
 // @ts-ignore
@@ -83,6 +84,7 @@ import {
   APNService,
   sendCallTimeoutNotification,
 } from '../services/APNs';
+import { GetRandomDeviceResponse } from 'src/models';
 
 type ApiRequest = (json: {}, socket?: Socket) => {} | void;
 interface Socket extends SocketClient {
@@ -542,7 +544,7 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
   }
 
   async [ACTIONS.MAKE_APN_CALL](
-    { call_id }: APNCallRequest,
+    { call_id, user_id }: APNCallRequest,
     socket: Socket
   ): Promise<MakeLobbyCallResponse> {
     const busyUsers: Array<string> = [];
@@ -550,14 +552,27 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
       if (value.status === 'busy') busyUsers.push(key);
     });
 
-    const targetAPNDevice = await APNService.getRandomDeviceId([
-      ...busyUsers,
-      socket.self_id,
-    ]);
+    let targetAPNDevice: GetRandomDeviceResponse | null = null;
+
+    if (user_id) {
+      targetAPNDevice = await APNService.getDeviceIdByUserId(user_id);
+    } else {
+      targetAPNDevice = await APNService.getRandomDeviceId([
+        ...busyUsers,
+        socket.self_id,
+      ]);
+    }
 
     if (!targetAPNDevice) {
-      console.log(`[APN] ${NO_APN_DEVICE_TOKEN_FOUND}. Throwing an error...`);
-      throw new Error(NO_APN_DEVICE_TOKEN_FOUND);
+      if (user_id) {
+        console.log(
+          `[APN] ${USER_ENVIRONMENT_DOES_NOT_SUPPORT_APN}. Throwing an error...`
+        );
+        throw new Error(USER_ENVIRONMENT_DOES_NOT_SUPPORT_APN);
+      } else {
+        console.log(`[APN] ${NO_APN_DEVICE_TOKEN_FOUND}. Throwing an error...`);
+        throw new Error(NO_APN_DEVICE_TOKEN_FOUND);
+      }
     }
 
     const eventData: LobbyCallEventData = {
@@ -585,11 +600,11 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     { user_id, call_id }: APNCallCancel,
     socket: Socket
   ): Promise<void> {
-    const targetAPNDeviceId = await APNService.getDeviceIdByUserId(user_id);
+    const targetAPNDevice = await APNService.getDeviceIdByUserId(user_id);
 
-    if (targetAPNDeviceId) {
+    if (targetAPNDevice) {
       sendCallTimeoutNotification(
-        [targetAPNDeviceId],
+        [targetAPNDevice.deviceId],
         call_id,
         socket.self_name
       );
@@ -600,11 +615,11 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     { user_id, call_id }: APNCallTimeout,
     socket: Socket
   ): Promise<void> {
-    const targetAPNDeviceId = await APNService.getDeviceIdByUserId(user_id);
+    const targetAPNDevice = await APNService.getDeviceIdByUserId(user_id);
 
-    if (targetAPNDeviceId) {
+    if (targetAPNDevice) {
       sendCallTimeoutNotification(
-        [targetAPNDeviceId],
+        [targetAPNDevice.deviceId],
         call_id,
         socket.self_name
       );

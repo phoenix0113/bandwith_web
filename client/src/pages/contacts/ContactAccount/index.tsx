@@ -28,16 +28,14 @@ export const ContactAccountComponent = (
       <ProfileImageWrapper src={imageUrl} />
       <CommonContentWrapper>
         <CommonContentTitle>{name}</CommonContentTitle>
-        {status === "online" && (
-          <CommonButton
-            margin="5% 0 20px 0"
-            onClick={() => callHandler(_id)}
-            backgroundColor={COLORS.MAIN_LIGHT}
-            color={COLORS.WHITE}
-          >
-            Make a Call
-          </CommonButton>
-        )}
+        <CommonButton
+          margin="5% 0 20px 0"
+          onClick={() => callHandler(_id)}
+          backgroundColor={COLORS.MAIN_LIGHT}
+          color={COLORS.WHITE}
+        >
+          Make a Call
+        </CommonButton>
         <CommonButton
           margin={status === "online" ? "0 0 20px 0" : "5% 0 20px 0"}
           onClick={() => deleteHandler(_id)}
