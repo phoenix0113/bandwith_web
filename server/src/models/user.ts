@@ -25,6 +25,8 @@ const UserSchema = new Schema({
   imageUrl: { type: String, required: false },
   hints: [{ type: UserHintSubSchema }],
   available: { type: Boolean, required: false, default: false },
+  phone: { type: String, required: false, unique: true, default: undefined },
+  verified: { type: Boolean, required: false, default: false },
 });
 
 UserSchema.pre('save', function <UserSchema>(next) {

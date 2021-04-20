@@ -31,9 +31,28 @@ export interface UserProfileRequest {
   firebaseToken: string;
 }
 
-export interface UserProfileResponse extends RegistrationRequest, UserProfileRequest, Document {
-  hints?: UserHint[];
+interface UserExtraData {
   available: boolean;
+  phone: string;
+  verified: boolean;
+}
+
+export interface UserProfileResponse
+  extends RegistrationRequest, UserProfileRequest, Document, UserExtraData {
+  hints?: UserHint[];
+}
+
+export interface SendSMSRequest {
+  phone: string;
+}
+
+export interface VerifyCodeRequest {
+  code: string;
+  phone: string;
+}
+
+export interface UpdatePhoneRequest {
+  phone: string;
 }
 
 // TODO: most likely some user data has to be here
@@ -70,9 +89,7 @@ export interface BasicResponse {
   success: boolean;
 }
 
-export interface User extends Document, RegistrationRequest, UserProfileRequest {
-  available: boolean;
-}
+export interface User extends Document, RegistrationRequest, UserProfileRequest, UserExtraData {}
 
 export interface Contact extends Document, CreateContactRequest {}
 

@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { UsersController } from '../../controllers';
+// @ts-ignore
 import { PATH } from '../../../../client/src/shared/routes';
 
 export const userRouter = Router();
@@ -22,3 +23,12 @@ userRouter.post(
 );
 
 userRouter.post(`/${PATH.USER}/${PATH.HINTS}`, UsersController.updateUserHint);
+
+userRouter.post(`/${PATH.USER}/${PATH.SEND_SMS}`, UsersController.sendSMS);
+
+userRouter.post(
+  `/${PATH.USER}/${PATH.VERIFY_CODE}`,
+  UsersController.verifyCode
+);
+
+userRouter.post(`/${PATH.USER}/${PATH.PHONE}`, UsersController.updatePhone);

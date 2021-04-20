@@ -15,6 +15,10 @@ import {
   OAuthFacebookRequest,
   SetReadHintRequest,
   HintTypes,
+  SendSMSRequest,
+  VerifyCodeRequest,
+  UpdatePhoneRequest,
+  BasicResponse,
 } from '../../../client/src/shared/interfaces';
 import { conf } from '../config';
 import { Algorithm, sign } from 'jsonwebtoken';
@@ -277,5 +281,50 @@ export class UsersService {
     } catch (err) {
       throw err;
     }
+  }
+
+  // user types in the phone and send it to the server for SMS verification
+  static async sendSMS(
+    { phone }: SendSMSRequest,
+    _id: string
+  ): Promise<BasicResponse> {
+    const existingPhone = await User.findOne({ phone });
+    if (existingPhone) {
+      throw {
+        status: 409,
+        message: 'This phone number is already in use',
+      };
+    } else {
+      // TODO: send an actual SMS to this phone number
+      return { success: true };
+    }
+  }
+
+  // user received SMS with code and sent it to the server for verification
+  static async verifyCode(
+    { phone, code }: VerifyCodeRequest,
+    _id: string
+  ): Promise<BasicResponse> {
+    // TODO: verifyCode here, guess it should be saved when the 'sendSMS' is called
+    return { success: true };
+  }
+
+  // user's code was verified (success: true) and now they send their phone again to save it in the DB
+  static async updateUserPhoneNumber(
+    { phone }: UpdatePhoneRequest,
+    _id: string
+  ): Promise<UserProfileResponse> {
+    const user = await User.findById(_id);
+
+    if (!user) {
+      throw { status: 400, message: 'User with such credentials not found' };
+    }
+
+    user.phone = phone;
+    user.verified = true;
+
+    await user.save();
+
+    return user;
   }
 }
