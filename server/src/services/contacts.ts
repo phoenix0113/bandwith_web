@@ -115,8 +115,11 @@ export class ContactsService {
 
       if (!matchedUsers.length) {
         console.log(
-          "[Contacts import] Didn't find any app users based on the provided contacts"
+          "[Contacts import] Didn't find any app users based on the provided contacts. Setting `contactsImported` to true"
         );
+        targetUser.contactsImported = true;
+        await targetUser.save();
+
         return { profile: targetUser, updated: false };
       }
 
