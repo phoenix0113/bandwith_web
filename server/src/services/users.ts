@@ -103,7 +103,11 @@ export class UsersService {
     { _id }: Document,
     { firebaseToken }: UserProfileRequest
   ): Promise<UserProfileResponse> {
-    const user = await User.findById(_id);
+    const user = await User.findById(_id).select('-password').populate({
+      path: 'contacts.user',
+      select: '_id name imageUrl',
+    });
+
     if (!user) {
       throw { status: 400, message: 'User with such credentials not found' };
     }

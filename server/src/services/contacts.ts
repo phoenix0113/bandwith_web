@@ -1,10 +1,13 @@
 import { Contact } from '../models';
+import { User } from '../models';
 import {
   CreateContactRequest,
   Document,
   GetContactListResponse,
   RemoveContactRequest,
   ImportContactsRequest,
+  ImportContactsResponse,
+  ImportedContactItem,
 } from '../../../client/src/shared/interfaces';
 
 export class ContactsService {
@@ -85,10 +88,88 @@ export class ContactsService {
   static async importContacts(
     { contacts }: ImportContactsRequest,
     _id: string
-  ): Promise<GetContactListResponse> {
+  ): Promise<ImportContactsResponse> {
     try {
-      // TODO: actual importing logic
-      return { contacts: [] };
+      const targetUser = await User.findById(_id).select('-password');
+
+      if (!targetUser) {
+        throw { status: 400, message: 'User Not found' };
+      }
+
+      const phones: Array<string> = [];
+      contacts.forEach((c) => {
+        phones.push(...c.phones);
+      });
+
+      const regexString = phones.join('|');
+
+      console.log(
+        `[Contacts import] Seaching for users with regex: ${regexString}`
+      );
+
+      const matchedUsers = await User.find({
+        phone: {
+          $regex: regexString,
+        },
+      }).select('_id phone');
+
+      if (!matchedUsers.length) {
+        console.log(
+          "[Contacts import] Didn't find any app users based on the provided contacts"
+        );
+        return { profile: targetUser, updated: false };
+      }
+
+      console.log(
+        `[Contacts import] found ${matchedUsers.length} users: `,
+        matchedUsers
+      );
+
+      const newContacts: Array<ImportedContactItem> = [];
+
+      matchedUsers.forEach((matchedUser) => {
+        const phoneContact = contacts.find((c) => {
+          const regex = new RegExp(c.phones.join('|').replace('+', '\\+'));
+          return !!matchedUser.phone.match(regex);
+        });
+
+        if (!phoneContact) {
+          console.error(
+            "[Contacts import] something went wrong while searching back for phone's contact by phone number. Matched user: ",
+            matchedUser
+          );
+          throw new Error(
+            "[Contacts import] something went wrong while searching back for phone's contact by phone number"
+          );
+        }
+
+        newContacts.push({
+          user: matchedUser._id,
+          recordId: phoneContact.recordId,
+          name: phoneContact.name,
+        });
+      });
+
+      console.log(
+        `[Contacts import] Found contacts for user ${targetUser.name}: `,
+        newContacts
+      );
+
+      targetUser.contactsImported = true;
+      targetUser.contacts = newContacts;
+
+      await targetUser.save();
+
+      const profile = await targetUser
+        .populate({
+          path: 'contacts.user',
+          select: '_id name imageUrl',
+        })
+        .execPopulate();
+
+      console.log("[Contacts import] update user's profile: ", profile);
+
+      return { profile, updated: true };
     } catch (e) {
       throw e;
     }

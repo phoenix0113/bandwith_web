@@ -17,6 +17,12 @@ const UserHintSubSchema = new Schema({
   seen: { type: Boolean, default: false },
 });
 
+const ImportedContactSubschema = new Schema({
+  recordId: { type: String, required: true }, // corresponds to the contact's unique id on user's phone
+  name: { type: String, required: true }, // corresponds to the persons' name on user's phone
+  user: { type: Schema.Types.ObjectId, ref: 'user' }, // found app's user in the DB
+});
+
 const UserSchema = new Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
@@ -28,6 +34,7 @@ const UserSchema = new Schema({
   phone: { type: String, required: false, unique: true, default: undefined },
   verified: { type: Boolean, required: false, default: false },
   contactsImported: { type: Boolean, required: false, default: false },
+  contacts: [{ type: ImportedContactSubschema }],
 });
 
 UserSchema.pre('save', function <UserSchema>(next) {
