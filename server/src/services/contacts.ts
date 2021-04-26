@@ -121,6 +121,8 @@ export class ContactsService {
           "[Contacts import] Didn't find any app users based on the provided contacts. Setting `contactsImported` to true"
         );
         targetUser.contactsImported = true;
+        targetUser.contacts = [];
+
         await targetUser.save();
 
         return { profile: targetUser, updated: false };
