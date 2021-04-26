@@ -111,6 +111,9 @@ export class ContactsService {
         phone: {
           $regex: regexString,
         },
+        _id: {
+          $ne: _id, // removing ourselves from the list
+        },
       }).select('_id phone');
 
       if (!matchedUsers.length) {
