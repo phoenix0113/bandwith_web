@@ -35,6 +35,7 @@ interface UserExtraData {
   available: boolean;
   phone: string;
   verified: boolean;
+  contactsImported: boolean;
 }
 
 export interface UserProfileResponse
@@ -109,6 +110,20 @@ export interface GetContactListResponse {
 export interface RemoveContactRequest {
   contactPerson: string;
 }
+
+/**
+ * contacts import
+ */
+export interface ContactImportItem {
+  phone: number;
+  name: string;
+}
+
+export interface ImportContactsRequest {
+  contacts: Array<ContactImportItem>;
+}
+
+export type ImportContactsResponse = GetContactListResponse;
 
 export interface GetUserDataResponse extends Document {
   name: string;

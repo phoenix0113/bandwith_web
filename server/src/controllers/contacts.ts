@@ -34,4 +34,12 @@ export class ContactsController extends CrudController {
       res.send({ success: true });
     });
   }
+
+  static async importContacts(req: Request, res: Response) {
+    await ContactsController.processRequest(req, res, async () => {
+      res.send(
+        await ContactsService.importContacts(req.body, req['user'].userId)
+      );
+    });
+  }
 }

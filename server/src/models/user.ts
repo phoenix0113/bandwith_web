@@ -27,6 +27,7 @@ const UserSchema = new Schema({
   available: { type: Boolean, required: false, default: false },
   phone: { type: String, required: false, unique: true, default: undefined },
   verified: { type: Boolean, required: false, default: false },
+  contactsImported: { type: Boolean, required: false, default: false },
 });
 
 UserSchema.pre('save', function <UserSchema>(next) {

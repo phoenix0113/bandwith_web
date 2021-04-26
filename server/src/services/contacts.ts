@@ -4,6 +4,7 @@ import {
   Document,
   GetContactListResponse,
   RemoveContactRequest,
+  ImportContactsRequest,
 } from '../../../client/src/shared/interfaces';
 
 export class ContactsService {
@@ -78,6 +79,18 @@ export class ContactsService {
       await Contact.findByIdAndRemove(_id);
     } catch (err) {
       throw { status: 400, message: 'Not found' };
+    }
+  }
+
+  static async importContacts(
+    { contacts }: ImportContactsRequest,
+    _id: string
+  ): Promise<GetContactListResponse> {
+    try {
+      // TODO: actual importing logic
+      return { contacts: [] };
+    } catch (e) {
+      throw e;
     }
   }
 }
