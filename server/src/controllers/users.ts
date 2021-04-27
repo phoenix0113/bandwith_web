@@ -61,13 +61,13 @@ export class UsersController extends CrudController {
 
   static async sendSMS(req: Request, res: Response) {
     await UsersController.processRequest(req, res, async () => {
-      res.send(await UsersService.sendSMS(req.body, req['user'].userId));
+      res.send(await UsersService.sendSMS(req.body));
     });
   }
 
   static async verifyCode(req: Request, res: Response) {
     await UsersController.processRequest(req, res, async () => {
-      res.send(await UsersService.verifyCode(req.body, req['user'].userId));
+      res.send(await UsersService.verifyCode(req.body));
     });
   }
 

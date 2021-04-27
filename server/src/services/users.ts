@@ -1,5 +1,8 @@
+import { promisify } from 'util';
 import { OAuth2Client } from 'google-auth-library';
 import fetch from 'node-fetch';
+import Nexmo from 'nexmo';
+import { Algorithm, sign } from 'jsonwebtoken';
 import { User } from '../models';
 import {
   RegistrationRequest,
@@ -19,11 +22,16 @@ import {
   VerifyCodeRequest,
   UpdatePhoneRequest,
   BasicResponse,
+  NexmoResponse,
 } from '../../../client/src/shared/interfaces';
 import { conf } from '../config';
-import { Algorithm, sign } from 'jsonwebtoken';
 
 export class UsersService {
+  static nexmo = new Nexmo({
+    apiKey: conf.phoneVerification.apiKey,
+    apiSecret: conf.phoneVerification.apiSecret,
+  });
+
   static async getAllUsers(): Promise<GetAllUsersResponse> {
     const users = await User.find();
 
@@ -288,29 +296,70 @@ export class UsersService {
   }
 
   // user types in the phone and send it to the server for SMS verification
-  static async sendSMS(
-    { phone }: SendSMSRequest,
-    _id: string
-  ): Promise<BasicResponse> {
-    const existingPhone = await User.findOne({ phone });
-    if (existingPhone) {
-      throw {
-        status: 409,
-        message: 'This phone number is already in use',
-      };
-    } else {
-      // TODO: send an actual SMS to this phone number
-      return { success: true };
+  static async sendSMS({ phone }: SendSMSRequest): Promise<NexmoResponse> {
+    try {
+      const existingPhone = await User.findOne({ phone });
+      const sendCodeToPhone = promisify(UsersService.nexmo.verify.request).bind(
+        UsersService.nexmo.verify
+      );
+
+      if (existingPhone) {
+        throw {
+          status: 409,
+          message: 'This phone number is already in use',
+        };
+      } else {
+        const response = await sendCodeToPhone({
+          number: phone,
+          brand: 'Bandwwith',
+          code_length: conf.phoneVerification.code_length,
+        });
+
+        if (+response.status === 0) {
+          return {
+            success: true,
+            request_id: response.request_id,
+          };
+        } else {
+          throw {
+            status: 457,
+            nexmoStatus: response.status,
+            message: response.error_text,
+          };
+        }
+      }
+    } catch (err) {
+      throw err;
     }
   }
 
   // user received SMS with code and sent it to the server for verification
-  static async verifyCode(
-    { phone, code }: VerifyCodeRequest,
-    _id: string
-  ): Promise<BasicResponse> {
-    // TODO: verifyCode here, guess it should be saved when the 'sendSMS' is called
-    return { success: true };
+  static async verifyCode({
+    code,
+    request_id,
+  }: VerifyCodeRequest): Promise<BasicResponse> {
+    try {
+      const checkCode = promisify(UsersService.nexmo.verify.check).bind(
+        UsersService.nexmo.verify
+      );
+
+      const response = await checkCode({
+        request_id,
+        code,
+      });
+
+      if (+response.status === 0) {
+        return { success: true };
+      } else {
+        throw {
+          status: 457,
+          nexmoStatus: response.status,
+          message: response.error_text,
+        };
+      }
+    } catch (err) {
+      throw err;
+    }
   }
 
   // user's code was verified (success: true) and now they send their phone again to save it in the DB

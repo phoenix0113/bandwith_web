@@ -4,3 +4,5 @@ data/
 firebase-credentials.json
 _redirects
 test.txt
+logs/
+cert/

@@ -54,9 +54,13 @@ export interface SendSMSRequest {
   phone: string;
 }
 
+export interface NexmoResponse extends BasicResponse {
+  request_id: string;
+}
+
 export interface VerifyCodeRequest {
   code: string;
-  phone: string;
+  request_id: string;
 }
 
 export interface UpdatePhoneRequest {

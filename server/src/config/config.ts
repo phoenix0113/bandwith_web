@@ -44,6 +44,11 @@ export const conf = {
     bundleId: 'org.reactjs.native.example.DoejoBandwwithLLC',
     production: getEnvStr('APN_ENVIRONMENT_PRODUCTION'),
   },
+  phoneVerification: {
+    apiKey: getEnvStr('NEXMO_API_KEY'),
+    apiSecret: getEnvStr('NEXMO_API_SECRET'),
+    code_length: 4,
+  },
 };
 
 function getEnvStr(key: string, _default?: string): string {

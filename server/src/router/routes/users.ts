@@ -24,10 +24,13 @@ userRouter.post(
 
 userRouter.post(`/${PATH.USER}/${PATH.HINTS}`, UsersController.updateUserHint);
 
-userRouter.post(`/${PATH.USER}/${PATH.SEND_SMS}`, UsersController.sendSMS);
+userRouter.post(
+  `/${PATH.USER_VERIFICATION}/${PATH.SEND_SMS}`,
+  UsersController.sendSMS
+);
 
 userRouter.post(
-  `/${PATH.USER}/${PATH.VERIFY_CODE}`,
+  `/${PATH.USER_VERIFICATION}/${PATH.VERIFY_CODE}`,
   UsersController.verifyCode
 );
 
