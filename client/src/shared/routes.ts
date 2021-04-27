@@ -11,7 +11,6 @@ export const PATH = {
   SUBSCRIBE: "subscribe",
   PUSH: "push",
   USER: "user",
-  USER_VERIFICATION: "user-v",
   PROFILE: "profile",
   AUTH: "auth",
   CONTACTS: "contacts",
