@@ -1,3 +1,5 @@
+import { isValidPhoneNumber, CountryCode } from 'libphonenumber-js';
+
 import { Contact } from '../models';
 import { User } from '../models';
 import {
@@ -151,11 +153,25 @@ export class ContactsService {
           );
         }
 
-        newContacts.push({
-          user: matchedUser._id,
-          recordId: phoneContact.recordId,
-          name: phoneContact.name,
+        const atLeastOneValid = phoneContact.phones.some((phone) => {
+          return isValidPhoneNumber(
+            phone,
+            matchedUser.countryCode as CountryCode
+          );
         });
+
+        if (atLeastOneValid) {
+          newContacts.push({
+            user: matchedUser._id,
+            recordId: phoneContact.recordId,
+            name: phoneContact.name,
+          });
+        } else {
+          console.log(
+            `> All imported phones isn't valid for country ${matchedUser.countryCode} and phone ${matchedUser.phone} (${matchedUser.name}). Provided phones that matched by regex: `,
+            phoneContact
+          );
+        }
       });
 
       console.log(
