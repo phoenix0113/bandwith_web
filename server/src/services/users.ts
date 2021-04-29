@@ -296,8 +296,19 @@ export class UsersService {
   }
 
   // user types in the phone and send it to the server for SMS verification
-  static async sendSMS({ phone }: SendSMSRequest): Promise<NexmoResponse> {
+  static async sendSMS({
+    phone,
+    request_id,
+  }: SendSMSRequest): Promise<NexmoResponse> {
     try {
+      if (request_id) {
+        const cancelVerification = promisify(
+          UsersService.nexmo.verify.control
+        ).bind(UsersService.nexmo.verify);
+        console.log('await cancelVerification();');
+        await cancelVerification({ request_id, cmd: 'cancel' });
+      }
+
       const existingPhone = await User.findOne({ phone });
       const sendCodeToPhone = promisify(UsersService.nexmo.verify.request).bind(
         UsersService.nexmo.verify

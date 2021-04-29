@@ -53,6 +53,7 @@ export interface UserProfileResponse
 
 export interface SendSMSRequest {
   phone: string;
+  request_id?: string;
 }
 
 export interface NexmoResponse extends BasicResponse {
