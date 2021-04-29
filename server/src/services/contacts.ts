@@ -116,7 +116,7 @@ export class ContactsService {
         _id: {
           $ne: _id, // removing ourselves from the list
         },
-      }).select('_id phone');
+      }).select('_id phone countryCode');
 
       if (!matchedUsers.length) {
         console.log(
@@ -191,7 +191,7 @@ export class ContactsService {
         })
         .execPopulate();
 
-      console.log("[Contacts import] update user's profile: ", profile);
+      // console.log("[Contacts import] update user's profile: ", profile);
 
       return { profile, updated: true };
     } catch (e) {
