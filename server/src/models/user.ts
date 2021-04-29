@@ -32,6 +32,7 @@ const UserSchema = new Schema({
   hints: [{ type: UserHintSubSchema }],
   available: { type: Boolean, required: false, default: false },
   phone: { type: String, required: false, unique: true, default: undefined },
+  countryCode: { type: String, required: false, default: undefined },
   verified: { type: Boolean, required: false, default: false },
   contactsImported: { type: Boolean, required: false, default: false },
   contacts: [{ type: ImportedContactSubschema }],

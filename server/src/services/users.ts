@@ -364,7 +364,7 @@ export class UsersService {
 
   // user's code was verified (success: true) and now they send their phone again to save it in the DB
   static async updateUserPhoneNumber(
-    { phone }: UpdatePhoneRequest,
+    { phone, countryCode }: UpdatePhoneRequest,
     _id: string
   ): Promise<UserProfileResponse> {
     const user = await User.findById(_id);
@@ -374,6 +374,7 @@ export class UsersService {
     }
 
     user.phone = phone;
+    user.countryCode = countryCode;
     user.verified = true;
 
     await user.save();
