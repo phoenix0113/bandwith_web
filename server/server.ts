@@ -26,7 +26,7 @@ const main = async () => {
   const app = express();
 
   app.use(cors());
-  app.use(bodyParser.json());
+  app.use(bodyParser.json({ limit: '2mb' }));
 
   app.use(
     `/${PATH.API_DOCS}`,
