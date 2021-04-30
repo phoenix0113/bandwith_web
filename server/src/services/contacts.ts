@@ -1,6 +1,11 @@
-import { isValidPhoneNumber, CountryCode } from 'libphonenumber-js';
+import {
+  isValidPhoneNumber,
+  CountryCode,
+  isPossibleNumber,
+} from 'libphonenumber-js';
+import { uniqBy } from 'lodash';
 
-import { Contact } from '../models';
+import { Contact, IUser } from '../models';
 import { User } from '../models';
 import {
   CreateContactRequest,
@@ -10,7 +15,105 @@ import {
   ImportContactsRequest,
   ImportContactsResponse,
   ImportedContactItem,
+  ContactImportItem,
 } from '../../../client/src/shared/interfaces';
+
+const removeImpossibleNumbers = (
+  contacts: ContactImportItem[]
+): ContactImportItem[] => {
+  let skippedCounter = 0;
+  let skippedPhones = 0;
+
+  const cleaned = contacts
+    .map((contact) => {
+      contact.phones = contact.phones.filter((phone) => {
+        if (!isPossibleNumber(phone)) {
+          skippedPhones++;
+          return false;
+        }
+        return true;
+      });
+
+      if (!contact.phones.length) {
+        skippedCounter++;
+        return null;
+      }
+
+      return contact;
+    })
+    .filter(Boolean) as ContactImportItem[];
+
+  console.log(
+    `[Contacts import] Imported contacts were cleaned up from impossible number. Removed contacts: ${skippedCounter}. Skipped phone number: ${skippedPhones}`
+  );
+
+  return cleaned || [];
+};
+
+const MAX_PHONES_FOR_SINGLE_REQUEST = 500;
+
+const fetchByChunks = async (
+  contacts: ContactImportItem[],
+  self_id: string
+): Promise<IUser[]> => {
+  try {
+    const phones: Array<string> = [];
+    contacts.forEach((c) => {
+      phones.push(...c.phones);
+    });
+
+    // chunk and regexArray correspond to a single request to the DB
+    const chunks = Math.ceil(phones.length / MAX_PHONES_FOR_SINGLE_REQUEST);
+    const regexArray: Array<string> = [];
+
+    if (chunks === 1) {
+      const regexString = phones.join('|');
+      regexArray.push(regexString);
+    } else {
+      for (let i = 0; i < chunks; i++) {
+        const chunk = phones.slice(
+          i * MAX_PHONES_FOR_SINGLE_REQUEST,
+          i * MAX_PHONES_FOR_SINGLE_REQUEST + MAX_PHONES_FOR_SINGLE_REQUEST
+        );
+
+        const regexString = chunk.join('|');
+        regexArray.push(regexString);
+      }
+    }
+
+    console.log(
+      `[Contacts import] Found ${phones.length} phones. Created ${regexArray.length} regex chunkds`
+    );
+
+    const promises = regexArray.map((regexString) => {
+      return User.find({
+        phone: {
+          $regex: regexString,
+        },
+        _id: {
+          $ne: self_id, // removing ourselves from the list
+        },
+      }).select('_id phone countryCode');
+    });
+
+    const resolvedArray = await Promise.all(promises);
+
+    const users: IUser[] = [];
+    resolvedArray.forEach((resolved) => {
+      users.push(...resolved);
+    });
+
+    const uniqueUsers = uniqBy(users, '_id');
+
+    console.log(
+      `[Contacts import] Fetched ${users.length} from the DB. Unique users: ${uniqueUsers.length}`
+    );
+
+    return uniqueUsers;
+  } catch (e) {
+    throw e;
+  }
+};
 
 export class ContactsService {
   static async createContact(
@@ -98,25 +201,11 @@ export class ContactsService {
         throw { status: 400, message: 'User Not found' };
       }
 
-      const phones: Array<string> = [];
-      contacts.forEach((c) => {
-        phones.push(...c.phones);
-      });
+      // all "possible" contacts
+      const cleanupContacts = removeImpossibleNumbers(contacts);
 
-      const regexString = phones.join('|');
-
-      console.log(
-        `[Contacts import] Seaching for users with regex: ${regexString}`
-      );
-
-      const matchedUsers = await User.find({
-        phone: {
-          $regex: regexString,
-        },
-        _id: {
-          $ne: _id, // removing ourselves from the list
-        },
-      }).select('_id phone countryCode');
+      // all users that match at least to one "possible" contact
+      const matchedUsers = await fetchByChunks(cleanupContacts, _id);
 
       if (!matchedUsers.length) {
         console.log(
@@ -130,20 +219,15 @@ export class ContactsService {
         return { profile: targetUser, updated: false };
       }
 
-      console.log(
-        `[Contacts import] found ${matchedUsers.length} users: `,
-        matchedUsers
-      );
-
       const newContacts: Array<ImportedContactItem> = [];
 
       matchedUsers.forEach((matchedUser) => {
-        const phoneContact = contacts.find((c) => {
+        const phoneContacts = cleanupContacts.filter((c) => {
           const regex = new RegExp(c.phones.join('|').replace('+', '\\+'));
           return !!matchedUser.phone.match(regex);
         });
 
-        if (!phoneContact) {
+        if (!phoneContacts.length) {
           console.error(
             "[Contacts import] something went wrong while searching back for phone's contact by phone number. Matched user: ",
             matchedUser
@@ -153,24 +237,36 @@ export class ContactsService {
           );
         }
 
-        const atLeastOneValid = phoneContact.phones.some((phone) => {
-          return isValidPhoneNumber(
-            phone,
-            matchedUser.countryCode as CountryCode
+        // Note: it's not likely that we will find multiple phoneContact for one matchedUser
+        if (phoneContacts.length > 1) {
+          console.warn(
+            '[Contacts import] Found more than 1 phoneContact for matchedUser. Phone contact and matched user: ',
+            phoneContacts,
+            matchedUser
           );
-        });
+        }
 
-        if (atLeastOneValid) {
-          newContacts.push({
-            user: matchedUser._id,
-            recordId: phoneContact.recordId,
-            name: phoneContact.name,
+        for (let i = 0; i < phoneContacts.length; i++) {
+          const atLeastOneValid = phoneContacts[i].phones.some((phone) => {
+            return isValidPhoneNumber(
+              phone,
+              matchedUser.countryCode as CountryCode
+            );
           });
-        } else {
-          console.log(
-            `> All imported phones isn't valid for country ${matchedUser.countryCode} and phone ${matchedUser.phone} (${matchedUser.name}). Provided phones that matched by regex: `,
-            phoneContact
-          );
+
+          if (atLeastOneValid) {
+            newContacts.push({
+              user: matchedUser._id,
+              recordId: phoneContacts[i].recordId,
+              name: phoneContacts[i].name,
+            });
+            break;
+          } else {
+            console.log(
+              `> All imported phones from 'phoneContact' aren't valid for matched phone ${matchedUser.phone} with country. 'phoneContact' that matched regex: `,
+              phoneContacts[i]
+            );
+          }
         }
       });
 
@@ -190,8 +286,6 @@ export class ContactsService {
           select: '_id name imageUrl',
         })
         .execPopulate();
-
-      // console.log("[Contacts import] update user's profile: ", profile);
 
       return { profile, updated: true };
     } catch (e) {
