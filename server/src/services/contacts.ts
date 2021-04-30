@@ -1,7 +1,8 @@
 import {
   isValidPhoneNumber,
   CountryCode,
-  isPossibleNumber,
+  isPossiblePhoneNumber,
+  getCountries,
 } from 'libphonenumber-js';
 import { uniqBy } from 'lodash';
 
@@ -21,21 +22,25 @@ import {
 const removeImpossibleNumbers = (
   contacts: ContactImportItem[]
 ): ContactImportItem[] => {
-  let skippedCounter = 0;
-  let skippedPhones = 0;
+  const allCountriesCodes = getCountries();
+
+  let skippedContactsCounter = 0;
+  let skippedPhones: string[] = [];
 
   const cleaned = contacts
     .map((contact) => {
       contact.phones = contact.phones.filter((phone) => {
-        if (!isPossibleNumber(phone)) {
-          skippedPhones++;
-          return false;
+        for (let i = 0; i < allCountriesCodes.length; i++) {
+          if (isPossiblePhoneNumber(phone, allCountriesCodes[i])) {
+            return true;
+          }
         }
-        return true;
+        skippedPhones.push(phone);
+        return false;
       });
 
       if (!contact.phones.length) {
-        skippedCounter++;
+        skippedContactsCounter++;
         return null;
       }
 
@@ -44,7 +49,8 @@ const removeImpossibleNumbers = (
     .filter(Boolean) as ContactImportItem[];
 
   console.log(
-    `[Contacts import] Imported contacts were cleaned up from impossible number. Removed contacts: ${skippedCounter}. Skipped phone number: ${skippedPhones}`
+    `[Contacts import] Imported contacts were cleaned up from impossible number. Removed contacts: ${skippedContactsCounter}. Skipped phone numbers: ${skippedPhones.length}. Actual skipped phones: `,
+    skippedPhones
   );
 
   return cleaned || [];
