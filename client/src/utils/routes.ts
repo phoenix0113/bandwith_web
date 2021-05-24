@@ -10,6 +10,7 @@ export enum Routes {
   LIVE_CALL="/call/live",
   FEED="/feed",
   ADMIN_LOGIN="/admin/login",
+  ADMIN_HELP="/admin/help",
 }
 
 export enum Params {
