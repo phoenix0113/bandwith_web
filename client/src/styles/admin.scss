@@ -1,0 +1,66 @@
+.admin-header {
+  height: 70px;
+  background-color: #1A1C1E;
+}
+
+.admin-header-side {
+  width: 250px;
+  position: fixed;
+}
+
+.admin-panel-form {
+  width: 100%;
+}
+
+.admin-auth-input {
+  height: 48px;
+}
+
+.ant-input {
+  background-color: #1F2123 !important;
+  font-size: 16px;
+  line-height: 19px;
+  font-family: 'Avenir-SFProDisplay';
+}
+
+.ant-input ::-webkit-input-placeholder, :-ms-input-placeholder, ::placeholder {
+  color: #A9AEBE;
+}
+
+.ant-input-prefix {
+  margin-right: 30.69px;
+  margin-left: 0;
+}
+
+.ant-input-affix-wrapper,
+.ant-input-affix-wrapper:hover {
+  background-color: #1F2123;
+  border-radius: 4px;
+  height: 50px;
+  width: 100%;
+  padding: 4px 20.69px;
+  border: none;
+}
+
+.active {
+  padding-left: 46px !important;
+}
+
+.admin-active {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.3) -97.53%, rgba(255, 255, 255, 3e-05) 100%);
+  opacity: 1 !important;
+}
+
+.pa-left-50 {
+  padding-left: 50px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.admin-dashboard-video:hover {
+  .admin-dashboard-video-pause-button {
+    display: block;
+  }
+}
