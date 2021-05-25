@@ -32,6 +32,7 @@ const ContactListPage = lazy(() => import("./pages/contacts"));
 const FeedPage = lazy(() => import("./pages/feed"));
 const AdminLoginPage = lazy(() => import("./pages/admin/login"));
 const AdminHelpPage = lazy(() => import("./pages/admin/help"));
+const AdminDashboardPage = lazy(() => import("./pages/admin/dashboard"));
 
 export const App = observer((): JSX.Element => {
   const { pathname } = useLocation();
@@ -67,6 +68,7 @@ export const App = observer((): JSX.Element => {
           <ProtectedRoute exact path={Routes.FEED} Component={FeedPage} />
           <ProtectedRoute exact path={Routes.ADMIN_LOGIN} Component={AdminLoginPage} />
           <ProtectedRoute exact path={Routes.ADMIN_HELP} Component={AdminHelpPage} />
+          <ProtectedRoute exact path={Routes.ADMIN_DASHBOARD} Component={AdminDashboardPage} />
         </Switch>
       </Suspense>
     </AppWrapper>

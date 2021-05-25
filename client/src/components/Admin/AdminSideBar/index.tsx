@@ -1,11 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   SideBarSection, SideBarUl, SideBarLi, SideBarActive, SideBarHref,
   LogoutModalSection, LogoutModal, LogoutModalTitle, LogoutModalFooter, LogoutModalButton,
 } from "./styled";
 
-const AdminSideBar = (pageType): JSX.Element => {
+interface Data {
+  pageType: string;
+}
+
+const AdminSideBar = (props:Data): JSX.Element => {
   const [logoutModalStatus, setLogoutModalStatus] = useState(false);
+  const [type, setType] = useState("");
   const pages = [
     { key: "dashboard", value: "Dashboard" },
     { key: "video", value: "Video" },
@@ -24,11 +29,15 @@ const AdminSideBar = (pageType): JSX.Element => {
     setLogoutModalStatus(false);
   };
 
+  useEffect(() => {
+    setType(props.pageType);
+  });
+
   return (
     <SideBarSection>
       <SideBarUl>
         {pages.map((page) => (
-          (pageType.pageType === page.key) ? (
+          (type === page.key) ? (
             <SideBarLi className="admin-active" key={page.key}>
               <SideBarActive />
               <SideBarHref

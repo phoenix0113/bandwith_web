@@ -194,3 +194,151 @@ export const AdminHelpDescription = styled.div`
   line-height: 23px;
   color: #6D7278;
 `;
+
+export const AdminVideoPageContent = styled.div`
+  margin: 97px 35px 35px 285px;
+  width: 100%;
+`;
+
+export const AdminVideoContent = styled.div`
+  max-width: 1120px;
+  margin: auto;
+`;
+
+export const AdminVideoProfile = styled.div`
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+`;
+
+export const AdminVideoProfilePhoto = styled.img`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1px solid #FFFFFF;
+`;
+
+export const AdminVideoProfileInformation = styled.div`
+  align-items: center;
+  margin-left: 20px;
+`;
+
+export const AdminVideoProfileUserName = styled.a`
+  font-family: 'Avenir-Kefa';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  line-height: 18px;
+  color: #0091FF;
+`;
+
+export const AdminVideoProfileLevel = styled.div`
+  font-family: 'Avenir-Kefa';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  line-height: 18px;
+  color: #FFFFFF;
+`;
+
+export const AdminVideo = styled.video`
+  width: 100%;
+  max-width: 1120px;
+  border-radius: 38px;
+`;
+
+export const AdminVideoToolsSection = styled.div`
+  margin-top: 30px;
+  max-width: 1120px;
+  height: 60px;
+  background: #1F2123;
+  box-shadow: 0px 0px 44px rgba(0, 0, 0, 0.02);
+  border-radius: 50px;
+`;
+
+export const AdminVideoTools = styled.div`
+  padding: 20px 25px;
+  display: flex;
+  align-items: center;
+`;
+
+export const AdminVideoToolsMoveButton = styled.img`
+  width: 10px;
+  height: 16px;
+  cursor: pointer;
+`;
+
+export const AdminVideoStatusTools = styled.div`
+  width: 36.6%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 11.74%;
+`;
+
+export const AdminVideoToolsPrevNextButton = styled.img`
+  width: 19.46px;
+  height: 17px;
+  cursor: pointer;
+`;
+
+export const AdminVideoToolsPlayPauseButton = styled.img`
+  width: 13.34px;
+  height: 17px;
+  cursor: pointer;
+`;
+
+export const AdminVideoActiveStatusTools = styled.div`
+  width: 24.9%;
+  border-left: 1px solid #979797;
+  border-right: 1px solid #979797;
+  padding: 0 6.34%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const AdminVideoToolsAcceptButton = styled.img`
+  width: 21px;
+  height: 18px;
+  cursor: pointer;
+`;
+
+export const AdminVideoToolsDeclineButton = styled.img`
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+`;
+
+export const AdminVideoToolsVoiceButton = styled.img`
+  width: 19.92px;
+  height: 17.97px;
+  cursor: pointer;
+`;
+
+export const AdminVideoSettingsTools = styled.div`
+  width: 31.7%;
+  padding: 0 6.96%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const AdminVideoToolsOptionButton = styled.img`
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+`;
+
+export const AdminVideoToolsFullScreenButton = styled.img`
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+`;
+
+export const AdminVideoToolsCloseButton = styled.img`
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  margin-left: auto;
+`;
