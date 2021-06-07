@@ -13,6 +13,8 @@ export enum Routes {
   ADMIN_HELP="/admin/help",
   ADMIN_DASHBOARD="/admin/dashboard",
   ADMIN_VIDEO="/admin/video",
+  ADMIN_USERS="/admin/users",
+  ADMIN_VIDEOS="/admin/manage",
   ADMIN_SINGLE_VIDEO="/admin/video/:id",
 }
 

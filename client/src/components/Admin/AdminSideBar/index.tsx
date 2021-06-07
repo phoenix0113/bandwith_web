@@ -11,11 +11,7 @@ interface Data {
 const AdminSideBar = (props:Data): JSX.Element => {
   const [logoutModalStatus, setLogoutModalStatus] = useState(false);
   const [type, setType] = useState("");
-  const pages = [
-    { key: "dashboard", value: "Dashboard" },
-    { key: "video", value: "Video" },
-    { key: "help", value: "Help" },
-  ];
+  const [showSubPage, setShowSubPage] = useState(false);
 
   const handleLogoutModal = () => {
     setLogoutModalStatus(true);
@@ -29,34 +25,83 @@ const AdminSideBar = (props:Data): JSX.Element => {
     setLogoutModalStatus(false);
   };
 
+  const changeShowSubPage = () => {
+    setShowSubPage(!showSubPage);
+  };
+
   useEffect(() => {
     setType(props.pageType);
+    if (type === "users" || type === "manage") {
+      setShowSubPage(true);
+    }
   });
 
   return (
     <SideBarSection>
       <SideBarUl>
-        {pages.map((page) => (
-          (type === page.key) ? (
-            <SideBarLi className="admin-active" key={page.key}>
-              <SideBarActive />
-              <SideBarHref
-                className="sidebar-active"
-                href={page.key}
-              >
-                {page.value}
-              </SideBarHref>
-            </SideBarLi>
+        <SideBarLi className={(type === "dashboard") ? "admin-active" : ""}>
+          {(type === "dashboard") ? <SideBarActive /> : <></>}
+          <SideBarHref
+            className={(type === "dashboard") ? "sidebar-active" : ""}
+            href="/admin/dashboard"
+          >
+            Dashboard
+          </SideBarHref>
+        </SideBarLi>
+        <SideBarLi className={(type === "video") ? "admin-active" : ""}>
+          {(type === "video") ? <SideBarActive /> : <></>}
+          <SideBarHref
+            className={(type === "video") ? "sidebar-active" : ""}
+            href="/admin/video"
+          >
+            Video
+          </SideBarHref>
+        </SideBarLi>
+        <SideBarLi>
+          <SideBarHref
+            onClick={changeShowSubPage}
+          >
+            Manage
+          </SideBarHref>
+        </SideBarLi>
+        {
+          (showSubPage) ? (
+            <>
+              <SideBarLi className={(type === "users") ? "admin-active" : ""}>
+                {(type === "users") ? <SideBarActive /> : <></>}
+                <SideBarHref
+                  className={(type === "users") ? "sub-sidebar-active" : ""}
+                  href="/admin/users"
+                  style={{ paddingLeft: "70px" }}
+                >
+                  User Manage
+                </SideBarHref>
+
+              </SideBarLi>
+              <SideBarLi className={(type === "manage") ? "admin-active" : ""}>
+                {(type === "manage") ? <SideBarActive /> : <></>}
+                <SideBarHref
+                  className={(type === "manage") ? "sub-sidebar-active" : ""}
+                  href="/admin/manage"
+                  style={{ paddingLeft: "70px" }}
+                >
+                  Video Manage
+                </SideBarHref>
+              </SideBarLi>
+            </>
           ) : (
-            <SideBarLi key={page.key}>
-              <SideBarHref
-                href={page.key}
-              >
-                {page.value}
-              </SideBarHref>
-            </SideBarLi>
+            <></>
           )
-        ))}
+        }
+        <SideBarLi className={(type === "help") ? "admin-active" : ""}>
+          {(type === "help") ? <SideBarActive /> : <></>}
+          <SideBarHref
+            className={(type === "help") ? "sidebar-active" : ""}
+            href="/admin/help"
+          >
+            Help
+          </SideBarHref>
+        </SideBarLi>
         <SideBarLi
           // onClick={handleLogoutModal}
           className="pa-left-50 cursor-pointer"

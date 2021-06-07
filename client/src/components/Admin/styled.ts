@@ -463,3 +463,59 @@ export const AdminSingleVideoProfileContent = styled.div`
 export const AdminSingleVideoPlayerContent = styled.div`
 
 `;
+
+export const AdminVideoManageContent = styled.div`
+  margin-top: 167px;
+  margin-left: 295px;
+  margin-right: 55px;
+  padding: 0 35px;
+  display: flex;
+  width: 100%;
+`;
+
+export const AdminVideoManageWrapper = styled.div`
+  max-width: 1120px;
+  margin: auto;
+`;
+
+export const AdminVideoManageList = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+`;
+
+export const AdminVideoManageProfile = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+`;
+
+export const AdminVideoManageProfileImage = styled.img`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1px solid #FFFFFF;
+`;
+
+export const AdminVideoManageProfileName = styled.div`
+  font-family: 'Avenir-Kefa';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  line-height: 18px;
+  color: #0091FF;
+  margin-left: 20px;
+`;
+
+export const AdminVideoManageStatus = styled.select`
+  font-family: 'Avenir-Kefa';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  line-height: 18px;
+  color: #ffffff;
+  background-color: #0E0C09;
+  outline: none;
+  border: none;
+  margin-left: 20px;
+`;

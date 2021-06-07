@@ -35,6 +35,7 @@ const AdminHelpPage = lazy(() => import("./pages/admin/help"));
 const AdminDashboardPage = lazy(() => import("./pages/admin/dashboard"));
 const AdminVideoPage = lazy(() => import("./pages/admin/video"));
 const AdminSingleVideoPage = lazy(() => import("./pages/admin/single"));
+const AdminManagePage = lazy(() => import("./pages/admin/manage"));
 
 export const App = observer((): JSX.Element => {
   const { pathname } = useLocation();
@@ -73,6 +74,7 @@ export const App = observer((): JSX.Element => {
           <ProtectedRoute exact path={Routes.ADMIN_DASHBOARD} Component={AdminDashboardPage} />
           <ProtectedRoute exact path={Routes.ADMIN_VIDEO} Component={AdminVideoPage} />
           <ProtectedRoute exact path={Routes.ADMIN_SINGLE_VIDEO} Component={AdminSingleVideoPage} />
+          <ProtectedRoute exact path={Routes.ADMIN_VIDEOS} Component={AdminManagePage} />
         </Switch>
       </Suspense>
     </AppWrapper>
