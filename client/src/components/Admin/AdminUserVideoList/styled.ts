@@ -1,10 +1,11 @@
 import styled from "styled-components";
 
-export const VideoPlayerContent = styled.div`
+export const VideoPlayerContent = styled.a`
   height: 50px;
   padding: 5px;
   border-radius: 5px;
   position: relative;
+  cursor: pointer;
 `;
 
 export const VideoPlayer = styled.video`

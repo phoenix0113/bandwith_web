@@ -204,7 +204,7 @@ const AdminVideoPage = (): JSX.Element => {
               {
                 videos.map((video) => (
                   <AdminVideoList key={video._id} style={{ minWidth: "500px" }}>
-                    <AdminUserVideoList url={video.list[0].url} />
+                    <AdminUserVideoList url={video.list[0].url} id={video._id} />
                     <AdminUser
                       name={video.user.name}
                       photo={video.user.photo}

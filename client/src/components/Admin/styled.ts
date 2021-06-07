@@ -236,19 +236,57 @@ export const AdminVideoProfileLevel = styled.div`
   color: #FFFFFF;
 `;
 
-export const AdminVideo = styled.video`
+export const AdminVideoPlayer = styled.video`
   width: 100%;
   max-width: 1120px;
   border-radius: 38px;
 `;
 
-export const AdminVideoToolsSection = styled.div`
-  margin-top: 30px;
+export const AdminVideoToolsContent = styled.div`
+  margin-top: 35px;
   max-width: 1120px;
+  width: 100%;
   height: 60px;
   background: #1F2123;
   box-shadow: 0px 0px 44px rgba(0, 0, 0, 0.02);
   border-radius: 50px;
+`;
+
+export const AdminProfile = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const AdminProfileImage = styled.img`
+  width: 50px;
+  height: 50px;
+  border: 1px solid #FFFFFF;
+  border-radius: 50%;
+`;
+
+export const AdminProfileContent = styled.div`
+  margin-left: 20px;
+`;
+
+export const AdminProfileName = styled.a`
+  font-family: 'Avenir-Kefa';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  line-height: 18px;
+  color: #0091FF;
+`;
+
+export const AdminVideoStatus = styled.select`
+  font-family: 'Avenir-Kefa';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  line-height: 18px;
+  color: #ffffff;
+  background-color: #0E0C09;
+  outline: none;
+  border: none;
 `;
 
 export const AdminVideoTools = styled.div`
@@ -401,4 +439,27 @@ export const AdminVideoListSaveButton = styled.button`
   cursor: pointer;
   padding: 5px 20px;
   border-radius: 5px;
+`;
+
+export const AdminSingleVideoContentWrapper = styled.div`
+  max-width: 1190px;
+  margin: auto;
+  padding: 0 35px;
+`;
+
+export const AdminSingleVideoContent = styled.div`
+  margin-top: 165px;
+  margin-left: 250px;
+  width: 100%;
+`;
+
+export const AdminSingleVideoProfileContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  max-width: 1120px;
+  margin-bottom: 18px;
+`;
+
+export const AdminSingleVideoPlayerContent = styled.div`
+
 `;
