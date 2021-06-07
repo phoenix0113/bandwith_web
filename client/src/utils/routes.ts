@@ -12,6 +12,7 @@ export enum Routes {
   ADMIN_LOGIN="/admin/login",
   ADMIN_HELP="/admin/help",
   ADMIN_DASHBOARD="/admin/dashboard",
+  ADMIN_VIDEO="/admin/video",
 }
 
 export enum Params {

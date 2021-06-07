@@ -41,7 +41,7 @@ const AdminSideBar = (props:Data): JSX.Element => {
             <SideBarLi className="admin-active" key={page.key}>
               <SideBarActive />
               <SideBarHref
-                className="active"
+                className="sidebar-active"
                 href={page.key}
               >
                 {page.value}

@@ -3,7 +3,7 @@ import AdminSideBar from "../../../components/Admin/AdminSideBar";
 import { AdminPageContent, AdminPageWrapper, AdminHelpContent, AdminHelpTitle, AdminHelpDescription } from "../../../components/Admin/styled";
 import { PAGE_TYPE } from "./types";
 
-const AdminDashboardPage = (): JSX.Element => {
+const AdminHelpPage = (): JSX.Element => {
   const here = "";
   return (
     <AdminPageWrapper>
@@ -76,4 +76,4 @@ const AdminDashboardPage = (): JSX.Element => {
   );
 };
 
-export default AdminDashboardPage;
+export default AdminHelpPage;

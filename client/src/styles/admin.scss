@@ -43,7 +43,7 @@
   border: none;
 }
 
-.active {
+.sidebar-active {
   padding-left: 46px !important;
 }
 
@@ -64,4 +64,8 @@
   .admin-dashboard-video-pause-button {
     display: block;
   }
+}
+
+.user-list-active {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.3) -97.53%, rgba(255, 255, 255, 3e-05) 100%);
 }

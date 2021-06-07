@@ -200,11 +200,6 @@ export const AdminVideoPageContent = styled.div`
   width: 100%;
 `;
 
-export const AdminVideoContent = styled.div`
-  max-width: 1120px;
-  margin: auto;
-`;
-
 export const AdminVideoProfile = styled.div`
   margin-bottom: 18px;
   display: flex;
@@ -341,4 +336,69 @@ export const AdminVideoToolsCloseButton = styled.img`
   height: 14px;
   cursor: pointer;
   margin-left: auto;
+`;
+
+export const AdminUserVideo = styled.div`
+  height: 50px;
+`;
+
+export const AdminVideoWrapper = styled.div`
+  margin-left: 30px;
+`;
+
+export const AdminVideoContent = styled.div`
+  margin-top: 167px;
+  margin-left: 295px;
+  margin-right: 55px;
+  width: 100%;
+`;
+
+export const AdminVideoContentWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+export const AdminVideoList = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const AdminVideoListStatus = styled.select`
+  margin-left: 20px;
+  height: 20px;
+  width: 70px;
+  border: none;
+  outline: none;
+`;
+
+export const AdminVideoListTitle = styled.div`
+  font-size: 20px;
+  color: white;
+  text-align: center;
+  margin-bottom: 20px;
+`;
+
+export const AdminUserWrapper = styled.div`
+  min-width: 200px;
+`;
+
+export const AdminUserList = styled.div`
+  
+`;
+
+export const AdminAction = styled.div`
+  width: 700px;
+  margin: auto;
+  padding: 20px 0;
+`;
+
+export const AdminVideoListSaveButton = styled.button`
+  background-color: green;
+  color: white;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px 20px;
+  border-radius: 5px;
 `;
