@@ -1,3 +1,5 @@
+import { useContext, useEffect, useState } from "react";
+import { AdminStorageContext } from "../../../services/admin";
 import AdminHeader from "../../../components/Admin/AdminHeader";
 import AdminSideBar from "../../../components/Admin/AdminSideBar";
 import AdminVideo from "../../../components/Admin/AdminVideo";
@@ -6,15 +8,33 @@ import {
   VideoContentWrapper, AdminDashboardVideoContent,
 } from "../../../components/Admin/styled";
 import { PAGE_TYPE } from "./types";
+import { VIDEO_LOAD_LIMIT } from "../../../utils/constants";
 
 const AdminDashboardPage = (): JSX.Element => {
-  const videoUrls = [
-    "https://samplelib.com/lib/preview/mp4/sample-15s.mp4",
-    "https://samplelib.com/lib/preview/mp4/sample-15s.mp4",
-    "https://samplelib.com/lib/preview/mp4/sample-15s.mp4",
-    "https://samplelib.com/lib/preview/mp4/sample-15s.mp4",
-    "https://samplelib.com/lib/preview/mp4/sample-15s.mp4",
-  ];
+  const {
+    videos,
+  } = useContext(AdminStorageContext);
+
+  const [allVideos, setAllVideos] = useState([]);
+  const [latestVideos, setLatestVideos] = useState([]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setAllVideos(videos);
+    }, 500);
+  }, [videos]);
+
+  useEffect(() => {
+    if (allVideos.length < VIDEO_LOAD_LIMIT) {
+      setLatestVideos(allVideos);
+    } else {
+      const temp = [];
+      for (let i = 0; i < VIDEO_LOAD_LIMIT; i += 1) {
+        temp.push(allVideos[i]);
+      }
+      setLatestVideos(temp);
+    }
+  }, [allVideos]);
 
   return (
     <AdminPageWrapper>
@@ -28,8 +48,8 @@ const AdminDashboardPage = (): JSX.Element => {
             </AdminDashboardVideoTitle>
             <VideoContentWrapper>
               {
-                videoUrls.map((videoUrl) => (
-                  <AdminVideo url={videoUrl} key={Math.random()} />
+                latestVideos.map((latestVideo) => (
+                  <AdminVideo url={latestVideo.list[0].url} key={latestVideo._id} />
                 ))
               }
             </VideoContentWrapper>
