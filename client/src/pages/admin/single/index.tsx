@@ -1,15 +1,15 @@
 import { useRef, useState } from "react";
+import { useHistory } from "react-router-dom";
 import AdminHeader from "../../../components/Admin/AdminHeader";
 import AdminSideBar from "../../../components/Admin/AdminSideBar";
 import {
   AdminPageContent, AdminPageWrapper, AdminSingleVideoContent, AdminSingleVideoProfileContent,
-  AdminSingleVideoPlayerContent, AdminVideoToolsContent, AdminProfile, AdminProfileImage,
+  AdminSingleVideoContentWrapper, AdminVideoToolsContent, AdminProfile, AdminProfileImage,
   AdminProfileContent, AdminProfileName, AdminVideoTools, AdminVideoToolsMoveButton,
   AdminVideoStatusTools, AdminVideoToolsPrevNextButton, AdminVideoToolsPlayPauseButton,
   AdminVideoActiveStatusTools, AdminVideoToolsAcceptButton, AdminVideoToolsDeclineButton,
   AdminVideoToolsVoiceButton, AdminVideoSettingsTools, AdminVideoToolsOptionButton,
   AdminVideoToolsFullScreenButton, AdminVideoToolsCloseButton, AdminVideoPlayer, AdminVideoStatus,
-  AdminSingleVideoContentWrapper, VideoPauseButton,
 } from "../../../components/Admin/styled";
 import { PAGE_TYPE } from "./types";
 import moveButton from "../../../assets/images/admin/move.png";
@@ -25,21 +25,9 @@ import fullscreenButton from "../../../assets/images/admin/fullscreen.png";
 import closeButton from "../../../assets/images/admin/close.png";
 
 const AdminSingleVideoPage = (): JSX.Element => {
+  const history = useHistory();
   const playerRef = useRef<HTMLVideoElement>(null);
   const [showPlayBtn, setShowPlayBtn] = useState(true);
-  const changePlayBtn = () => {
-    if (playerRef.current.paused) {
-      playerRef.current.play().then(() => setShowPlayBtn(false)).catch(() => {
-        if (playerRef.current.paused) {
-          setShowPlayBtn(true);
-        }
-      });
-    } else if (!playerRef.current.paused) {
-      playerRef.current.pause();
-      setShowPlayBtn(true);
-    }
-  };
-
   const [video, setVideo] = useState({
     key: "60a686b53270a8001e8cf271",
     _id: "60a686b53270a8001e8cf271",
@@ -54,6 +42,43 @@ const AdminSingleVideoPage = (): JSX.Element => {
       name: "Luis Andres 1",
     },
   });
+
+  const [videoIDs, setVideoIDS] = useState([
+    "602507d8191d33001d2e1721",
+    "602507d8191d33001d2e1722",
+    "602507d8191d33001d2e1723",
+    "602507d8191d33001d2e1724",
+    "602507d8191d33001d2e1725",
+    "602507d8191d33001d2e1726",
+  ]);
+
+  const [nextID, setNextID] = useState("602507d8191d33001d2e1722");
+  const [prevID, setPrevID] = useState("602507d8191d33001d2e1723");
+
+  const changePlayBtn = () => {
+    if (playerRef.current.paused) {
+      playerRef.current.play().then(() => setShowPlayBtn(false)).catch(() => {
+        if (playerRef.current.paused) {
+          setShowPlayBtn(true);
+        }
+      });
+    } else if (!playerRef.current.paused) {
+      playerRef.current.pause();
+      setShowPlayBtn(true);
+    }
+  };
+
+  const prevPlay = () => {
+    let prevUrl = "/admin/video/";
+    prevUrl += prevID;
+    history.push(prevUrl);
+  };
+
+  const nextPlay = () => {
+    let nextUrl = "/admin/video/";
+    nextUrl += nextID;
+    history.push(nextUrl);
+  };
 
   return (
     <AdminPageWrapper>
@@ -74,14 +99,14 @@ const AdminSingleVideoPage = (): JSX.Element => {
                 <option value="private">Private</option>
               </AdminVideoStatus>
             </AdminSingleVideoProfileContent>
-            <AdminVideoPlayer ref={playerRef}>
+            <AdminVideoPlayer ref={playerRef} controls>
               <source src={video.list[0].url} />
             </AdminVideoPlayer>
             <AdminVideoToolsContent>
               <AdminVideoTools>
                 <AdminVideoToolsMoveButton src={moveButton} />
                 <AdminVideoStatusTools>
-                  <AdminVideoToolsPrevNextButton src={prevButton} />
+                  <AdminVideoToolsPrevNextButton src={prevButton} onClick={prevPlay} />
                   {
                     (showPlayBtn) ? (
                       <AdminVideoToolsPlayPauseButton src={playButton} onClick={changePlayBtn} />
@@ -89,7 +114,7 @@ const AdminSingleVideoPage = (): JSX.Element => {
                       <AdminVideoToolsPlayPauseButton className="admin-dashboard-video-pause-button" src={pauseButton} onClick={changePlayBtn} />
                     )
                   }
-                  <AdminVideoToolsPrevNextButton src={nextButton} />
+                  <AdminVideoToolsPrevNextButton src={nextButton} onClick={nextPlay} />
                 </AdminVideoStatusTools>
                 <AdminVideoActiveStatusTools>
                   <AdminVideoToolsAcceptButton src={acceptButton} />
