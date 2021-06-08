@@ -78,4 +78,12 @@ export class UsersController extends CrudController {
       );
     });
   }
+
+  static async getAllUsers(req: Request, res:Response) {
+    await UsersController.processRequest(req, res, async () => {
+      res.send(
+        await UsersService.getAllUsers()
+      );
+    });
+  }
 }

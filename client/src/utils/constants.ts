@@ -23,3 +23,5 @@ export const SEND_LOGS_THRESHOLD = 5;
 export const OUTGOING_CALL_SECONDS = 30;
 
 export const NAVIGATOR_SHARE_ERROR = "Your browser doesn't support Social Share";
+
+export const VIDEO_LOAD_LIMIT = 6;

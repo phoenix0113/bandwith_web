@@ -381,64 +381,119 @@ export const AdminUserVideo = styled.div`
 `;
 
 export const AdminVideoWrapper = styled.div`
-  margin-left: 30px;
+  max-width: 550px;
+  width: 100%;
+  margin: 0 44px 0 71px;
+  min-height: 100%;
 `;
 
 export const AdminVideoContent = styled.div`
-  margin-top: 167px;
-  margin-left: 295px;
-  margin-right: 55px;
+  margin-top: 70px;
+  margin-left: 250px;
   width: 100%;
+  background-color: #151617;
 `;
 
 export const AdminVideoContentWrapper = styled.div`
   display: flex;
-  justify-content: center;
+  min-height: 100%;
 `;
 
 export const AdminVideoList = styled.div`
   display: flex;
-  justify-content: center;
+  width: 100%;
+  height: 143px;
+  padding: 15px;
+  background: #1A1C1E;
+  margin: 20px 0;
   align-items: center;
 `;
 
-export const AdminVideoListStatus = styled.select`
-  margin-left: 20px;
-  height: 20px;
-  width: 70px;
+export const AdminVideoListStatus = styled.div`
   border: none;
   outline: none;
+  margin-right: 0;
+  margin-left: auto;
 `;
 
 export const AdminVideoListTitle = styled.div`
-  font-size: 20px;
-  color: white;
-  text-align: center;
-  margin-bottom: 20px;
+  font-family: 'Avenir-Kefa';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 34px;
+  line-height: 40px;
+  color: #FFFFFF;
+  margin-top: 47px;
+  margin-bottom: 41px;
 `;
 
 export const AdminUserWrapper = styled.div`
-  min-width: 200px;
+  max-width: 450px;
+  margin: 0 39px;
+  width: 100%;
+  min-height: 100%;
+`;
+
+export const AdminVideoListWrapper = styled.div`
+  width: 100%;
+  background-color: #0E0C09;
 `;
 
 export const AdminUserList = styled.div`
-  
-`;
-
-export const AdminAction = styled.div`
-  width: 700px;
-  margin: auto;
-  padding: 20px 0;
-`;
-
-export const AdminVideoListSaveButton = styled.button`
-  background-color: green;
-  color: white;
-  outline: none;
-  border: none;
+  height: 143px;
+  margin: 20px 0;
+  background: #1A1C1E;
+  box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
   cursor: pointer;
-  padding: 5px 20px;
-  border-radius: 5px;
+  padding: 30px;
+`;
+
+export const AdminListActive = styled.div`
+  position: absolute;
+  width: 18px;
+  height: 143px;
+  left: 0;
+  top: 0;
+  background: linear-gradient(270deg, rgba(41, 67, 76, 0.268952) 3.51%, #32C5FF 179.71%);
+  mix-blend-mode: normal;
+  opacity: 0.6;
+  border-radius: 6px 0 0 6px;
+`;
+
+export const AdminListActiveBar = styled.div`
+  position: absolute;
+  width: 4px;
+  height: 143px;
+  left: 0;
+  top: 0;
+  background: #32C5FF;
+  border-radius: 6px 0 0 6px;
+`;
+
+export const AdminVideoListStatusLabel = styled.label`
+  font-family: Lato;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 22px;
+  text-align: right;
+  color: #FFFFFF;
+  margin-right: 24px;
+`;
+
+export const AdminVideoListStatusInput = styled.input`
+  margin-right: 0;
+  margin-left: auto;
+  width: 17px;
+  height: 17px;
+`;
+
+export const TextRight = styled.div`
+  text-align: right;
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
 `;
 
 export const AdminSingleVideoContentWrapper = styled.div`

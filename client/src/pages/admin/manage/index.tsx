@@ -9,7 +9,7 @@ import {
 } from "../../../components/Admin/styled";
 import { PAGE_TYPE } from "./types";
 
-const AdminManagePage = () => {
+const AdminManagePage = (): JSX.Element => {
   const [videos, setVideos] = useState([
     {
       key: "60a686b53270a8001e8cf271",
