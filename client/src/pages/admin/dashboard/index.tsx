@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { observer } from "mobx-react";
 import { AdminStorageContext } from "../../../services/admin";
 import AdminHeader from "../../../components/Admin/AdminHeader";
 import AdminSideBar from "../../../components/Admin/AdminSideBar";
@@ -10,7 +11,7 @@ import {
 import { PAGE_TYPE } from "./types";
 import { VIDEO_LOAD_LIMIT } from "../../../utils/constants";
 
-const AdminDashboardPage = (): JSX.Element => {
+const AdminDashboardPage = observer((): JSX.Element => {
   const {
     videos,
   } = useContext(AdminStorageContext);
@@ -19,9 +20,7 @@ const AdminDashboardPage = (): JSX.Element => {
   const [latestVideos, setLatestVideos] = useState([]);
 
   useEffect(() => {
-    setTimeout(() => {
-      setAllVideos(videos);
-    }, 500);
+    setAllVideos(videos);
   }, [videos]);
 
   useEffect(() => {
@@ -58,6 +57,6 @@ const AdminDashboardPage = (): JSX.Element => {
       </AdminPageContent>
     </AdminPageWrapper>
   );
-};
+});
 
 export default AdminDashboardPage;

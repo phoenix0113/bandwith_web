@@ -195,47 +195,6 @@ export const AdminHelpDescription = styled.div`
   color: #6D7278;
 `;
 
-export const AdminVideoPageContent = styled.div`
-  margin: 97px 35px 35px 285px;
-  width: 100%;
-`;
-
-export const AdminVideoProfile = styled.div`
-  margin-bottom: 18px;
-  display: flex;
-  align-items: center;
-`;
-
-export const AdminVideoProfilePhoto = styled.img`
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: 1px solid #FFFFFF;
-`;
-
-export const AdminVideoProfileInformation = styled.div`
-  align-items: center;
-  margin-left: 20px;
-`;
-
-export const AdminVideoProfileUserName = styled.a`
-  font-family: 'Avenir-Kefa';
-  font-style: normal;
-  font-weight: normal;
-  font-size: 20px;
-  line-height: 18px;
-  color: #0091FF;
-`;
-
-export const AdminVideoProfileLevel = styled.div`
-  font-family: 'Avenir-Kefa';
-  font-style: normal;
-  font-weight: normal;
-  font-size: 20px;
-  line-height: 18px;
-  color: #FFFFFF;
-`;
-
 export const AdminVideoPlayer = styled.video`
   width: 100%;
   max-width: 1120px;
@@ -376,13 +335,8 @@ export const AdminVideoToolsCloseButton = styled.img`
   margin-left: auto;
 `;
 
-export const AdminUserVideo = styled.div`
-  height: 50px;
-`;
-
 export const AdminVideoWrapper = styled.div`
   max-width: 550px;
-  width: 100%;
   margin: 0 44px 0 71px;
   min-height: 100%;
 `;
@@ -429,13 +383,13 @@ export const AdminVideoListTitle = styled.div`
 
 export const AdminUserWrapper = styled.div`
   max-width: 450px;
-  margin: 0 39px;
-  width: 100%;
+  margin: 0 auto;
+  width: 45%;
   min-height: 100%;
 `;
 
 export const AdminVideoListWrapper = styled.div`
-  width: 100%;
+  width: 55%;
   background-color: #0E0C09;
 `;
 
@@ -515,10 +469,6 @@ export const AdminSingleVideoProfileContent = styled.div`
   margin-bottom: 18px;
 `;
 
-export const AdminSingleVideoPlayerContent = styled.div`
-
-`;
-
 export const AdminVideoManageContent = styled.div`
   margin-top: 167px;
   margin-left: 295px;
@@ -530,47 +480,7 @@ export const AdminVideoManageContent = styled.div`
 
 export const AdminVideoManageWrapper = styled.div`
   max-width: 1120px;
-  margin: auto;
-`;
-
-export const AdminVideoManageList = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 10px 0;
-`;
-
-export const AdminVideoManageProfile = styled.div`
-  display: flex;
-  align-items: center;
-  margin-left: 20px;
-`;
-
-export const AdminVideoManageProfileImage = styled.img`
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: 1px solid #FFFFFF;
-`;
-
-export const AdminVideoManageProfileName = styled.div`
-  font-family: 'Avenir-Kefa';
-  font-style: normal;
-  font-weight: normal;
-  font-size: 20px;
-  line-height: 18px;
-  color: #0091FF;
-  margin-left: 20px;
-`;
-
-export const AdminVideoManageStatus = styled.select`
-  font-family: 'Avenir-Kefa';
-  font-style: normal;
-  font-weight: normal;
-  font-size: 20px;
-  line-height: 18px;
-  color: #ffffff;
-  background-color: #0E0C09;
-  outline: none;
-  border: none;
-  margin-left: 20px;
+  width: 100%;
+  margin: 0 auto;
+  border: 1px solid red;
 `;

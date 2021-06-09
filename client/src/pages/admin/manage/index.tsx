@@ -1,144 +1,39 @@
-import { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { observer } from "mobx-react";
 import AdminHeader from "../../../components/Admin/AdminHeader";
 import AdminSideBar from "../../../components/Admin/AdminSideBar";
-import AdminUserVideoList from "../../../components/Admin/AdminUserVideoList";
+import AdminUserVideoListPlayer from "../../../components/Admin/AdminVideoListPlayer";
+import AdminUserListProfile from "../../../components/Admin/AdminUserListProfile";
+import { AdminStorageContext } from "../../../services/admin";
 import {
   AdminPageContent, AdminPageWrapper, AdminVideoManageContent, AdminVideoManageWrapper,
-  AdminVideoManageList, AdminVideoManageProfile, AdminVideoManageProfileImage,
-  AdminVideoManageProfileName, AdminVideoManageStatus,
+  AdminVideoList, AdminVideoListStatus, TextRight, AdminVideoListStatusLabel,
+  AdminVideoListStatusInput,
 } from "../../../components/Admin/styled";
 import { PAGE_TYPE } from "./types";
 
-const AdminManagePage = (): JSX.Element => {
-  const [videos, setVideos] = useState([
-    {
-      key: "60a686b53270a8001e8cf271",
-      _id: "60a686b53270a8001e8cf271",
-      list: [
-        {
-          url: "https://samplelib.com/lib/preview/mp4/sample-15s.mp4",
-        },
-      ],
-      user: {
-        _id: "602507d8191d33001d2e1721",
-        photo: "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50",
-        name: "Luis Andres 1",
-      },
-    },
-    {
-      key: "60a686b53270a8001e8cf272",
-      _id: "60a686b53270a8001e8cf272",
-      list: [
-        {
-          url: "https://samplelib.com/lib/preview/mp4/sample-15s.mp4",
-        },
-      ],
-      user: {
-        _id: "602507d8191d33001d2e1721",
-        photo: "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50",
-        name: "Luis Andres 1",
-      },
-    },
-    {
-      key: "60a686b53270a8001e8cf273",
-      _id: "60a686b53270a8001e8cf273",
-      list: [
-        {
-          url: "https://samplelib.com/lib/preview/mp4/sample-15s.mp4",
-        },
-      ],
-      user: {
-        _id: "602507d8191d33001d2e1721",
-        photo: "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50",
-        name: "Luis Andres 2",
-      },
-    },
-    {
-      key: "60a686b53270a8001e8cf274",
-      _id: "60a686b53270a8001e8cf274",
-      list: [
-        {
-          url: "https://samplelib.com/lib/preview/mp4/sample-15s.mp4",
-        },
-      ],
-      user: {
-        _id: "602507d8191d33001d2e1721",
-        photo: "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50",
-        name: "Luis Andres 2",
-      },
-    },
-    {
-      key: "60a686b53270a8001e8cf275",
-      _id: "60a686b53270a8001e8cf275",
-      list: [
-        {
-          url: "https://samplelib.com/lib/preview/mp4/sample-15s.mp4",
-        },
-      ],
-      user: {
-        _id: "602507d8191d33001d2e1721",
-        photo: "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50",
-        name: "Luis Andres 2",
-      },
-    },
-    {
-      key: "60a686b53270a8001e8cf276",
-      _id: "60a686b53270a8001e8cf276",
-      list: [
-        {
-          url: "https://samplelib.com/lib/preview/mp4/sample-15s.mp4",
-        },
-      ],
-      user: {
-        _id: "602507d8191d33001d2e1721",
-        photo: "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50",
-        name: "Luis Andres 3",
-      },
-    },
-    {
-      key: "60a686b53270a8001e8cf277",
-      _id: "60a686b53270a8001e8cf277",
-      list: [
-        {
-          url: "https://samplelib.com/lib/preview/mp4/sample-15s.mp4",
-        },
-      ],
-      user: {
-        _id: "602507d8191d33001d2e1721",
-        photo: "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50",
-        name: "Luis Andres 3",
-      },
-    },
-    {
-      key: "60a686b53270a8001e8cf278",
-      _id: "60a686b53270a8001e8cf278",
-      list: [
-        {
-          url: "https://samplelib.com/lib/preview/mp4/sample-15s.mp4",
-        },
-      ],
-      user: {
-        _id: "602507d8191d33001d2e1721",
-        photo: "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50",
-        name: "Luis Andres 4",
-      },
-    },
-    {
-      key: "60a686b53270a8001e8cf279",
-      _id: "60a686b53270a8001e8cf279",
-      list: [
-        {
-          url: "https://samplelib.com/lib/preview/mp4/sample-15s.mp4",
-        },
-      ],
-      user: {
-        key: "602507d8191d33001d2e1721",
-        _id: "602507d8191d33001d2e1721",
-        photo: "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50",
-        name: "Luis Andres 4",
-      },
-    },
-  ]);
+const AdminManagePage = observer((): JSX.Element => {
+  const {
+    videos,
+    updateStatus,
+  } = useContext(AdminStorageContext);
+  const [allVideos, setAllVideos] = useState([]);
+
+  useEffect(() => {
+    setAllVideos(videos);
+  }, [videos]);
+
+  const setStatus = (id: string, status: string) => {
+    const video = allVideos.find((item) => item._id === id);
+    video.status = status;
+  };
+
+  const onChangeStatus = (
+    id: string, status: string,
+  ) => {
+    updateStatus(id, status);
+    setStatus(id, status);
+  };
 
   return (
     <AdminPageWrapper>
@@ -148,22 +43,57 @@ const AdminManagePage = (): JSX.Element => {
         <AdminVideoManageContent>
           <AdminVideoManageWrapper>
             {
-              videos.map((video) => (
-                <AdminVideoManageList key={video._id}>
-                  <AdminUserVideoList url={video.list[0].url} id={video._id} />
-                  <AdminVideoManageProfile>
-                    <AdminVideoManageProfileImage src={video.user.photo} />
-                    <AdminVideoManageProfileName>
-                      {video.user.name}
-                    </AdminVideoManageProfileName>
-                  </AdminVideoManageProfile>
-                  <AdminVideoManageStatus>
-                    <option value="public">Public</option>
-                    <option value="private">Private</option>
-                    <option value="blocked">Blocked</option>
-                    <option value="unblock">Unblock</option>
-                  </AdminVideoManageStatus>
-                </AdminVideoManageList>
+              allVideos.map((video) => (
+                <AdminVideoList key={video._id}>
+                  <AdminUserVideoListPlayer url={video.list[0].url} />
+                  <div style={{ marginLeft: "26px", marginRight: "26px" }}>
+                    <AdminUserListProfile
+                      imageUrl={video.user.imageUrl}
+                      name={video.user.name}
+                    />
+                  </div>
+                  <AdminVideoListStatus>
+                    <TextRight>
+                      <AdminVideoListStatusLabel htmlFor={video._id}>
+                        Public
+                      </AdminVideoListStatusLabel>
+                      <AdminVideoListStatusInput
+                        type="radio"
+                        value="public"
+                        name={video._id}
+                        id={video._id}
+                        checked={(video.status === "public")}
+                        onChange={() => onChangeStatus(video._id, "public")}
+                      />
+                    </TextRight>
+                    <TextRight>
+                      <AdminVideoListStatusLabel htmlFor={video._id}>
+                        Feature
+                      </AdminVideoListStatusLabel>
+                      <AdminVideoListStatusInput
+                        type="radio"
+                        value="feature"
+                        name={video._id}
+                        id={video._id}
+                        checked={(video.status === "feature")}
+                        onChange={() => onChangeStatus(video._id, "feature")}
+                      />
+                    </TextRight>
+                    <TextRight>
+                      <AdminVideoListStatusLabel htmlFor={video._id}>
+                        Block
+                      </AdminVideoListStatusLabel>
+                      <AdminVideoListStatusInput
+                        type="radio"
+                        value="block"
+                        name={video._id}
+                        id={video._id}
+                        checked={(video.status === "block")}
+                        onChange={() => onChangeStatus(video._id, "block")}
+                      />
+                    </TextRight>
+                  </AdminVideoListStatus>
+                </AdminVideoList>
               ))
             }
           </AdminVideoManageWrapper>
@@ -171,6 +101,6 @@ const AdminManagePage = (): JSX.Element => {
       </AdminPageContent>
     </AdminPageWrapper>
   );
-};
+});
 
 export default AdminManagePage;

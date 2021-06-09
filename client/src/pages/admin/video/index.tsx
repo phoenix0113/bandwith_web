@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { observer } from "mobx-react";
 import AdminHeader from "../../../components/Admin/AdminHeader";
 import AdminSideBar from "../../../components/Admin/AdminSideBar";
 import AdminUserListProfile from "../../../components/Admin/AdminUserListProfile";
@@ -12,7 +13,7 @@ import {
 import { PAGE_TYPE } from "./types";
 import { AdminStorageContext } from "../../../services/admin";
 
-const AdminVideoPage = (): JSX.Element => {
+const AdminVideoPage = observer((): JSX.Element => {
   const {
     videos,
     users,
@@ -27,11 +28,15 @@ const AdminVideoPage = (): JSX.Element => {
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      setCurrentUser(users[0]);
-      setAllUsers(users);
-      setAllVideos(videos);
-    }, 500);
+    setCurrentUser(users[0]);
+    setAllUsers(users);
+    setAllVideos(videos);
+    console.log("++++++++++++++ users +++++++++++++++");
+    console.log(allUsers);
+    console.log("++++++++++++++++++++++++++++++++++++");
+    console.log("-------------- videos --------------");
+    console.log(allVideos);
+    console.log("------------------------------------");
   }, [allVideosLoaded, allUsersLoaded]);
 
   return (
@@ -108,6 +113,6 @@ const AdminVideoPage = (): JSX.Element => {
       </AdminPageContent>
     </AdminPageWrapper>
   );
-};
+});
 
 export default AdminVideoPage;

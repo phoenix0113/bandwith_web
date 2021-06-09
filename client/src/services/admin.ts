@@ -1,9 +1,8 @@
-import { observable, runInAction } from "mobx";
+import { makeAutoObservable, observable, runInAction } from "mobx";
 import { createContext } from "react";
 import { showErrorNotification } from "../utils/notification";
 import { GetRecordResponse, GetUserDataResponse } from "../shared/interfaces";
-import { VIDEO_LOAD_LIMIT } from "../utils/constants";
-import { getUserList, getVideoList } from "../axios/routes/admin";
+import { getUserList, getVideoList, updateRecordingStatus } from "../axios/routes/admin";
 
 class AdminMobxService {
   @observable videos: Array<GetRecordResponse> = [];
@@ -15,6 +14,7 @@ class AdminMobxService {
   @observable allUsersLoaded = false;
 
   constructor() {
+    makeAutoObservable(this);
     this.loadAllUsers();
     this.loadAllVideos();
   }
@@ -23,15 +23,16 @@ class AdminMobxService {
   private loadAllUsers = async () => {
     try {
       const { users } = await getUserList({
-        limit: VIDEO_LOAD_LIMIT, offset: this.users.length,
+        offset: this.users.length,
       });
 
       runInAction(() => {
         this.users.push(...users);
-        this.allUsersLoaded = true;
       });
     } catch (err) {
       showErrorNotification(err.message);
+    } finally {
+      this.allUsersLoaded = true;
     }
   }
 
@@ -39,12 +40,28 @@ class AdminMobxService {
   private loadAllVideos = async () => {
     try {
       const { recordings } = await getVideoList({
-        limit: VIDEO_LOAD_LIMIT, offset: this.videos.length,
+        offset: this.videos.length,
       });
 
       runInAction(() => {
         this.videos.push(...recordings);
-        this.allVideosLoaded = true;
+      });
+    } catch (err) {
+      showErrorNotification(err.message);
+    } finally {
+      this.allVideosLoaded = true;
+    }
+  }
+
+  // function for update status of video
+  public updateStatus = async (
+    _id: string,
+    status: string,
+  ) => {
+    try {
+      const { code } = await updateRecordingStatus({
+        _id,
+        status,
       });
     } catch (err) {
       showErrorNotification(err.message);

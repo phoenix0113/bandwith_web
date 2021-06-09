@@ -12,3 +12,4 @@ callRecordingsRouter.post(
 callRecordingsRouter.get('/:_id', CallRecordingsController.getRecordById);
 callRecordingsRouter.delete('/', CallRecordingsController.deleteRecordByCallId);
 callRecordingsRouter.get('/', CallRecordingsController.getAllRecords);
+callRecordingsRouter.post('/', CallRecordingsController.updateRecordingStatus);

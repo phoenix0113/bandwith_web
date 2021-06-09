@@ -261,6 +261,7 @@ export interface CreateCallRecordingRequest {
   pipeId: string;
   callId: string;
   createDate?: number;
+  status: string;
 }
 
 export interface PublishRecordingRequest {
@@ -288,6 +289,15 @@ export interface CallRecording extends Document, CreateCallRecordingRequest {
 export interface GetAllRecordsQuery {
   limit?: number;
   offset?: number;
+}
+
+export interface UpdateRecordingQuery {
+  _id: string;
+  status: string;
+}
+
+export interface UpdateRecordingResponse {
+  code: number;
 }
 
 export interface GetAllRecordsResponse {
