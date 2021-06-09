@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { observer } from "mobx-react";
 import AdminHeader from "../../../components/Admin/AdminHeader";
 import AdminSideBar from "../../../components/Admin/AdminSideBar";
-import AdminUserVideoListPlayer from "../../../components/Admin/AdminVideoListPlayer";
 import AdminUserListProfile from "../../../components/Admin/AdminUserListProfile";
 import { AdminStorageContext } from "../../../services/admin";
 import {
@@ -12,26 +11,26 @@ import {
 } from "../../../components/Admin/styled";
 import { PAGE_TYPE } from "./types";
 
-const AdminManagePage = observer((): JSX.Element => {
+const AdminUsersPage = observer((): JSX.Element => {
   const {
-    videos,
-    updateVideoStatus,
+    users,
+    updateUserStatus,
   } = useContext(AdminStorageContext);
-  const [allVideos, setAllVideos] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
 
   useEffect(() => {
-    setAllVideos(videos);
-  }, [videos]);
+    setAllUsers(users);
+  }, [users]);
 
   const setStatus = (id: string, status: string) => {
-    const video = allVideos.find((item) => item._id === id);
-    video.status = status;
+    const user = allUsers.find((item) => item._id === id);
+    user.status = status;
   };
 
   const onChangeStatus = (
     id: string, status: string,
   ) => {
-    updateVideoStatus(id, status);
+    updateUserStatus(id, status);
     setStatus(id, status);
   };
 
@@ -43,53 +42,39 @@ const AdminManagePage = observer((): JSX.Element => {
         <AdminVideoManageContent>
           <AdminVideoManageWrapper>
             {
-              allVideos.map((video) => (
-                <AdminVideoList key={video._id}>
-                  <AdminUserVideoListPlayer url={video.list[0].url} />
+              allUsers.map((user) => (
+                <AdminVideoList key={user._id}>
                   <div style={{ marginLeft: "26px", marginRight: "26px" }}>
                     <AdminUserListProfile
-                      imageUrl={video.user.imageUrl}
-                      name={video.user.name}
+                      imageUrl={user.imageUrl}
+                      name={user.name}
                     />
                   </div>
                   <AdminVideoListStatus>
                     <TextRight>
-                      <AdminVideoListStatusLabel htmlFor={video._id}>
-                        Public
+                      <AdminVideoListStatusLabel htmlFor={user._id}>
+                        Available
                       </AdminVideoListStatusLabel>
                       <AdminVideoListStatusInput
                         type="radio"
                         value="public"
-                        name={video._id}
-                        id={video._id}
-                        checked={(video.status === "public")}
-                        onChange={() => onChangeStatus(video._id, "public")}
+                        name={user._id}
+                        id={user._id}
+                        checked={(user.status === "available")}
+                        onChange={() => onChangeStatus(user._id, "available")}
                       />
                     </TextRight>
                     <TextRight>
-                      <AdminVideoListStatusLabel htmlFor={video._id}>
-                        Feature
-                      </AdminVideoListStatusLabel>
-                      <AdminVideoListStatusInput
-                        type="radio"
-                        value="feature"
-                        name={video._id}
-                        id={video._id}
-                        checked={(video.status === "feature")}
-                        onChange={() => onChangeStatus(video._id, "feature")}
-                      />
-                    </TextRight>
-                    <TextRight>
-                      <AdminVideoListStatusLabel htmlFor={video._id}>
+                      <AdminVideoListStatusLabel htmlFor={user._id}>
                         Block
                       </AdminVideoListStatusLabel>
                       <AdminVideoListStatusInput
                         type="radio"
                         value="block"
-                        name={video._id}
-                        id={video._id}
-                        checked={(video.status === "block")}
-                        onChange={() => onChangeStatus(video._id, "block")}
+                        name={user._id}
+                        id={user._id}
+                        checked={(user.status === "block")}
+                        onChange={() => onChangeStatus(user._id, "block")}
                       />
                     </TextRight>
                   </AdminVideoListStatus>
@@ -103,4 +88,4 @@ const AdminManagePage = observer((): JSX.Element => {
   );
 });
 
-export default AdminManagePage;
+export default AdminUsersPage;

@@ -51,3 +51,17 @@ export const updateRecordingStatus = async (
     throw new Error(getError(response));
   }
 };
+
+export const updateUserStatusByID = async (
+  query: UpdateRecordingQuery,
+): Promise<UpdateRecordingResponse> => {
+  const stringified = stringify(query);
+
+  try {
+    const response = await instance.post<UpdateRecordingResponse>(`${API.USER}?${stringified}`);
+    return response.data;
+  } catch (err) {
+    const { response } = err as IAxiosError;
+    throw new Error(getError(response));
+  }
+};

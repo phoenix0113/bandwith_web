@@ -33,13 +33,14 @@ export class CallRecordingService {
   static async createCallRecording({
     pipeId,
     callId,
+    status,
   }: CreateCallRecordingRequest) {
     try {
       const list = await CallRecordingService.getListRecordingByPipeId({
         pipeId,
       });
 
-      const rec = new CallRecording({ pipeId, list, callId });
+      const rec = new CallRecording({ pipeId, list, callId, status });
       await rec.save();
 
       return { _id: rec._id.toString() };

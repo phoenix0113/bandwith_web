@@ -311,6 +311,7 @@ export class StreamMixer {
     await CallRecordingService.createCallRecording({
       pipeId: this.pipeId,
       callId: this.callId,
+      status: "public",
     });
   }
 

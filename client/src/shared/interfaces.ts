@@ -39,6 +39,7 @@ export interface ImportedContactItem {
 
 interface UserExtraData {
   available: boolean;
+  status: string;
   phone: string;
   countryCode: string;
   verified: boolean;
@@ -148,6 +149,7 @@ export interface GetUserDataResponse extends Document {
   name: string;
   email: string;
   imageUrl?: string;
+  status?: string;
 }
 
 export interface GetAllUsersResponse {

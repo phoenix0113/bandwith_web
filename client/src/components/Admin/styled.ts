@@ -482,5 +482,4 @@ export const AdminVideoManageWrapper = styled.div`
   max-width: 1120px;
   width: 100%;
   margin: 0 auto;
-  border: 1px solid red;
 `;

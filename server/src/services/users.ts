@@ -392,4 +392,25 @@ export class UsersService {
 
     return user;
   }
+
+  static async updateUserStatus({ _id, status }) {
+    try {
+      const user = await User.findById(_id);
+      if (!user) {
+        throw { status: 400, message: 'User not found' };
+      }
+
+      await User.findOneAndUpdate(
+        { _id },
+        { $set: { status } },
+        {
+          new: true,
+        }
+      );
+
+      return { code: 200 };
+    } catch (err) {
+      throw err;
+    }
+  }
 }

@@ -1,13 +1,13 @@
 import { makeAutoObservable, observable, runInAction } from "mobx";
 import { createContext } from "react";
 import { showErrorNotification } from "../utils/notification";
-import { GetRecordResponse, GetUserDataResponse } from "../shared/interfaces";
-import { getUserList, getVideoList, updateRecordingStatus } from "../axios/routes/admin";
+import { GetRecordResponse, User } from "../shared/interfaces";
+import { getUserList, getVideoList, updateRecordingStatus, updateUserStatusByID } from "../axios/routes/admin";
 
 class AdminMobxService {
   @observable videos: Array<GetRecordResponse> = [];
 
-  @observable users: Array<GetUserDataResponse> = [];
+  @observable users: Array<User> = [];
 
   @observable allVideosLoaded = false;
 
@@ -54,12 +54,27 @@ class AdminMobxService {
   }
 
   // function for update status of video
-  public updateStatus = async (
+  public updateVideoStatus = async (
     _id: string,
     status: string,
   ) => {
     try {
       const { code } = await updateRecordingStatus({
+        _id,
+        status,
+      });
+    } catch (err) {
+      showErrorNotification(err.message);
+    }
+  }
+
+  // function for update status of user
+  public updateUserStatus = async (
+    _id: string,
+    status: string,
+  ) => {
+    try {
+      const { code } = await updateUserStatusByID({
         _id,
         status,
       });

@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { CrudController } from './crudController';
 import { UsersService } from '../services';
+import { UpdateRecordingQuery } from '../../../client/src/shared/interfaces';
+import { parseQuery } from "../config";
 
 export class UsersController extends CrudController {
   static async loginUser(req: Request, res: Response) {
@@ -83,6 +85,16 @@ export class UsersController extends CrudController {
     await UsersController.processRequest(req, res, async () => {
       res.send(
         await UsersService.getAllUsers()
+      );
+    });
+  }
+
+  static async updateUserStatus(req: Request, res: Response) {
+    await UsersController.processRequest(req, res, async () => {
+      res.send(
+        await UsersService.updateUserStatus(
+          parseQuery(req.query) as UpdateRecordingQuery
+        )
       );
     });
   }

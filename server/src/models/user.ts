@@ -29,6 +29,7 @@ const UserSchema = new Schema({
   password: { type: String, required: true },
   firebaseToken: { type: String, required: false },
   imageUrl: { type: String, required: false },
+  status: { type: String, default: "available" },
   hints: [{ type: UserHintSubSchema }],
   available: { type: Boolean, required: false, default: false },
   phone: { type: String, required: false, unique: true, default: undefined },
