@@ -361,6 +361,7 @@ export const AdminVideoList = styled.div`
   background: #1A1C1E;
   margin: 20px 0;
   align-items: center;
+  border-radius: 6px;
 `;
 
 export const AdminVideoListStatus = styled.div`

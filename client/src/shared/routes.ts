@@ -27,6 +27,7 @@ export const PATH = {
   VERIFY_CODE: "verifyCode",
   PHONE: "phone",
   IMPORT: "contactsImport",
+  BLOCK: "block",
 };
 
 export const API = {
@@ -54,4 +55,5 @@ export const API = {
   VERIFY_CODE: `${PATH.API}/${PATH.USER}/${PATH.VERIFY_CODE}`,
   UPDATE_PHONE: `${PATH.API}/${PATH.USER}/${PATH.PHONE}`,
   IMPORT_CONTACTS: `${PATH.API}/${PATH.CONTACTS}/${PATH.IMPORT}`,
+  BLOCK: `/${PATH.API}/${PATH.BLOCK}`,
 };

@@ -4,3 +4,4 @@ export * from './contacts';
 export * from './notifications';
 export * from './room-comments';
 export * from './call-recording';
+export * from './block';

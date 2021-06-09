@@ -5,3 +5,4 @@ export * from './notifications';
 export * from './room-comments';
 export * from './call-recordings';
 export * from './logs';
+export * from './block';

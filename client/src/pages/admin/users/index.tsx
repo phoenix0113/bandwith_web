@@ -10,6 +10,7 @@ import {
   AdminVideoListStatusInput,
 } from "../../../components/Admin/styled";
 import { PAGE_TYPE } from "./types";
+import { PUBLIC_STATUS, BLOCK_STATUS } from "../../../utils/constants";
 
 const AdminUsersPage = observer((): JSX.Element => {
   const {
@@ -57,7 +58,7 @@ const AdminUsersPage = observer((): JSX.Element => {
                       </AdminVideoListStatusLabel>
                       <AdminVideoListStatusInput
                         type="radio"
-                        value="public"
+                        value={PUBLIC_STATUS}
                         name={user._id}
                         id={user._id}
                         checked={(user.status === "available")}
@@ -70,7 +71,7 @@ const AdminUsersPage = observer((): JSX.Element => {
                       </AdminVideoListStatusLabel>
                       <AdminVideoListStatusInput
                         type="radio"
-                        value="block"
+                        value={BLOCK_STATUS}
                         name={user._id}
                         id={user._id}
                         checked={(user.status === "block")}

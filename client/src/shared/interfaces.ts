@@ -217,6 +217,10 @@ export interface CommentRequest {
   recordingIds?: Array<string>;
 }
 
+export interface BlockedVideoIdsResponse {
+  ids: Array<string>;
+}
+
 export interface Comment extends CommentRequest, Document {}
 
 // Type that can be used in the following way in express: `req.query as GetAllCommentsQuery`
@@ -286,6 +290,17 @@ export interface CallRecording extends Document, CreateCallRecordingRequest {
   list: ListRecordingItem[];
   user?: string;
   participiants?: string[];
+}
+
+export interface BlockRecordingResponse {
+  ids: Array<string>;
+}
+
+export interface BlockRecording extends Document, CreateBlockRecordingRequest{}
+
+export interface CreateBlockRecordingRequest {
+  callrecording: string;
+  user: string;
 }
 
 export interface GetAllRecordsQuery {

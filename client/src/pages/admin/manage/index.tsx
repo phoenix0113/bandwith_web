@@ -11,6 +11,7 @@ import {
   AdminVideoListStatusInput,
 } from "../../../components/Admin/styled";
 import { PAGE_TYPE } from "./types";
+import { PUBLIC_STATUS, BLOCK_STATUS, FEATURE_STATUS } from "../../../utils/constants";
 
 const AdminManagePage = observer((): JSX.Element => {
   const {
@@ -59,11 +60,11 @@ const AdminManagePage = observer((): JSX.Element => {
                       </AdminVideoListStatusLabel>
                       <AdminVideoListStatusInput
                         type="radio"
-                        value="public"
+                        value={PUBLIC_STATUS}
                         name={video._id}
                         id={video._id}
-                        checked={(video.status === "public")}
-                        onChange={() => onChangeStatus(video._id, "public")}
+                        checked={(video.status === PUBLIC_STATUS)}
+                        onChange={() => onChangeStatus(video._id, PUBLIC_STATUS)}
                       />
                     </TextRight>
                     <TextRight>
@@ -75,8 +76,8 @@ const AdminManagePage = observer((): JSX.Element => {
                         value="feature"
                         name={video._id}
                         id={video._id}
-                        checked={(video.status === "feature")}
-                        onChange={() => onChangeStatus(video._id, "feature")}
+                        checked={(video.status === FEATURE_STATUS)}
+                        onChange={() => onChangeStatus(video._id, FEATURE_STATUS)}
                       />
                     </TextRight>
                     <TextRight>
@@ -88,8 +89,8 @@ const AdminManagePage = observer((): JSX.Element => {
                         value="block"
                         name={video._id}
                         id={video._id}
-                        checked={(video.status === "block")}
-                        onChange={() => onChangeStatus(video._id, "block")}
+                        checked={(video.status === BLOCK_STATUS)}
+                        onChange={() => onChangeStatus(video._id, BLOCK_STATUS)}
                       />
                     </TextRight>
                   </AdminVideoListStatus>

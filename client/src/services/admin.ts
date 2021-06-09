@@ -2,12 +2,17 @@ import { makeAutoObservable, observable, runInAction } from "mobx";
 import { createContext } from "react";
 import { showErrorNotification } from "../utils/notification";
 import { GetRecordResponse, User } from "../shared/interfaces";
-import { getUserList, getVideoList, updateRecordingStatus, updateUserStatusByID } from "../axios/routes/admin";
+import {
+  getUserList, getVideoList, updateRecordingStatus, updateUserStatusByID, addBlockRecording,
+  getUnblockedVideosByUserID, removeBlockRecording,
+} from "../axios/routes/admin";
 
 class AdminMobxService {
   @observable videos: Array<GetRecordResponse> = [];
 
   @observable users: Array<User> = [];
+
+  @observable blockedIDs: Array<string> = [];
 
   @observable allVideosLoaded = false;
 
@@ -77,6 +82,54 @@ class AdminMobxService {
       const { code } = await updateUserStatusByID({
         _id,
         status,
+      });
+    } catch (err) {
+      showErrorNotification(err.message);
+    }
+  }
+
+  // function for get unblocked video ids by user id
+  public getUnblockedVideosByID = async (
+    _id: string,
+  ) => {
+    this.blockedIDs = [];
+    try {
+      const { ids } = await getUnblockedVideosByUserID({
+        _id,
+      });
+
+      runInAction(() => {
+        this.blockedIDs.push(...ids);
+      });
+    } catch (err) {
+      showErrorNotification(err.message);
+    }
+  }
+
+  // function for get unblocked video ids by user id
+  public addBlockID = async (
+    callrecording: string,
+    user: string,
+  ) => {
+    try {
+      const { code } = await addBlockRecording({
+        callrecording,
+        user,
+      });
+    } catch (err) {
+      showErrorNotification(err.message);
+    }
+  }
+
+  // function for get unblocked video ids by user id
+  public removeBlockID = async (
+    callrecording: string,
+    user: string,
+  ) => {
+    try {
+      const { code } = await removeBlockRecording({
+        callrecording,
+        user,
       });
     } catch (err) {
       showErrorNotification(err.message);

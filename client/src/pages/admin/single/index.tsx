@@ -23,6 +23,7 @@ import voiceButton from "../../../assets/images/admin/voice.png";
 import optionButton from "../../../assets/images/admin/option.png";
 import fullscreenButton from "../../../assets/images/admin/fullscreen.png";
 import closeButton from "../../../assets/images/admin/close.png";
+import { PUBLIC_STATUS, BLOCK_STATUS } from "../../../utils/constants";
 
 const AdminSingleVideoPage = (): JSX.Element => {
   const history = useHistory();
@@ -95,8 +96,8 @@ const AdminSingleVideoPage = (): JSX.Element => {
                 </AdminProfileContent>
               </AdminProfile>
               <AdminVideoStatus>
-                <option value="public">Public</option>
-                <option value="private">Private</option>
+                <option value={PUBLIC_STATUS}>Public</option>
+                <option value={BLOCK_STATUS}>Block</option>
               </AdminVideoStatus>
             </AdminSingleVideoProfileContent>
             <AdminVideoPlayer ref={playerRef} controls>
