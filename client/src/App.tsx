@@ -4,6 +4,7 @@ import { Utils } from "avcore/client";
 import { observer } from "mobx-react";
 
 import { PrivateRouterComponent as ProtectedRoute, isAuthRoute } from "./components/PrivateRouter";
+import { AdminRouterComponent } from "./components/Admin/AdminRouter";
 import { AppWrapper } from "./components/AppWrapper";
 import { SuspenceFallbackComponent } from "./components/SuspenceFallback";
 import { DisclaimerComponent } from "./components/Disclaimer";
@@ -70,13 +71,21 @@ export const App = observer((): JSX.Element => {
           <ProtectedRoute exact path={Routes.NOTIFICATIONS} Component={NotificationPage} />
           <ProtectedRoute exact path={Routes.CONTACT_LIST} Component={ContactListPage} />
           <ProtectedRoute exact path={Routes.FEED} Component={FeedPage} />
-          <ProtectedRoute exact path={Routes.ADMIN_LOGIN} Component={AdminLoginPage} />
-          <ProtectedRoute exact path={Routes.ADMIN_HELP} Component={AdminHelpPage} />
-          <ProtectedRoute exact path={Routes.ADMIN_DASHBOARD} Component={AdminDashboardPage} />
-          <ProtectedRoute exact path={Routes.ADMIN_VIDEO} Component={AdminVideoPage} />
-          <ProtectedRoute exact path={Routes.ADMIN_SINGLE_VIDEO} Component={AdminSingleVideoPage} />
-          <ProtectedRoute exact path={Routes.ADMIN_VIDEOS} Component={AdminManagePage} />
-          <ProtectedRoute exact path={Routes.ADMIN_USERS} Component={AdminUsersPage} />
+          <AdminRouterComponent exact path={Routes.ADMIN_LOGIN} Component={AdminLoginPage} />
+          <AdminRouterComponent exact path={Routes.ADMIN_HELP} Component={AdminHelpPage} />
+          <AdminRouterComponent
+            exact
+            path={Routes.ADMIN_DASHBOARD}
+            Component={AdminDashboardPage}
+          />
+          <AdminRouterComponent exact path={Routes.ADMIN_VIDEO} Component={AdminVideoPage} />
+          <AdminRouterComponent
+            exact
+            path={Routes.ADMIN_SINGLE_VIDEO}
+            Component={AdminSingleVideoPage}
+          />
+          <AdminRouterComponent exact path={Routes.ADMIN_VIDEOS} Component={AdminManagePage} />
+          <AdminRouterComponent exact path={Routes.ADMIN_USERS} Component={AdminUsersPage} />
         </Switch>
       </Suspense>
     </AppWrapper>

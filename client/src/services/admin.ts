@@ -1,13 +1,23 @@
 import { makeAutoObservable, observable, runInAction } from "mobx";
 import { createContext } from "react";
+import axios from "axios";
+import { CloudClient } from "avcore/client";
 import { showErrorNotification } from "../utils/notification";
 import { GetRecordResponse, User } from "../shared/interfaces";
 import {
   getUserList, getVideoList, updateRecordingStatus, updateUserStatusByID, addBlockRecording,
   getUnblockedVideosByUserID, removeBlockRecording, getAvailableVideoList,
 } from "../axios/routes/admin";
+import { CallSocket } from "../interfaces/Socket";
+import { GlobalServiceStatus } from "../interfaces/global";
+
+const DUMMY_ENDPOINT = "/admin/token";
 
 class AdminMobxService {
+  @observable serviceStatus: GlobalServiceStatus = GlobalServiceStatus.IDLE;
+
+  @observable avcoreCloudClient: CloudClient = null;
+
   @observable videos: Array<GetRecordResponse> = [];
 
   @observable availableVideos: Array<GetRecordResponse> = [];
@@ -16,15 +26,30 @@ class AdminMobxService {
 
   @observable blockedIDs: Array<string> = [];
 
+  @observable socket: CallSocket = null;
+
+  @observable token: string = null;
+
   @observable allVideosLoaded = false;
 
   @observable allUsersLoaded = false;
 
   constructor() {
     makeAutoObservable(this);
+    // this.initializeService();
     this.loadAllUsers();
     this.loadAllVideos();
     this.loadAvailableVideos();
+  }
+
+  private initializeService = async () => {
+    // try {
+    //   const response = await axios.get(DUMMY_ENDPOINT);
+    //   const { token } = response.data;
+    //   this.token = token;
+    // } catch (err) {
+    //   console.log("> Expected error from worker's endpoint not found from token", err);
+    // }
   }
 
   // function for get all users

@@ -50,29 +50,8 @@ export const SideBarHref = styled.a`
   }
 `;
 
-export const LogoutModalSection = styled.div`  
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 100;
-`;
-
-export const LogoutModal = styled.div`
-  z-index: 100;
-  position: absolute;
-  width: 685px;
-  height: 280px;
-  border-radius: 14px;
-  background-color: #ffffff;
-  text-align: center;
-  top: calc((100% - 280px)/2);
-  left: calc((100% - 685px)/2);
-`;
-
 export const LogoutModalTitle = styled.div`
-  margin: 31px auto 0 auto;
+  margin: 15px auto 0 auto;
   width: 390px;
   font-family: 'Avenir-SFProDisplay';
   font-weight: 700;
@@ -84,7 +63,7 @@ export const LogoutModalTitle = styled.div`
 
 export const LogoutModalFooter = styled.div`
   display: flex;
-  margin-top: 95px;
+  margin: 19px 0 30px 0;
   justify-content: center;
 `;
 
@@ -99,6 +78,6 @@ export const LogoutModalButton = styled.button`
   font-family: 'Avenir-SFProDisplay';
   font-size: 16px;
   line-height: 24px;
-  margin: 0 15px;
+  margin: 0 15px !important;
   cursor: pointer;
 `;

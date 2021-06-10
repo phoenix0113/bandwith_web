@@ -35,7 +35,7 @@ const RegistrationPage = (): JSX.Element => {
 
       await register({ name, email: email.toLowerCase(), password: encodedPassword });
 
-      const { token } = await login({ email, password: encodedPassword });
+      const { token } = await login({ email, password: encodedPassword, role: "user" });
       if (token) {
         GlobalStorage.login(token);
       }

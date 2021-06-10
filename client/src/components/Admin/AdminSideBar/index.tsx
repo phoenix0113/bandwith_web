@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
+import { Modal } from "antd";
 import {
   SideBarSection, SideBarUl, SideBarLi, SideBarActive, SideBarHref,
-  LogoutModalSection, LogoutModal, LogoutModalTitle, LogoutModalFooter, LogoutModalButton,
+  LogoutModalTitle, LogoutModalFooter, LogoutModalButton,
 } from "./styled";
 
 interface Data {
@@ -103,27 +104,26 @@ const AdminSideBar = (props:Data): JSX.Element => {
           </SideBarHref>
         </SideBarLi>
         <SideBarLi
-          // onClick={handleLogoutModal}
+          onClick={handleLogoutModal}
           className="pa-left-50 cursor-pointer"
         >
           Log Out
         </SideBarLi>
       </SideBarUl>
-      {
-        (logoutModalStatus) ? (
-          <LogoutModalSection>
-            <LogoutModal>
-              <LogoutModalTitle>
-                Are you sure tha you want Logout ?
-              </LogoutModalTitle>
-              <LogoutModalFooter>
-                <LogoutModalButton onClick={handleLogout}>Logout</LogoutModalButton>
-                <LogoutModalButton onClick={handleLogoutCancel}>Cancel</LogoutModalButton>
-              </LogoutModalFooter>
-            </LogoutModal>
-          </LogoutModalSection>
-        ) : ""
-      }
+      <Modal
+        width={685}
+        title={<LogoutModalTitle>Are you sure tha you want Logout ?</LogoutModalTitle>}
+        centered
+        visible={logoutModalStatus}
+        onCancel={handleLogoutCancel}
+        onOk={handleLogout}
+        footer={(
+          <LogoutModalFooter>
+            <LogoutModalButton key="back" onClick={handleLogout}>Logout</LogoutModalButton>
+            <LogoutModalButton key="submit" onClick={handleLogoutCancel}>Cancel</LogoutModalButton>
+          </LogoutModalFooter>
+        )}
+      />
     </SideBarSection>
 
   );

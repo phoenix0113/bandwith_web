@@ -30,7 +30,7 @@ const LoginPage = (): JSX.Element => {
     vibrate("click");
     GlobalStorage.setAction("pending");
     try {
-      const { token } = await login({ email: email.toLowerCase(), password: md5(password) });
+      const { token } = await login({ email: email.toLowerCase(), password: md5(password), role: "user" });
       if (token) {
         GlobalStorage.login(token);
       }

@@ -16,7 +16,7 @@ import { PUBLIC_STATUS, BLOCK_STATUS } from "../../../utils/constants";
 
 const AdminVideoPage = observer((): JSX.Element => {
   const {
-    videos,
+    availableVideos,
     users,
     blockedIDs,
     getUnblockedVideosByID,
@@ -47,7 +47,7 @@ const AdminVideoPage = observer((): JSX.Element => {
   };
 
   useEffect(() => {
-    setAllVideos(videos);
+    setAllVideos(availableVideos);
     getAvailableUsers(users);
   }, [allVideosLoaded, allUsersLoaded]);
 

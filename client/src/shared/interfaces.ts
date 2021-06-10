@@ -18,6 +18,7 @@ export interface OAuthFacebookRequest {
 export interface LoginRequest {
   email: string;
   password: string;
+  role: string;
 }
 
 export interface RegistrationRequest {
@@ -40,6 +41,7 @@ export interface ImportedContactItem {
 interface UserExtraData {
   available: boolean;
   status: string;
+  role: string;
   phone: string;
   countryCode: string;
   verified: boolean;

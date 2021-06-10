@@ -9,7 +9,7 @@ import { authWithGoogle } from "../../axios/routes/user";
 import { GlobalStorage } from "../../services/global";
 
 import {
-  WelcomeWrapper, ContentToolbox, HeaderContent, HeaderImage,
+  WelcomeWrapper, ContentToolbox, HeaderContent, HeaderImage, AdminLoginButton,
   HeaderWrapper, LoginButton, RegistrationButton, ContinueWithIcon,
 } from "./styled";
 import logo from "../../assets/images/Bandwith.svg";
@@ -73,6 +73,13 @@ const WelcomePage = (): JSX.Element => {
           onSuccess={googleResponse}
           cookiePolicy="single_host_origin"
         />
+        <AdminLoginButton onClick={() => {
+          vibrate("click");
+          history.push(Routes.ADMIN_LOGIN);
+        }}
+        >
+          Admin Login
+        </AdminLoginButton>
       </ContentToolbox>
     </WelcomeWrapper>
   );

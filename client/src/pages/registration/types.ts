@@ -3,6 +3,7 @@ export enum FormFields {
   EMAIL="email",
   PASSWORD="password",
   CONFIRM_PASSWORD="confirm_password",
+  ROLE="role",
 }
 
 export interface IFormValues {
@@ -10,4 +11,5 @@ export interface IFormValues {
   [FormFields.EMAIL]: string;
   [FormFields.PASSWORD]: string;
   [FormFields.CONFIRM_PASSWORD]: string;
+  [FormFields.ROLE]: string;
 }

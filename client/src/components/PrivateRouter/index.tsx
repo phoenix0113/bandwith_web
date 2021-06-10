@@ -4,7 +4,7 @@ import { Redirect, Route, RouteComponentProps, useHistory, useLocation } from "r
 
 import { Routes } from "../../utils/routes";
 
-import { GlobalStorageContext } from "../../services/global";
+import { GlobalStorageContext, GlobalStorage } from "../../services/global";
 import { IncommingCallStorageContext } from "../../services/incommingCall";
 import { OutgoingCallStorageContext } from "../../services/outgoingCall";
 
@@ -49,6 +49,11 @@ export const PrivateRouterComponent = observer(({ Component, path, exact }: IPro
   if (!token && !isAuthRoute(path)) {
     onAuthCallback = { search, path };
     return <Redirect to={Routes.WELCOME} />;
+  }
+
+  if (GlobalStorage.profile?.role === "admin") {
+    onAuthCallback = { search, path };
+    return <Redirect to={Routes.ADMIN_LOGIN} />;
   }
 
   if (token && isAuthRoute(path)) {

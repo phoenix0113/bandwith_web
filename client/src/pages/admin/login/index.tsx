@@ -1,4 +1,6 @@
+import { useHistory } from "react-router-dom";
 import { Form, Input } from "antd";
+import md5 from "md5";
 import AdminHeader from "../../../components/Admin/AdminHeader";
 import {
   AdminPageWrapper, AdminAuthForm, AdminPanelTitle, AdminPanelDescription, EmailIcon,
@@ -9,10 +11,29 @@ import { InputIconWrapper } from "../../../components/styled";
 import ArtistLoader from "../../../assets/images/ArtistLoader.svg";
 import emailIcon from "../../../assets/images/admin/icon_mail.svg";
 import passwordIcon from "../../../assets/images/admin/icon_password.svg";
-import { FormFields } from "./types";
+import { FormFields, IFormValues } from "./types";
+import { vibrate } from "../../../utils/vibration";
+import { GlobalStorage } from "../../../services/global";
+import { login } from "../../../axios/routes/user";
+import { showErrorNotification } from "../../../utils/notification";
 
 const AdminLoginPage = (): JSX.Element => {
-  const here = "";
+  const history = useHistory();
+
+  const onFinish = async ({ email, password }: IFormValues) => {
+    vibrate("click");
+    GlobalStorage.setAction("pending");
+    try {
+      const { token } = await login({ email: email.toLowerCase(), password: md5(password), role: "admin" });
+      if (token) {
+        GlobalStorage.login(token);
+      }
+    } catch (err) {
+      GlobalStorage.setAction("error");
+      showErrorNotification(err.message);
+    }
+  };
+
   return (
     <AdminPageWrapper>
       <AdminHeader />
@@ -33,7 +54,7 @@ const AdminLoginPage = (): JSX.Element => {
               <br />
               et dolore magna aliqua.
             </AdminPanelDescription>
-            <Form id="admin-auth-form" className="admin-panel-form">
+            <Form id="admin-auth-form" className="admin-panel-form" onFinish={onFinish}>
               <Form.Item name={FormFields.EMAIL} rules={[{ required: true, type: "email", message: "Enter a valid email" }]}>
                 <Input
                   placeholder="Email"

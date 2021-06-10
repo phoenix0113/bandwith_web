@@ -12,7 +12,7 @@ export const getRecordingsList = async (
   const stringified = stringify(query);
 
   try {
-    const response = await instance.get<GetAllRecordsResponse>(`${API.RECORD}?${stringified}`);
+    const response = await instance.post<GetAllRecordsResponse>(`${API.RECORD_AVAILABLE}?${stringified}`);
 
     return response.data;
   } catch (err) {

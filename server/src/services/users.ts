@@ -68,7 +68,7 @@ export class UsersService {
     return { _id: u._id.toString() };
   }
 
-  static async auth({ email, password }: LoginRequest): Promise<AuthResponse> {
+  static async auth({ email, password, role }: LoginRequest): Promise<AuthResponse> {
     const { unsetField } = conf.oauth;
 
     if (password === unsetField) {
@@ -81,6 +81,7 @@ export class UsersService {
       const user = await User.findOne({
         email,
         password,
+        role,
       });
       if (!user) {
         throw { status: 400, message: 'User with such credentials not found' };

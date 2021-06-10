@@ -7,6 +7,7 @@ export const WelcomeWrapper = styled.div`
   width: 100%;
   height: 100%;
   background-color: ${BANDWITH_COLORS.BLACK};
+  overflow-y: auto;
 `;
 
 export const HeaderWrapper = styled.div`
@@ -84,4 +85,9 @@ export const ContinueWithIcon = styled.img`
   @media (min-width: 768px) {
     width: auto;
   }
+`;
+
+export const AdminLoginButton = styled(BasicButton)`
+  background-color: white;
+  border-color: ${COLORS.MAIN_LIGHT};
 `;

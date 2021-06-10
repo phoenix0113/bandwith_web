@@ -207,8 +207,6 @@ export class CallRecordingService {
     offset,
   }: GetAllRecordsQuery): Promise<GetAllRecordsResponse> {
     try {
-      const amount = await CallRecording.countDocuments();
-
       const recordings = await CallRecording.find({
         status: { $in: [ "public", "feature" ] }
       })
@@ -223,6 +221,8 @@ export class CallRecordingService {
           path: 'participants',
           select: '-password -email -firebaseToken',
         });
+
+      const amount = recordings.length;
 
       await Promise.all(
         recordings.map(async (recordItem) => {
