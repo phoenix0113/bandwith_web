@@ -141,20 +141,26 @@ export const VideoPlayerContent = styled.div`
 
 export const VideoPlayer = styled.video`
   border-radius: 32px;
-  width: 353px;
-  height: 300px;
+  max-width: 353px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  cursor: pointer;
   border: 1px solid white;
+`;
+
+export const ButtonSection = styled.div`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const VideoPlayerButton = styled.img`
   width: 45.49px;
   height: 57.96px;
-  position: absolute;
-  top: 121px;
-  left: 169px;
-  cursor: pointer;
-  z-index: 10;
 `;
 
 export const VideoPauseButton = styled.img`
