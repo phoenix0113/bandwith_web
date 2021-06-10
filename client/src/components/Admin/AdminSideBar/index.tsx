@@ -1,5 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import { Modal } from "antd";
+import { GlobalStorageContext } from "../../../services/global";
+import { vibrate } from "../../../utils/vibration";
 import {
   SideBarSection, SideBarUl, SideBarLi, SideBarActive, SideBarHref,
   LogoutModalTitle, LogoutModalFooter, LogoutModalButton,
@@ -13,6 +16,7 @@ const AdminSideBar = (props:Data): JSX.Element => {
   const [logoutModalStatus, setLogoutModalStatus] = useState(false);
   const [type, setType] = useState("");
   const [showSubPage, setShowSubPage] = useState(false);
+  const { logout } = useContext(GlobalStorageContext);
 
   const handleLogoutModal = () => {
     setLogoutModalStatus(true);
@@ -24,6 +28,8 @@ const AdminSideBar = (props:Data): JSX.Element => {
 
   const handleLogout = () => {
     setLogoutModalStatus(false);
+    vibrate("click");
+    logout();
   };
 
   const changeShowSubPage = () => {
