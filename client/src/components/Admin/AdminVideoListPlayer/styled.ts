@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const VideoPlayerContent = styled.a`
+export const VideoPlayerContent = styled.div`
   position: relative;
   cursor: pointer;
 `;

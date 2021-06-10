@@ -280,6 +280,7 @@ export interface PublishRecordingRequest {
 export type RecordUser = ContactItem;
 
 export interface GetRecordResponse extends Document {
+  status: string;
   list: ListRecordingItem[];
   createDate?: number;
   pipeId: string;

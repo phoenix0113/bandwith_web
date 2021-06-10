@@ -1,7 +1,7 @@
 import { stringify } from "query-string";
 import {
   GetAllRecordsQuery, GetAllRecordsResponse, GetAllUsersResponse, UpdateRecordingQuery,
-  UpdateRecordingResponse, Document, BlockedVideoIdsResponse, CreateBlockRecordingRequest,
+  UpdateRecordingResponse, Document, BlockedVideoIdsResponse, CreateBlockRecordingRequest, GetRecordResponse,
 } from "../../shared/interfaces";
 import { IAxiosError } from "../interfaces";
 import { getError } from "../utils";
@@ -116,6 +116,17 @@ export const removeBlockRecording = async (
 
   try {
     const response = await instance.delete<UpdateRecordingResponse>(`${API.BLOCK}?${stringified}`);
+    return response.data;
+  } catch (err) {
+    const { response } = err as IAxiosError;
+    throw new Error(getError(response));
+  }
+};
+
+export const getRecordingByID = async (id: string): Promise<GetRecordResponse> => {
+  try {
+    const response = await instance.get<GetRecordResponse>(`${API.RECORD}/${id}`);
+
     return response.data;
   } catch (err) {
     const { response } = err as IAxiosError;

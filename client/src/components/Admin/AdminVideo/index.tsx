@@ -16,6 +16,7 @@ const AdminVideo = (props:Data):JSX.Element => {
   const handleVideo = (id: string) => {
     let router = "/admin/video/";
     router += id;
+    router += "/latest";
     history.push(router);
   };
 

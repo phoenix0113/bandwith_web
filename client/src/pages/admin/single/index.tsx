@@ -1,5 +1,7 @@
-import { useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { observer } from "mobx-react";
 import { useHistory } from "react-router-dom";
+import { AdminStorageContext } from "../../../services/admin";
 import AdminHeader from "../../../components/Admin/AdminHeader";
 import AdminSideBar from "../../../components/Admin/AdminSideBar";
 import {
@@ -12,6 +14,7 @@ import {
   AdminVideoToolsFullScreenButton, AdminVideoToolsCloseButton, AdminVideoPlayer, AdminVideoStatus,
 } from "../../../components/Admin/styled";
 import { PAGE_TYPE } from "./types";
+import { PUBLIC_STATUS, BLOCK_STATUS } from "../../../utils/constants";
 import moveButton from "../../../assets/images/admin/move.png";
 import prevButton from "../../../assets/images/admin/prev.png";
 import nextButton from "../../../assets/images/admin/next.png";
@@ -23,38 +26,53 @@ import voiceButton from "../../../assets/images/admin/voice.png";
 import optionButton from "../../../assets/images/admin/option.png";
 import fullscreenButton from "../../../assets/images/admin/fullscreen.png";
 import closeButton from "../../../assets/images/admin/close.png";
-import { PUBLIC_STATUS, BLOCK_STATUS } from "../../../utils/constants";
 
-const AdminSingleVideoPage = (): JSX.Element => {
+const AdminSingleVideoPage = observer((props): JSX.Element => {
+  const {
+    latestVideos,
+    availableVideos,
+    videos,
+    getVideoByID,
+  } = useContext(AdminStorageContext);
+
+  const [currentID, setCurrentID] = useState("");
+  const [type, setType] = useState("");
+  const [videoList, setVideoList] = useState([]);
+  const [nextID, setNextID] = useState("");
+  const [prevID, setPrevID] = useState("");
+  const [showPlayBtn, setShowPlayBtn] = useState(true);
   const history = useHistory();
   const playerRef = useRef<HTMLVideoElement>(null);
-  const [showPlayBtn, setShowPlayBtn] = useState(true);
-  const [video, setVideo] = useState({
-    key: "60a686b53270a8001e8cf271",
-    _id: "60a686b53270a8001e8cf271",
-    list: [
-      {
-        url: "https://samplelib.com/lib/preview/mp4/sample-15s.mp4",
-      },
-    ],
-    user: {
-      _id: "602507d8191d33001d2e1721",
-      photo: "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50",
-      name: "Luis Andres 1",
-    },
-  });
 
-  const [videoIDs, setVideoIDS] = useState([
-    "602507d8191d33001d2e1721",
-    "602507d8191d33001d2e1722",
-    "602507d8191d33001d2e1723",
-    "602507d8191d33001d2e1724",
-    "602507d8191d33001d2e1725",
-    "602507d8191d33001d2e1726",
-  ]);
+  const getIndex = (videoID: string) => {
+    let count = 0;
+    let index = 0;
+    for (let i = 0; i < videoList.length; i += 1) {
+      if (videoList[i]._id === videoID) {
+        index = count;
+      }
+      count += 1;
+    }
+    return index;
+  };
 
-  const [nextID, setNextID] = useState("602507d8191d33001d2e1722");
-  const [prevID, setPrevID] = useState("602507d8191d33001d2e1723");
+  const getNextVideoID = (videoID: string) => {
+    const index = getIndex(videoID);
+    if (index < videoList.length - 1) {
+      setNextID(videoList[index + 1]._id);
+    } else if (videoList[0] !== undefined) {
+      setNextID(videoList[0]._id);
+    }
+  };
+
+  const getPrevVideoID = (videoID: string) => {
+    const index = getIndex(videoID);
+    if (index === 0) {
+      setPrevID(videoList[videoList.length - 1]?._id);
+    } else if (videoList[index - 1] !== undefined) {
+      setPrevID(videoList[index - 1]._id);
+    }
+  };
 
   const changePlayBtn = () => {
     if (playerRef.current.paused) {
@@ -70,16 +88,36 @@ const AdminSingleVideoPage = (): JSX.Element => {
   };
 
   const prevPlay = () => {
+    getPrevVideoID(currentID);
     let prevUrl = "/admin/video/";
     prevUrl += prevID;
+    prevUrl += "/";
+    prevUrl += type;
     history.push(prevUrl);
   };
 
   const nextPlay = () => {
+    getNextVideoID(currentID);
     let nextUrl = "/admin/video/";
     nextUrl += nextID;
+    nextUrl += "/";
+    nextUrl += type;
     history.push(nextUrl);
   };
+
+  useEffect(() => {
+    setCurrentID(props.match.params.id);
+    setType(props.match.params.type);
+    if (type === "latest") {
+      setVideoList(latestVideos);
+    } else if (type === "available") {
+      setVideoList(availableVideos);
+    } else if (type === "all") {
+      setVideoList(videos);
+    }
+    getPrevVideoID(currentID);
+    getNextVideoID(currentID);
+  });
 
   return (
     <AdminPageWrapper>
@@ -88,52 +126,61 @@ const AdminSingleVideoPage = (): JSX.Element => {
         <AdminSideBar pageType={PAGE_TYPE} />
         <AdminSingleVideoContent>
           <AdminSingleVideoContentWrapper>
-            <AdminSingleVideoProfileContent>
-              <AdminProfile>
-                <AdminProfileImage src={video.user.photo} />
-                <AdminProfileContent>
-                  <AdminProfileName>{video.user.name}</AdminProfileName>
-                </AdminProfileContent>
-              </AdminProfile>
-              <AdminVideoStatus>
-                <option value={PUBLIC_STATUS}>Public</option>
-                <option value={BLOCK_STATUS}>Block</option>
-              </AdminVideoStatus>
-            </AdminSingleVideoProfileContent>
-            <AdminVideoPlayer ref={playerRef} controls>
-              <source src={video.list[0].url} />
-            </AdminVideoPlayer>
-            <AdminVideoToolsContent>
-              <AdminVideoTools>
-                <AdminVideoToolsMoveButton src={moveButton} />
-                <AdminVideoStatusTools>
-                  <AdminVideoToolsPrevNextButton src={prevButton} onClick={prevPlay} />
-                  {
-                    (showPlayBtn) ? (
-                      <AdminVideoToolsPlayPauseButton src={playButton} onClick={changePlayBtn} />
+            {
+              videoList.map((item) => (
+                (item._id === currentID) ? (
+                  <AdminVideoPlayer ref={playerRef} controls key={item._id}>
+                    <source src={item?.list[0].url} />
+                  </AdminVideoPlayer>
+                ) : (
+                  <></>
+                )
+              ))
+            }
+            <div style={{ padding: "0 30px", width: "100%" }}>
+              <AdminSingleVideoProfileContent>
+                {
+                  videoList.map((item) => (
+                    (item._id === currentID) ? (
+                      <AdminProfile key={item._id}>
+                        <AdminProfileImage src={item?.user.imageUrl} />
+                        <AdminProfileContent>
+                          <AdminProfileName>{item?.user.name}</AdminProfileName>
+                        </AdminProfileContent>
+                      </AdminProfile>
                     ) : (
-                      <AdminVideoToolsPlayPauseButton className="admin-dashboard-video-pause-button" src={pauseButton} onClick={changePlayBtn} />
+                      <></>
                     )
-                  }
-                  <AdminVideoToolsPrevNextButton src={nextButton} onClick={nextPlay} />
-                </AdminVideoStatusTools>
-                <AdminVideoActiveStatusTools>
-                  <AdminVideoToolsAcceptButton src={acceptButton} />
-                  <AdminVideoToolsDeclineButton src={declineButton} />
-                </AdminVideoActiveStatusTools>
-                <AdminVideoSettingsTools>
-                  <AdminVideoToolsVoiceButton src={voiceButton} />
-                  <AdminVideoToolsOptionButton src={optionButton} />
-                  <AdminVideoToolsFullScreenButton src={fullscreenButton} />
-                </AdminVideoSettingsTools>
-                <AdminVideoToolsCloseButton src={closeButton} />
-              </AdminVideoTools>
-            </AdminVideoToolsContent>
+                  ))
+                }
+              </AdminSingleVideoProfileContent>
+              <AdminVideoToolsContent>
+                <AdminVideoTools>
+                  <AdminVideoToolsMoveButton src={moveButton} />
+                  <AdminVideoStatusTools>
+                    <AdminVideoToolsPrevNextButton src={prevButton} onClick={prevPlay} />
+                    {
+                      (showPlayBtn) ? (
+                        <AdminVideoToolsPlayPauseButton src={playButton} onClick={changePlayBtn} />
+                      ) : (
+                        <AdminVideoToolsPlayPauseButton className="admin-dashboard-video-pause-button" src={pauseButton} onClick={changePlayBtn} />
+                      )
+                    }
+                    <AdminVideoToolsPrevNextButton src={nextButton} onClick={nextPlay} />
+                  </AdminVideoStatusTools>
+                  <AdminVideoActiveStatusTools>
+                    <AdminVideoToolsAcceptButton src={acceptButton} />
+                    <AdminVideoToolsDeclineButton src={declineButton} />
+                  </AdminVideoActiveStatusTools>
+                  <AdminVideoToolsCloseButton src={closeButton} />
+                </AdminVideoTools>
+              </AdminVideoToolsContent>
+            </div>
           </AdminSingleVideoContentWrapper>
         </AdminSingleVideoContent>
       </AdminPageContent>
     </AdminPageWrapper>
   );
-};
+});
 
 export default AdminSingleVideoPage;

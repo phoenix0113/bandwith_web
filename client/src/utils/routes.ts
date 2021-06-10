@@ -16,7 +16,7 @@ export enum Routes {
   ADMIN_VIDEO="/admin/video",
   ADMIN_USERS="/admin/users",
   ADMIN_VIDEOS="/admin/manage",
-  ADMIN_SINGLE_VIDEO="/admin/video/:id",
+  ADMIN_SINGLE_VIDEO="/admin/video/:id/:type",
 }
 
 export enum Params {

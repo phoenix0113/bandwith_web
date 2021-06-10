@@ -146,7 +146,7 @@ export const VideoPlayer = styled.video`
   height: 100%;
   object-fit: cover;
   cursor: pointer;
-  border: 1px solid white;
+  border: 2px solid white;
 `;
 
 export const ButtonSection = styled.div`
@@ -161,20 +161,6 @@ export const ButtonSection = styled.div`
 export const VideoPlayerButton = styled.img`
   width: 45.49px;
   height: 57.96px;
-`;
-
-export const VideoPauseButton = styled.img`
-  display: none;
-  :hover {
-    display: block !important;
-  }
-  width: 45.49px;
-  height: 57.96px;
-  position: absolute;
-  top: 121px;
-  left: 169px;
-  cursor: pointer;
-  z-index: 10;
 `;
 
 export const AdminHelpContent = styled.div`
@@ -203,9 +189,13 @@ export const AdminHelpDescription = styled.div`
 `;
 
 export const AdminVideoPlayer = styled.video`
-  width: 100%;
-  max-width: 1120px;
+  // width: 100%;
+  width: auto;
+  // max-width: 1120px;
+  max-width: 50vh;
   border-radius: 38px;
+  height: calc(100% - 20px);
+  border: 2px solid white;
 `;
 
 export const AdminVideoToolsContent = styled.div`
@@ -268,7 +258,8 @@ export const AdminVideoToolsMoveButton = styled.img`
 `;
 
 export const AdminVideoStatusTools = styled.div`
-  width: 36.6%;
+  // width: 36.6%;
+  width: 50%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -288,12 +279,14 @@ export const AdminVideoToolsPlayPauseButton = styled.img`
 `;
 
 export const AdminVideoActiveStatusTools = styled.div`
-  width: 24.9%;
+  // width: 24.9%;
+  width: 50%;
   border-left: 1px solid #979797;
-  border-right: 1px solid #979797;
+  // border-right: 1px solid #979797;
   padding: 0 6.34%;
   display: flex;
-  justify-content: space-between;
+  // justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
 `;
 
@@ -344,7 +337,7 @@ export const AdminVideoToolsCloseButton = styled.img`
 
 export const AdminVideoWrapper = styled.div`
   max-width: 550px;
-  margin: 0 44px 0 71px;
+  margin: 0 auto;
   min-height: 100%;
 `;
 
@@ -462,12 +455,16 @@ export const AdminSingleVideoContentWrapper = styled.div`
   max-width: 1190px;
   margin: auto;
   padding: 0 35px;
+  height: 100%;
+  width: 100%;
+  display: flex;
 `;
 
 export const AdminSingleVideoContent = styled.div`
   margin-top: 165px;
   margin-left: 250px;
   width: 100%;
+  display: flex;
 `;
 
 export const AdminSingleVideoProfileContent = styled.div`
@@ -494,5 +491,6 @@ export const AdminVideoManageWrapper = styled.div`
 export const AdminScrollContent = styled.div`
   height: calc(100vh - 210px);
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 0 10px;
 `;

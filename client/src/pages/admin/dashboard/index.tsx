@@ -6,34 +6,20 @@ import AdminSideBar from "../../../components/Admin/AdminSideBar";
 import AdminVideo from "../../../components/Admin/AdminVideo";
 import {
   AdminPageContent, AdminPageWrapper, AdminDashboardVideoTitle, AdminDashboardContent,
-  VideoContentWrapper, AdminDashboardVideoContent,
+  VideoContentWrapper, AdminDashboardVideoContent, AdminScrollContent,
 } from "../../../components/Admin/styled";
 import { PAGE_TYPE } from "./types";
-import { VIDEO_LOAD_LIMIT } from "../../../utils/constants";
 
 const AdminDashboardPage = observer((): JSX.Element => {
   const {
-    availableVideos,
+    latestVideos,
   } = useContext(AdminStorageContext);
 
-  const [allVideos, setAllVideos] = useState([]);
-  const [latestVideos, setLatestVideos] = useState([]);
+  const [videos, setVideos] = useState([]);
 
   useEffect(() => {
-    setAllVideos(availableVideos);
-  }, [availableVideos]);
-
-  useEffect(() => {
-    if (allVideos.length < VIDEO_LOAD_LIMIT) {
-      setLatestVideos(allVideos);
-    } else {
-      const temp = [];
-      for (let i = 0; i < VIDEO_LOAD_LIMIT; i += 1) {
-        temp.push(allVideos[i]);
-      }
-      setLatestVideos(temp);
-    }
-  }, [allVideos]);
+    setVideos(latestVideos);
+  }, [latestVideos]);
 
   return (
     <AdminPageWrapper>
@@ -45,17 +31,19 @@ const AdminDashboardPage = observer((): JSX.Element => {
             <AdminDashboardVideoTitle>
               Controled Video:
             </AdminDashboardVideoTitle>
-            <VideoContentWrapper>
-              {
-                latestVideos.map((latestVideo) => (
-                  <AdminVideo
-                    url={latestVideo.list[0].url}
-                    id={latestVideo._id}
-                    key={latestVideo._id}
-                  />
-                ))
-              }
-            </VideoContentWrapper>
+            <AdminScrollContent className="scrollbar-content">
+              <VideoContentWrapper>
+                {
+                  videos.map((latestVideo) => (
+                    <AdminVideo
+                      url={latestVideo.list[0].url}
+                      id={latestVideo._id}
+                      key={latestVideo._id}
+                    />
+                  ))
+                }
+              </VideoContentWrapper>
+            </AdminScrollContent>
           </AdminDashboardVideoContent>
         </AdminDashboardContent>
       </AdminPageContent>

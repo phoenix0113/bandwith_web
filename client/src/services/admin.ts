@@ -1,17 +1,14 @@
 import { makeAutoObservable, observable, runInAction } from "mobx";
 import { createContext } from "react";
-import axios from "axios";
 import { CloudClient } from "avcore/client";
 import { showErrorNotification } from "../utils/notification";
 import { GetRecordResponse, User } from "../shared/interfaces";
 import {
   getUserList, getVideoList, updateRecordingStatus, updateUserStatusByID, addBlockRecording,
-  getUnblockedVideosByUserID, removeBlockRecording, getAvailableVideoList,
+  getUnblockedVideosByUserID, removeBlockRecording, getAvailableVideoList, getRecordingByID,
 } from "../axios/routes/admin";
-import { CallSocket } from "../interfaces/Socket";
 import { GlobalServiceStatus } from "../interfaces/global";
-
-const DUMMY_ENDPOINT = "/admin/token";
+import { VIDEO_LOAD_LIMIT } from "../utils/constants";
 
 class AdminMobxService {
   @observable serviceStatus: GlobalServiceStatus = GlobalServiceStatus.IDLE;
@@ -22,13 +19,13 @@ class AdminMobxService {
 
   @observable availableVideos: Array<GetRecordResponse> = [];
 
+  @observable latestVideos: Array<GetRecordResponse> = [];
+
+  @observable currentVideo: GetRecordResponse = null;
+
   @observable users: Array<User> = [];
 
   @observable blockedIDs: Array<string> = [];
-
-  @observable socket: CallSocket = null;
-
-  @observable token: string = null;
 
   @observable allVideosLoaded = false;
 
@@ -36,20 +33,10 @@ class AdminMobxService {
 
   constructor() {
     makeAutoObservable(this);
-    // this.initializeService();
     this.loadAllUsers();
     this.loadAllVideos();
     this.loadAvailableVideos();
-  }
-
-  private initializeService = async () => {
-    // try {
-    //   const response = await axios.get(DUMMY_ENDPOINT);
-    //   const { token } = response.data;
-    //   this.token = token;
-    // } catch (err) {
-    //   console.log("> Expected error from worker's endpoint not found from token", err);
-    // }
+    this.loadLatestVideos();
   }
 
   // function for get all users
@@ -76,6 +63,7 @@ class AdminMobxService {
         offset: this.videos.length,
       });
 
+      this.currentVideo = recordings[0];
       runInAction(() => {
         this.videos.push(...recordings);
       });
@@ -93,8 +81,27 @@ class AdminMobxService {
         offset: this.availableVideos.length,
       });
 
+      this.currentVideo = recordings[0];
       runInAction(() => {
         this.availableVideos.push(...recordings);
+      });
+    } catch (err) {
+      showErrorNotification(err.message);
+    } finally {
+      this.allVideosLoaded = true;
+    }
+  }
+
+  // function for get all videos
+  private loadLatestVideos = async () => {
+    try {
+      const { recordings } = await getAvailableVideoList({
+        limit: VIDEO_LOAD_LIMIT,
+        offset: this.latestVideos.length,
+      });
+
+      runInAction(() => {
+        this.latestVideos.push(...recordings);
       });
     } catch (err) {
       showErrorNotification(err.message);
@@ -113,6 +120,17 @@ class AdminMobxService {
         _id,
         status,
       });
+    } catch (err) {
+      showErrorNotification(err.message);
+    }
+  }
+
+  // function for get video by id
+  public getVideoByID = async (
+    _id: string,
+  ) => {
+    try {
+      this.currentVideo = await getRecordingByID(_id);
     } catch (err) {
       showErrorNotification(err.message);
     }

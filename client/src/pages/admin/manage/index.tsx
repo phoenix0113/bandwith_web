@@ -50,7 +50,7 @@ const AdminManagePage = observer((): JSX.Element => {
               {
                 allVideos.map((video) => (
                   <AdminVideoList key={video._id}>
-                    <AdminUserVideoListPlayer url={video.list[0].url} />
+                    <AdminUserVideoListPlayer url={video.list[0].url} id={video._id} type="all" />
                     <div style={{ marginLeft: "26px", marginRight: "26px" }}>
                       <AdminUserListProfile
                         imageUrl={video.user.imageUrl}
