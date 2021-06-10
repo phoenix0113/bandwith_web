@@ -28,6 +28,7 @@ export const PATH = {
   PHONE: "phone",
   IMPORT: "contactsImport",
   BLOCK: "block",
+  AVAILABLE: "available",
 };
 
 export const API = {
@@ -56,4 +57,5 @@ export const API = {
   UPDATE_PHONE: `${PATH.API}/${PATH.USER}/${PATH.PHONE}`,
   IMPORT_CONTACTS: `${PATH.API}/${PATH.CONTACTS}/${PATH.IMPORT}`,
   BLOCK: `/${PATH.API}/${PATH.BLOCK}`,
+  RECORD_AVAILABLE: `/${PATH.API}/${PATH.RECORD}/${PATH.AVAILABLE}`,
 };

@@ -202,6 +202,46 @@ export class CallRecordingService {
     }
   }
 
+  static async getAvailableRecords({
+    limit,
+    offset,
+  }: GetAllRecordsQuery): Promise<GetAllRecordsResponse> {
+    try {
+      const amount = await CallRecording.countDocuments();
+
+      const recordings = await CallRecording.find({
+        status: { $in: [ "public", "feature" ] }
+      })
+        .sort({ date: 'desc' })
+        .skip((offset && +offset) || 0)
+        .limit((limit && +limit) || 0)
+        .populate({
+          path: 'user',
+          select: '-password -email -firebaseToken',
+        })
+        .populate({
+          path: 'participants',
+          select: '-password -email -firebaseToken',
+        });
+
+      await Promise.all(
+        recordings.map(async (recordItem) => {
+          const signedUrl = await StorageHandler.get().signedUrl(
+            recordItem.list[0].fullKey
+          );
+
+          recordItem.list[0].url = signedUrl;
+
+          await recordItem.save();
+        })
+      );
+
+      return { recordings: Object.assign([], recordings), amount };
+    } catch (err) {
+      throw err;
+    }
+  }
+
   static async getAllRecordings({
     limit,
     offset,

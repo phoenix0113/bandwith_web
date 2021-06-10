@@ -8,7 +8,7 @@ import {
   AdminPageContent, AdminPageWrapper, AdminVideoContent, AdminVideoList, AdminVideoListStatus,
   AdminVideoWrapper, AdminVideoListTitle, AdminUserWrapper, AdminUserList, AdminVideoContentWrapper,
   AdminVideoListWrapper, AdminListActive, AdminListActiveBar, AdminVideoListStatusLabel, TextRight,
-  AdminVideoListStatusInput,
+  AdminVideoListStatusInput, AdminScrollContent,
 } from "../../../components/Admin/styled";
 import { PAGE_TYPE } from "./types";
 import { AdminStorageContext } from "../../../services/admin";
@@ -60,8 +60,6 @@ const AdminVideoPage = observer((): JSX.Element => {
   useEffect(() => {
     if (currentUser !== undefined) {
       setBlockedVideos(blockedIDs);
-      console.log("Current User ID: ", currentUser._id);
-      console.log("After Block Video IDs: ", blockedVideos.length);
     }
   });
 
@@ -89,7 +87,7 @@ const AdminVideoPage = observer((): JSX.Element => {
               <AdminVideoListTitle>
                 Users List
               </AdminVideoListTitle>
-              <div className="scrollbar-sample" style={{ height: "calc(100vh - 210px)", overflowY: "auto", padding: "0 10px" }}>
+              <AdminScrollContent className="scrollbar-content">
                 {
                   allUsers.map((user) => (
                     (user?._id === currentUser?._id) ? (
@@ -113,14 +111,14 @@ const AdminVideoPage = observer((): JSX.Element => {
                     )
                   ))
                 }
-              </div>
+              </AdminScrollContent>
             </AdminUserWrapper>
             <AdminVideoListWrapper>
               <AdminVideoWrapper>
                 <AdminVideoListTitle>
                   Video List By User
                 </AdminVideoListTitle>
-                <div className="scrollbar-sample" style={{ height: "calc(100vh - 210px)", overflowY: "auto", padding: "0 10px" }}>
+                <AdminScrollContent className="scrollbar-content">
                   {
                     allVideos.map((video) => (
                       <AdminVideoList key={video._id}>
@@ -162,7 +160,7 @@ const AdminVideoPage = observer((): JSX.Element => {
                       </AdminVideoList>
                     ))
                   }
-                </div>
+                </AdminScrollContent>
               </AdminVideoWrapper>
             </AdminVideoListWrapper>
           </AdminVideoContentWrapper>

@@ -13,15 +13,15 @@ import { VIDEO_LOAD_LIMIT } from "../../../utils/constants";
 
 const AdminDashboardPage = observer((): JSX.Element => {
   const {
-    videos,
+    availableVideos,
   } = useContext(AdminStorageContext);
 
   const [allVideos, setAllVideos] = useState([]);
   const [latestVideos, setLatestVideos] = useState([]);
 
   useEffect(() => {
-    setAllVideos(videos);
-  }, [videos]);
+    setAllVideos(availableVideos);
+  }, [availableVideos]);
 
   useEffect(() => {
     if (allVideos.length < VIDEO_LOAD_LIMIT) {

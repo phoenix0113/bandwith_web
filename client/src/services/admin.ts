@@ -4,11 +4,13 @@ import { showErrorNotification } from "../utils/notification";
 import { GetRecordResponse, User } from "../shared/interfaces";
 import {
   getUserList, getVideoList, updateRecordingStatus, updateUserStatusByID, addBlockRecording,
-  getUnblockedVideosByUserID, removeBlockRecording,
+  getUnblockedVideosByUserID, removeBlockRecording, getAvailableVideoList,
 } from "../axios/routes/admin";
 
 class AdminMobxService {
   @observable videos: Array<GetRecordResponse> = [];
+
+  @observable availableVideos: Array<GetRecordResponse> = [];
 
   @observable users: Array<User> = [];
 
@@ -22,6 +24,7 @@ class AdminMobxService {
     makeAutoObservable(this);
     this.loadAllUsers();
     this.loadAllVideos();
+    this.loadAvailableVideos();
   }
 
   // function for get all users
@@ -50,6 +53,23 @@ class AdminMobxService {
 
       runInAction(() => {
         this.videos.push(...recordings);
+      });
+    } catch (err) {
+      showErrorNotification(err.message);
+    } finally {
+      this.allVideosLoaded = true;
+    }
+  }
+
+  // function for get all videos
+  private loadAvailableVideos = async () => {
+    try {
+      const { recordings } = await getAvailableVideoList({
+        offset: this.availableVideos.length,
+      });
+
+      runInAction(() => {
+        this.availableVideos.push(...recordings);
       });
     } catch (err) {
       showErrorNotification(err.message);

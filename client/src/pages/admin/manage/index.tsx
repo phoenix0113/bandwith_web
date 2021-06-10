@@ -8,7 +8,7 @@ import { AdminStorageContext } from "../../../services/admin";
 import {
   AdminPageContent, AdminPageWrapper, AdminVideoManageContent, AdminVideoManageWrapper,
   AdminVideoList, AdminVideoListStatus, TextRight, AdminVideoListStatusLabel,
-  AdminVideoListStatusInput,
+  AdminVideoListStatusInput, AdminScrollContent, AdminVideoListTitle,
 } from "../../../components/Admin/styled";
 import { PAGE_TYPE } from "./types";
 import { PUBLIC_STATUS, BLOCK_STATUS, FEATURE_STATUS } from "../../../utils/constants";
@@ -42,61 +42,66 @@ const AdminManagePage = observer((): JSX.Element => {
       <AdminPageContent>
         <AdminSideBar pageType={PAGE_TYPE} />
         <AdminVideoManageContent>
+          <AdminVideoListTitle>
+            Video List
+          </AdminVideoListTitle>
           <AdminVideoManageWrapper>
-            {
-              allVideos.map((video) => (
-                <AdminVideoList key={video._id}>
-                  <AdminUserVideoListPlayer url={video.list[0].url} />
-                  <div style={{ marginLeft: "26px", marginRight: "26px" }}>
-                    <AdminUserListProfile
-                      imageUrl={video.user.imageUrl}
-                      name={video.user.name}
-                    />
-                  </div>
-                  <AdminVideoListStatus>
-                    <TextRight>
-                      <AdminVideoListStatusLabel htmlFor={video._id}>
-                        Public
-                      </AdminVideoListStatusLabel>
-                      <AdminVideoListStatusInput
-                        type="radio"
-                        value={PUBLIC_STATUS}
-                        name={video._id}
-                        id={video._id}
-                        checked={(video.status === PUBLIC_STATUS)}
-                        onChange={() => onChangeStatus(video._id, PUBLIC_STATUS)}
+            <AdminScrollContent className="scrollbar-content">
+              {
+                allVideos.map((video) => (
+                  <AdminVideoList key={video._id}>
+                    <AdminUserVideoListPlayer url={video.list[0].url} />
+                    <div style={{ marginLeft: "26px", marginRight: "26px" }}>
+                      <AdminUserListProfile
+                        imageUrl={video.user.imageUrl}
+                        name={video.user.name}
                       />
-                    </TextRight>
-                    <TextRight>
-                      <AdminVideoListStatusLabel htmlFor={video._id}>
-                        Feature
-                      </AdminVideoListStatusLabel>
-                      <AdminVideoListStatusInput
-                        type="radio"
-                        value="feature"
-                        name={video._id}
-                        id={video._id}
-                        checked={(video.status === FEATURE_STATUS)}
-                        onChange={() => onChangeStatus(video._id, FEATURE_STATUS)}
-                      />
-                    </TextRight>
-                    <TextRight>
-                      <AdminVideoListStatusLabel htmlFor={video._id}>
-                        Block
-                      </AdminVideoListStatusLabel>
-                      <AdminVideoListStatusInput
-                        type="radio"
-                        value="block"
-                        name={video._id}
-                        id={video._id}
-                        checked={(video.status === BLOCK_STATUS)}
-                        onChange={() => onChangeStatus(video._id, BLOCK_STATUS)}
-                      />
-                    </TextRight>
-                  </AdminVideoListStatus>
-                </AdminVideoList>
-              ))
-            }
+                    </div>
+                    <AdminVideoListStatus>
+                      <TextRight>
+                        <AdminVideoListStatusLabel htmlFor={video._id}>
+                          Public
+                        </AdminVideoListStatusLabel>
+                        <AdminVideoListStatusInput
+                          type="radio"
+                          value={PUBLIC_STATUS}
+                          name={video._id}
+                          id={video._id}
+                          checked={(video.status === PUBLIC_STATUS)}
+                          onChange={() => onChangeStatus(video._id, PUBLIC_STATUS)}
+                        />
+                      </TextRight>
+                      <TextRight>
+                        <AdminVideoListStatusLabel htmlFor={video._id}>
+                          Feature
+                        </AdminVideoListStatusLabel>
+                        <AdminVideoListStatusInput
+                          type="radio"
+                          value="feature"
+                          name={video._id}
+                          id={video._id}
+                          checked={(video.status === FEATURE_STATUS)}
+                          onChange={() => onChangeStatus(video._id, FEATURE_STATUS)}
+                        />
+                      </TextRight>
+                      <TextRight>
+                        <AdminVideoListStatusLabel htmlFor={video._id}>
+                          Block
+                        </AdminVideoListStatusLabel>
+                        <AdminVideoListStatusInput
+                          type="radio"
+                          value="block"
+                          name={video._id}
+                          id={video._id}
+                          checked={(video.status === BLOCK_STATUS)}
+                          onChange={() => onChangeStatus(video._id, BLOCK_STATUS)}
+                        />
+                      </TextRight>
+                    </AdminVideoListStatus>
+                  </AdminVideoList>
+                ))
+              }
+            </AdminScrollContent>
           </AdminVideoManageWrapper>
         </AdminVideoManageContent>
       </AdminPageContent>

@@ -144,6 +144,7 @@ export const VideoPlayer = styled.video`
   width: 353px;
   height: 300px;
   object-fit: cover;
+  border: 1px solid white;
 `;
 
 export const VideoPlayerButton = styled.img`
@@ -471,11 +472,10 @@ export const AdminSingleVideoProfileContent = styled.div`
 `;
 
 export const AdminVideoManageContent = styled.div`
-  margin-top: 167px;
+  margin-top: 70px;
   margin-left: 295px;
   margin-right: 55px;
   padding: 0 35px;
-  display: flex;
   width: 100%;
 `;
 
@@ -483,4 +483,10 @@ export const AdminVideoManageWrapper = styled.div`
   max-width: 1120px;
   width: 100%;
   margin: 0 auto;
+`;
+
+export const AdminScrollContent = styled.div`
+  height: calc(100vh - 210px);
+  overflow-y: auto;
+  padding: 0 10px;
 `;
