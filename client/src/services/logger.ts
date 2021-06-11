@@ -68,7 +68,7 @@ class LoggerService {
 
   private send = async (logs: string): Promise<void> => {
     try {
-      if (GlobalStorage.profile !== null && GlobalStorage.profile.name === undefined) {
+      if (GlobalStorage.profile !== null && GlobalStorage.profile.name !== undefined) {
         await sendLogs({
           userId: `${GlobalStorage.profile?.name.replace(" ", "")}|${GlobalStorage.profile._id.substr(0, 8)}`,
           logs,
