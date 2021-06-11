@@ -1,7 +1,8 @@
 import { stringify } from "query-string";
 import {
   GetAllRecordsQuery, GetAllRecordsResponse, GetAllUsersResponse, UpdateRecordingQuery,
-  UpdateRecordingResponse, Document, BlockedVideoIdsResponse, CreateBlockRecordingRequest, GetRecordResponse,
+  UpdateRecordingResponse, Document, BlockedVideoIdsResponse, CreateBlockRecordingRequest,
+  GetRecordResponse,
 } from "../../shared/interfaces";
 import { IAxiosError } from "../interfaces";
 import { getError } from "../utils";

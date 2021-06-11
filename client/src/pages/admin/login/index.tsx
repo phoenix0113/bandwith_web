@@ -16,6 +16,7 @@ import { vibrate } from "../../../utils/vibration";
 import { GlobalStorage } from "../../../services/global";
 import { login } from "../../../axios/routes/user";
 import { showErrorNotification } from "../../../utils/notification";
+import { Routes } from "../../../utils/routes";
 
 const AdminLoginPage = (): JSX.Element => {
   const history = useHistory();
@@ -85,6 +86,12 @@ const AdminLoginPage = (): JSX.Element => {
               href="#"
             >
               Forgot Password ?
+            </AdminForgotPassword>
+            <AdminForgotPassword
+              style={{ float: "right" }}
+              href="/"
+            >
+              Goto Welcome Page
             </AdminForgotPassword>
           </AdminAuthForm>
           <AdminPanelImage alt="logo" src={ArtistLoader} />

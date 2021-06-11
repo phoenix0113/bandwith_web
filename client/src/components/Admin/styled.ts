@@ -9,6 +9,10 @@ export const AdminAuthForm = styled.div`
   width: 44.263%;
   max-width: 540px;
   margin-top: 95.5px;
+  @media (max-width: 1024px) {
+    width: 100%;
+    max-width: 100%;
+  }
 `;
 
 export const AdminPanelTitle = styled.div`
@@ -26,7 +30,6 @@ export const TitleScale = styled.div`
 
 export const AdminPanelDescription = styled.div`
   margin: 23px 0 30px 0;
-  height: 95px;
   font-family: 'Avenir-Gilroy';
   font-weight: 400;
   font-style: normal;
@@ -44,6 +47,10 @@ export const AdminPanelImage = styled.img`
   width: 49.343%;
   max-width: 602px;
   margin-left: auto;
+  display: block;
+  @media (max-width: 1024px) {
+    display: none;
+  }
 `;
 
 export const AdminContent = styled.div`
@@ -80,6 +87,12 @@ export const AdminForgotPassword = styled.a`
 
 export const AdminContentWrapper = styled.div`
   margin-left: 80px;
+  @media (max-width: 1024px) {
+    margin-right: 80px;
+  }
+  @media (max-width: 375px) {
+    margin: 0 30px;
+  }
 `;
 
 export const AdminPageContent = styled.div`

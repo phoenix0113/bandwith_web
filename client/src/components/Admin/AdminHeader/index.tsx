@@ -2,6 +2,7 @@ import { observer } from "mobx-react";
 import { useHistory } from "react-router-dom";
 import { LogoutOutlined } from "@ant-design/icons";
 import { Logo, LogoSection, Header, CenterSection, RightSection } from "./styled";
+import { AdminAuthButton } from "../styled";
 import { vibrate } from "../../../utils/vibration";
 import { Routes } from "../../../utils/routes";
 import logo from "../../../assets/images/Bandwith.svg";
