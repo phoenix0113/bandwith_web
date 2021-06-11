@@ -3,6 +3,7 @@ import path from 'path';
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+dotenv.config({path: '../.env'});
 import bodyParser from 'body-parser';
 import consoleStamp from 'console-stamp';
 import jwt from 'express-jwt';
@@ -15,7 +16,6 @@ import { PATH, API } from '../client/src/shared/routes';
 import { SocketServer, StorageHandler } from './src/services';
 
 consoleStamp(console, { pattern: 'dd/mm/yyyy HH:MM:ss.l' });
-dotenv.config();
 
 const main = async () => {
   const jwtProtect = jwt({
