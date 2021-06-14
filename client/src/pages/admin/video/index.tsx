@@ -38,7 +38,7 @@ const AdminVideoPage = observer((): JSX.Element => {
   const getAvailableUsers = (allUsersData) => {
     const temp = [];
     for (let i = 0; i < allUsersData.length; i += 1) {
-      if (allUsersData[i].status !== BLOCK_STATUS) {
+      if (allUsersData[i].status !== BLOCK_STATUS && allUsersData[i].role !== "admin") {
         temp.push(allUsersData[i]);
       }
     }

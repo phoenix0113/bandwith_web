@@ -86,6 +86,9 @@ export class UsersService {
       if (!user) {
         throw { status: 400, message: 'User with such credentials not found' };
       }
+      if (user.status === "block") {
+        throw { status: 400, message: 'This account has been blocked by the administrator.' };
+      }
       console.log(email, UsersService.generateServerToken(user._id.toString()));
       return {
         token: UsersService.generateServerToken(user._id.toString()),

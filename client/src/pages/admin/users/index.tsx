@@ -42,7 +42,7 @@ const AdminUsersPage = observer((): JSX.Element => {
         <AdminSideBar pageType={PAGE_TYPE} />
         <AdminVideoManageContent>
           <AdminVideoListTitle>
-            Video List
+            User List
           </AdminVideoListTitle>
           <AdminVideoManageWrapper>
             <AdminScrollContent className="scrollbar-content">
