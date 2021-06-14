@@ -29,6 +29,8 @@ export const PATH = {
   IMPORT: "contactsImport",
   BLOCK: "block",
   AVAILABLE: "available",
+  FORGOT_PASSWORD: "forgot-password",
+  RESET_PASSWORD: "reset-password",
 };
 
 export const API = {

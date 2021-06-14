@@ -98,4 +98,16 @@ export class UsersController extends CrudController {
       );
     });
   }
+
+  static async getVerifyCode(req: Request, res: Response) {
+    await UsersController.processRequest(req, res, async () => {
+      res.send(await UsersService.getVerifyCode(req.body));
+    });
+  }
+
+  static async resetPassword(req: Request, res: Response) {
+    await UsersController.processRequest(req, res, async () => {
+      res.send(await UsersService.resetPassword(req.body));
+    });
+  }
 }

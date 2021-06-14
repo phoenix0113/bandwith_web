@@ -23,6 +23,8 @@ import {
   UpdatePhoneRequest,
   BasicResponse,
   NexmoResponse,
+  GetVerifyCodeRequest,
+  GetVerifyCodeResponse,
 } from '../../../client/src/shared/interfaces';
 import { conf } from '../config';
 
@@ -413,6 +415,72 @@ export class UsersService {
       );
 
       return { code: 200 };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async getVerifyCode({ email, role }: GetVerifyCodeRequest): Promise<GetVerifyCodeResponse> {
+    try {
+      const user = await User.findOne({
+        email,
+        role,
+      });
+
+      if (!user) {
+        throw { status: 400, message: 'User not found' };
+      }
+
+      const code = Math.floor(Math.random() * 100000000);
+
+      const nodemailer = require("nodemailer");
+      const transport = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+          user: process.env['MAIL_ADDRESS'],
+          pass: process.env['MAIL_PASSWORD'],
+        },
+      });
+
+      let mail_options = {
+        from: "Bandwith",
+        to: email,
+        subject: "Email verify code",
+        html: `<p>${code}</p>`
+      };
+
+      transport.sendMail(mail_options, function(error: any) {
+        if (error) {
+          throw error;
+        }
+      })
+
+      return { code: code.toString() };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async resetPassword({ email, role, password }: LoginRequest): Promise<GetVerifyCodeResponse> {
+    try {
+      const user = await User.findOne({
+        email,
+        role,
+      });
+
+      if (!user) {
+        throw { status: 400, message: 'User not found' };
+      }
+
+      await User.findOneAndUpdate(
+        { email, role },
+        { $set: { password } },
+        {
+          new: true,
+        }
+      );
+
+      return { code: "200" };
     } catch (err) {
       throw err;
     }

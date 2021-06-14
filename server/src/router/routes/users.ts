@@ -36,3 +36,7 @@ userRouter.post(`/${PATH.USER}/${PATH.PHONE}`, UsersController.updatePhone);
 userRouter.get(`/${PATH.USER}`, UsersController.getAllUsers);
 
 userRouter.post(`/${PATH.USER}`, UsersController.updateUserStatus);
+
+userRouter.post(`/${PATH.FORGOT_PASSWORD}`, UsersController.getVerifyCode);
+
+userRouter.post(`/${PATH.RESET_PASSWORD}`, UsersController.resetPassword);

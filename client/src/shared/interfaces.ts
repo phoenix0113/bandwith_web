@@ -299,6 +299,19 @@ export interface BlockRecordingResponse {
   ids: Array<string>;
 }
 
+export interface GetVerifyCodeRequest {
+  email: string;
+  role: string;
+}
+
+export interface GetVerifyCodeResponse {
+  code: string;
+}
+
+export interface ResetPasswordRequest extends GetVerifyCodeRequest {
+  password: string;
+}
+
 export interface BlockRecording extends Document, CreateBlockRecordingRequest{}
 
 export interface CreateBlockRecordingRequest {
