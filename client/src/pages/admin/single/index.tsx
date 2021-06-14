@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react";
 import { useHistory } from "react-router-dom";
+import { Routes } from "../../../utils/routes";
 import { AdminStorageContext } from "../../../services/admin";
 import AdminHeader from "../../../components/Admin/AdminHeader";
 import AdminSideBar from "../../../components/Admin/AdminSideBar";
@@ -10,11 +11,9 @@ import {
   AdminProfileContent, AdminProfileName, AdminVideoTools, AdminVideoToolsMoveButton,
   AdminVideoStatusTools, AdminVideoToolsPrevNextButton, AdminVideoToolsPlayPauseButton,
   AdminVideoActiveStatusTools, AdminVideoToolsAcceptButton, AdminVideoToolsDeclineButton,
-  AdminVideoToolsVoiceButton, AdminVideoSettingsTools, AdminVideoToolsOptionButton,
-  AdminVideoToolsFullScreenButton, AdminVideoToolsCloseButton, AdminVideoPlayer, AdminVideoStatus,
+  AdminVideoToolsCloseButton, AdminVideoPlayer, AdminVideoStatus,
 } from "../../../components/Admin/styled";
 import { PAGE_TYPE } from "./types";
-import { PUBLIC_STATUS, BLOCK_STATUS } from "../../../utils/constants";
 import moveButton from "../../../assets/images/admin/move.png";
 import prevButton from "../../../assets/images/admin/prev.png";
 import nextButton from "../../../assets/images/admin/next.png";
@@ -22,9 +21,6 @@ import playButton from "../../../assets/images/admin/play.png";
 import pauseButton from "../../../assets/images/admin/pause.png";
 import acceptButton from "../../../assets/images/admin/accept.png";
 import declineButton from "../../../assets/images/admin/decline.png";
-import voiceButton from "../../../assets/images/admin/voice.png";
-import optionButton from "../../../assets/images/admin/option.png";
-import fullscreenButton from "../../../assets/images/admin/fullscreen.png";
 import closeButton from "../../../assets/images/admin/close.png";
 
 const AdminSingleVideoPage = observer((props): JSX.Element => {
@@ -32,7 +28,7 @@ const AdminSingleVideoPage = observer((props): JSX.Element => {
     latestVideos,
     availableVideos,
     videos,
-    getVideoByID,
+    updateVideoStatus,
   } = useContext(AdminStorageContext);
 
   const [currentID, setCurrentID] = useState("");
@@ -94,6 +90,21 @@ const AdminSingleVideoPage = observer((props): JSX.Element => {
     prevUrl += "/";
     prevUrl += type;
     history.push(prevUrl);
+  };
+
+  const acceptVideo = (_id: string) => {
+    updateVideoStatus(_id, "public");
+    window.location.reload(false);
+  };
+
+  const declineVideo = (_id: string) => {
+    updateVideoStatus(_id, "block");
+    if (type === "latest") {
+      history.push(Routes.ADMIN_DASHBOARD);
+    } else if (type === "available") {
+      history.push(Routes.ADMIN_VIDEO);
+    }
+    window.location.reload(false);
   };
 
   const nextPlay = () => {
@@ -169,8 +180,26 @@ const AdminSingleVideoPage = observer((props): JSX.Element => {
                     <AdminVideoToolsPrevNextButton src={nextButton} onClick={nextPlay} />
                   </AdminVideoStatusTools>
                   <AdminVideoActiveStatusTools>
-                    <AdminVideoToolsAcceptButton src={acceptButton} />
-                    <AdminVideoToolsDeclineButton src={declineButton} />
+                    {
+                      videoList.map((item) => (
+                        (item._id === currentID) ? (
+                          <AdminVideoStatus key={item._id}>
+                            <AdminVideoToolsAcceptButton
+                              src={acceptButton}
+                              style={(item.status !== "block") ? ({ opacity: 0.1, cursor: "auto" }) : ({ opacity: 1, cursor: "pointer" })}
+                              onClick={() => acceptVideo(item._id)}
+                            />
+                            <AdminVideoToolsDeclineButton
+                              style={(item.status === "block") ? ({ opacity: 0.11, cursor: "auto" }) : ({ opacity: 1, cursor: "pointer" })}
+                              src={declineButton}
+                              onClick={() => declineVideo(item._id)}
+                            />
+                          </AdminVideoStatus>
+                        ) : (
+                          <></>
+                        )
+                      ))
+                    }
                   </AdminVideoActiveStatusTools>
                   <AdminVideoToolsCloseButton src={closeButton} />
                 </AdminVideoTools>

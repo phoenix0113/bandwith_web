@@ -246,16 +246,10 @@ export const AdminProfileName = styled.a`
   color: #0091FF;
 `;
 
-export const AdminVideoStatus = styled.select`
-  font-family: 'Avenir-Kefa';
-  font-style: normal;
-  font-weight: normal;
-  font-size: 20px;
-  line-height: 18px;
-  color: #ffffff;
-  background-color: #0E0C09;
-  outline: none;
-  border: none;
+export const AdminVideoStatus = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
 `;
 
 export const AdminVideoTools = styled.div`
