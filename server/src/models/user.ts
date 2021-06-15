@@ -33,7 +33,7 @@ const UserSchema = new Schema({
   role: { type: String, default: "user" },
   hints: [{ type: UserHintSubSchema }],
   available: { type: Boolean, required: false, default: false },
-  phone: { type: String, required: false, unique: true, default: undefined },
+  phone: { type: String, required: false },
   countryCode: { type: String, required: false, default: undefined },
   verified: { type: Boolean, required: false, default: false },
   contactsImported: { type: Boolean, required: false, default: false },
