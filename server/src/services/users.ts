@@ -433,27 +433,49 @@ export class UsersService {
 
       const code = Math.floor(Math.random() * 100000000);
 
-      const nodemailer = require("nodemailer");
-      const transport = nodemailer.createTransport({
-        service: "Gmail",
-        auth: {
-          user: process.env['MAIL_ADDRESS'],
-          pass: process.env['MAIL_PASSWORD'],
-        },
-      });
+      // const nodemailer = require("nodemailer");
+      // const transport = nodemailer.createTransport({
+      //   service: "gmail",
+      //   auth: {
+      //     user: process.env['MAIL_ADDRESS'],
+      //     pass: process.env['MAIL_PASSWORD'],
+      //   },
+      // });
 
-      let mail_options = {
-        from: "Bandwith",
+      // let mail_options = {
+      //   from: process.env['MAIL_ADDRESS'],
+      //   to: email,
+      //   subject: "Email verify code",
+      //   html: `<p>${code}</p>`
+      // };
+
+      // transport.sendMail(mail_options, function(error: any) {
+      //   if (error) {
+      //     throw error;
+      //   }
+      // })
+
+      var api_key = process.env['MAILGUN_KEY'];
+      var domain = process.env['MAILGUN_DOMAIN'];
+      var mailgun = require('mailgun-js')({apiKey: api_key, domain: domain});
+
+      var data = {
+        from: process.env['MAIL_ADDRESS'],
         to: email,
-        subject: "Email verify code",
-        html: `<p>${code}</p>`
+        subject: 'Email Verify Code',
+        text: code,
       };
-
-      transport.sendMail(mail_options, function(error: any) {
+      
+      console.log("api_key", api_key);
+      console.log("domain", domain);
+      console.log("email", email);
+      console.log("code", code);
+      
+      mailgun.messages().send(data, function (error) {
         if (error) {
           throw error;
         }
-      })
+      });
 
       return { code: code.toString() };
     } catch (err) {

@@ -23,6 +23,7 @@
     "google-auth-library": "^6.1.3",
     "libphonenumber-js": "^1.9.16",
     "lodash": "^4.17.21",
+    "mailgun-js": "^0.22.0",
     "mongoose": "^5.10.9",
     "nexmo": "^2.9.1",
     "node-fetch": "^2.6.1",
