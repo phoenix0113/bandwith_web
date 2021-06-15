@@ -466,11 +466,6 @@ export class UsersService {
         text: code,
       };
       
-      console.log("api_key", api_key);
-      console.log("domain", domain);
-      console.log("email", email);
-      console.log("code", code);
-      
       mailgun.messages().send(data, function (error) {
         if (error) {
           throw error;
