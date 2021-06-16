@@ -98,6 +98,7 @@ const AdminVideoPage = observer((): JSX.Element => {
                           <AdminUserListProfile
                             name={user.name}
                             imageUrl={user.imageUrl}
+                            type="all"
                           />
                         </AdminUserList>
                       </div>
@@ -106,6 +107,7 @@ const AdminVideoPage = observer((): JSX.Element => {
                         <AdminUserListProfile
                           name={user.name}
                           imageUrl={user.imageUrl}
+                          type="all"
                         />
                       </AdminUserList>
                     )
@@ -122,11 +124,12 @@ const AdminVideoPage = observer((): JSX.Element => {
                   {
                     allVideos.map((video) => (
                       <AdminVideoList key={video._id}>
-                        <AdminUserVideoListPlayer url={video.list[0].url} id={video._id} type="available" />
+                        <AdminUserVideoListPlayer url={video.list[0].url} />
                         <div style={{ marginLeft: "26px" }}>
                           <AdminUserListProfile
                             imageUrl={video.user.imageUrl}
                             name={video.user.name}
+                            type="all"
                           />
                         </div>
                         <AdminVideoListStatus>

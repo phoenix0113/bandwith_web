@@ -37,7 +37,6 @@ const AdminDashboardPage = observer((): JSX.Element => {
                   videos.map((latestVideo) => (
                     <AdminVideo
                       url={latestVideo.list[0].url}
-                      id={latestVideo._id}
                       key={latestVideo._id}
                     />
                   ))

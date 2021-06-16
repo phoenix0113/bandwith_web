@@ -1,37 +1,44 @@
 import { useEffect, useRef, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { ButtonSection, VideoPlayer, VideoPlayerButton, VideoPlayerContent } from "../styled";
+import { ButtonSection, VideoPlayer, VideoPlayerButton, VideoPauseButton, VideoPlayerContent } from "../styled";
 import playButton from "../../../assets/images/admin/play.svg";
+import pauseButton from "../../../assets/images/admin/pause.png";
 
 interface Data {
   url: string;
-  id: string;
 }
 
 const AdminVideo = (props:Data):JSX.Element => {
   const [videoUrl, setVideoUrl] = useState("");
   const playerRef = useRef<HTMLVideoElement>(null);
-  const [videoID, setVideoID] = useState("");
-  const history = useHistory();
-  const handleVideo = (id: string) => {
-    let router = "/admin/video/";
-    router += id;
-    router += "/latest";
-    history.push(router);
+  const [showPlayBtn, setShowPlayBtn] = useState(true);
+  const handleVideo = () => {
+    if (playerRef.current.paused) {
+      playerRef.current.play().then(() => setShowPlayBtn(false)).catch(() => {
+        if (playerRef.current.paused) {
+          setShowPlayBtn(true);
+        }
+      });
+    } else if (!playerRef.current.paused) {
+      playerRef.current.pause();
+      setShowPlayBtn(true);
+    }
   };
 
   useEffect(() => {
     setVideoUrl(props.url);
-    setVideoID(props.id);
   });
 
   return (
     <VideoPlayerContent className="admin-dashboard-video">
-      <ButtonSection>
-        <VideoPlayerButton src={playButton} />
-      </ButtonSection>
+      {
+        (showPlayBtn) ? (
+          <VideoPlayerButton src={playButton} onClick={handleVideo} />
+        ) : (
+          <VideoPauseButton className="admin-dashboard-video-pause-button" src={pauseButton} onClick={handleVideo} />
+        )
+      }
 
-      <VideoPlayer ref={playerRef} onClick={() => handleVideo(videoID)}>
+      <VideoPlayer ref={playerRef}>
         <source src={videoUrl} />
       </VideoPlayer>
     </VideoPlayerContent>

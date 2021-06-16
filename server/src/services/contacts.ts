@@ -99,6 +99,7 @@ const fetchByChunks = async (
         _id: {
           $ne: self_id, // removing ourselves from the list
         },
+        role: "user",
       }).select('_id phone countryCode');
     });
 

@@ -150,6 +150,9 @@ export const VideoPlayerContent = styled.div`
   border-radius: 32px;
   position: relative;
   padding: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const VideoPlayer = styled.video`
@@ -169,11 +172,25 @@ export const ButtonSection = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 10;
 `;
 
 export const VideoPlayerButton = styled.img`
   width: 45.49px;
   height: 57.96px;
+  z-index: 10;
+  position: absolute;
+`;
+
+export const VideoPauseButton = styled.img`
+  width: 45.49px;
+  height: 57.96px;
+  z-index: 10;
+  position: absolute;
+  display: none;
+  :hover {
+    display: block;
+  }
 `;
 
 export const AdminHelpContent = styled.div`
