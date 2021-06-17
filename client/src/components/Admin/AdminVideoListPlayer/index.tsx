@@ -38,7 +38,7 @@ const AdminUserVideoListPlayer = (props:Data):JSX.Element => {
         )
       }
       <VideoPlayer ref={playerRef}>
-        <source src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
+        <source src={videoSourceUrl} />
       </VideoPlayer>
     </VideoPlayerContent>
   );
