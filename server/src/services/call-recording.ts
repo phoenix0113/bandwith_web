@@ -210,7 +210,10 @@ export class CallRecordingService {
       const recordings = await CallRecording.find({
         status: { $in: [ "public", "feature" ] }
       })
-        .sort({ date: 'desc' })
+        .sort({
+          date: 'desc',
+          status: 'asc',
+        })
         .skip((offset && +offset) || 0)
         .limit((limit && +limit) || 0)
         .populate({
@@ -251,8 +254,8 @@ export class CallRecordingService {
 
       const recordings = await CallRecording.find()
         .sort({ date: 'desc' })
-        .skip((offset && +offset) || 0)
-        .limit((limit && +limit) || 0)
+        .skip((offset && + offset) || 0)
+        .limit((limit && + limit) || 0)
         .populate({
           path: 'user',
           select: '-password -email -firebaseToken',

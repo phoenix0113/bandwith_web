@@ -10,7 +10,7 @@ import {
   AdminVideoListStatusInput, AdminScrollContent, AdminVideoListTitle,
 } from "../../../components/Admin/styled";
 import { PAGE_TYPE } from "./types";
-import {PUBLIC_STATUS, BLOCK_STATUS, APPROVED_STATUS} from "../../../utils/constants";
+import { PUBLIC_STATUS, BLOCK_STATUS, APPROVED_STATUS } from "../../../utils/constants";
 
 const AdminUsersPage = observer((): JSX.Element => {
   const {
