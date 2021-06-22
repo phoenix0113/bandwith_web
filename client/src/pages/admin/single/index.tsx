@@ -22,6 +22,7 @@ import pauseButton from "../../../assets/images/admin/pause.png";
 import acceptButton from "../../../assets/images/admin/accept.png";
 import declineButton from "../../../assets/images/admin/decline.png";
 import closeButton from "../../../assets/images/admin/close.png";
+import { APPROVED_STATUS } from "../../../utils/constants";
 
 const AdminSingleVideoPage = observer((props): JSX.Element => {
   const {
@@ -101,7 +102,7 @@ const AdminSingleVideoPage = observer((props): JSX.Element => {
     updateVideoStatus(_id, "block");
     if (type === "latest") {
       history.push(Routes.ADMIN_DASHBOARD);
-    } else if (type === "available") {
+    } else if (type === APPROVED_STATUS) {
       history.push(Routes.ADMIN_VIDEO);
     }
     window.location.reload(false);
@@ -121,7 +122,7 @@ const AdminSingleVideoPage = observer((props): JSX.Element => {
     setType(props.match.params.type);
     if (type === "latest") {
       setVideoList(latestVideos);
-    } else if (type === "available") {
+    } else if (type === APPROVED_STATUS) {
       setVideoList(availableVideos);
     } else if (type === "all") {
       setVideoList(videos);

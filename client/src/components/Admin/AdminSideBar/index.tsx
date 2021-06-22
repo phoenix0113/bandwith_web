@@ -46,24 +46,6 @@ const AdminSideBar = (props:Data): JSX.Element => {
             Dashboard
           </SideBarHref>
         </SideBarLi>
-        <SideBarLi className={(type === "video") ? "admin-active" : ""}>
-          {(type === "video") ? <SideBarActive /> : <></>}
-          <SideBarHref
-            className={(type === "video") ? "sidebar-active" : ""}
-            href="/admin/video"
-          >
-            Video
-          </SideBarHref>
-        </SideBarLi>
-        <SideBarLi className={(type === "users") ? "admin-active" : ""}>
-          {(type === "users") ? <SideBarActive /> : <></>}
-          <SideBarHref
-            className={(type === "users") ? "sidebar-active" : ""}
-            href="/admin/users"
-          >
-            Users
-          </SideBarHref>
-        </SideBarLi>
         <SideBarLi className={(type === "manage") ? "admin-active" : ""}>
           {(type === "manage") ? <SideBarActive /> : <></>}
           <SideBarHref

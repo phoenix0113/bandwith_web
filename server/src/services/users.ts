@@ -35,7 +35,9 @@ export class UsersService {
   });
 
   static async getAllUsers(): Promise<GetAllUsersResponse> {
-    const users = await User.find();
+    const users = await User.find({
+      role: "user",
+    });
 
     return { users };
   }
@@ -465,7 +467,7 @@ export class UsersService {
         subject: 'Email Verify Code',
         text: code,
       };
-      
+
       mailgun.messages().send(data, function (error) {
         if (error) {
           throw error;

@@ -37,27 +37,10 @@ const AdminUserListProfile = (props: Data):JSX.Element => {
   return (
     <Profile>
       <ProfileImage src={image} />
-      {
-        (onlineStatus) ? (
-          <OnlineOffImage src={onlineImage} />
-        ) : (
-          <OnlineOffImage src={offlineImage} />
-        )
-      }
-
       <ProfileText>
         <ProfileName>
           {userName}
         </ProfileName>
-        <ProfileStatus>
-          {
-            (onlineStatus) ? (
-              "Online"
-            ) : (
-              "Offline"
-            )
-          }
-        </ProfileStatus>
       </ProfileText>
     </Profile>
   );

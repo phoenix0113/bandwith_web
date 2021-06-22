@@ -393,6 +393,7 @@ export const AdminVideoListStatus = styled.div`
   outline: none;
   margin-right: 0;
   margin-left: auto;
+  display: grid;
 `;
 
 export const AdminVideoListTitle = styled.div`
@@ -426,6 +427,7 @@ export const AdminUserList = styled.div`
   border-radius: 6px;
   cursor: pointer;
   padding: 30px;
+  display: flex;
 `;
 
 export const AdminListActive = styled.div`
@@ -470,7 +472,7 @@ export const AdminVideoListStatusInput = styled.input`
 
 export const TextRight = styled.div`
   text-align: right;
-  margin: 10px 0;
+  margin: 5px 0;
   display: flex;
   align-items: center;
 `;

@@ -12,97 +12,54 @@ import {
 } from "../../../components/Admin/styled";
 import { PAGE_TYPE } from "./types";
 import { AdminStorageContext } from "../../../services/admin";
-import { PUBLIC_STATUS, BLOCK_STATUS, FEATURE_STATUS } from "../../../utils/constants";
+import { PUBLIC_STATUS, BLOCK_STATUS, FEATURE_STATUS, APPROVED_STATUS } from "../../../utils/constants";
 
 const AdminVideoPage = observer((): JSX.Element => {
   const {
-    availableVideos,
     users,
-    blockedIDs,
-    featuredIDs,
-    getUnblockedVideosByID,
-    getFeaturedVideosByID,
-    addBlockID,
-    addFeaturedID,
-    removeBlockID,
-    removeFeaturedID,
-    allVideosLoaded,
+    videos,
+    updateUserStatus,
+    updateVideoStatus,
     allUsersLoaded,
+    allVideosLoaded,
   } = useContext(AdminStorageContext);
   const [currentUser, setCurrentUser] = useState(users[0]);
   const [allUsers, setAllUsers] = useState([]);
   const [allVideos, setAllVideos] = useState([]);
-  const [blockedVideos, setBlockedVideos] = useState([]);
-  const [featuredVideos, setFeaturedVideos] = useState([]);
 
   // function for change current user
   const changeCurrentUser = (user) => {
     setCurrentUser(user);
   };
 
-  const getAvailableUsers = (allUsersData) => {
-    const temp = [];
-    for (let i = 0; i < allUsersData.length; i += 1) {
-      if (allUsersData[i].status !== BLOCK_STATUS && allUsersData[i].role !== "admin") {
-        temp.push(allUsersData[i]);
-      }
-    }
-    setAllUsers(temp);
-    setCurrentUser(temp[0]);
+  const setUserStatus = (id: string, status: string) => {
+    const user = allUsers.find((item) => item._id === id);
+    user.status = status;
+  };
+
+  const changeUserStatus = (id: string, status: string) => {
+    updateUserStatus(id, status);
+    setUserStatus(id, status);
+  };
+
+  const setVideoStatus = (id: string, status: string) => {
+    const video = allVideos.find((item) => item._id === id);
+    video.status = status;
+  };
+
+  const changeVideoStatus = (id: string, status: string) => {
+    updateVideoStatus(id, status);
+    setVideoStatus(id, status);
   };
 
   useEffect(() => {
-    setAllVideos(availableVideos);
-    getAvailableUsers(users);
+    setAllUsers(users);
+    setAllVideos(videos);
+  }, [users, videos]);
+
+  useEffect(() => {
+    setCurrentUser(users[0]);
   }, [allVideosLoaded, allUsersLoaded]);
-
-  useEffect(() => {
-    if (currentUser !== undefined) {
-      getUnblockedVideosByID(currentUser._id);
-      getFeaturedVideosByID(currentUser._id);
-    }
-  }, [currentUser]);
-
-  useEffect(() => {
-    if (currentUser !== undefined) {
-      setBlockedVideos(blockedIDs);
-      setFeaturedVideos(featuredIDs);
-    }
-  });
-
-  const changeStatus = (id: string, status: string) => {
-    console.log("change status", status);
-    console.log("id", id);
-    if (status === PUBLIC_STATUS) {
-      let index = blockedVideos.indexOf(id, 0);
-      if (index > -1) {
-        removeBlockID(id, currentUser._id);
-        blockedVideos.splice(index, 1);
-      }
-
-      index = featuredVideos.indexOf(id, 0);
-      if (index > -1) {
-        removeFeaturedID(id, currentUser._id);
-        featuredVideos.splice(index, 1);
-      }
-    } else if (status === BLOCK_STATUS) {
-      addBlockID(id, currentUser._id);
-      const index = blockedVideos.indexOf(id, 0);
-      if (index > -1) {
-        removeBlockID(id, currentUser._id);
-        featuredVideos.splice(index, 1);
-      }
-      blockedVideos.push(id);
-    } else if (status === FEATURE_STATUS) {
-      addFeaturedID(id, currentUser._id);
-      const index = blockedVideos.indexOf(id, 0);
-      if (index > -1) {
-        removeBlockID(id, currentUser._id);
-        featuredVideos.splice(index, 1);
-      }
-      featuredVideos.push(id);
-    }
-  };
 
   return (
     <AdminPageWrapper>
@@ -117,7 +74,7 @@ const AdminVideoPage = observer((): JSX.Element => {
               </AdminVideoListTitle>
               <AdminScrollContent className="scrollbar-content">
                 {
-                  allUsers.map((user) => (
+                  users.map((user) => (
                     (user?._id === currentUser?._id) ? (
                       <div style={{ position: "relative", borderRadius: "6px" }} key={user._id}>
                         <AdminListActiveBar />
@@ -128,6 +85,34 @@ const AdminVideoPage = observer((): JSX.Element => {
                             imageUrl={user.imageUrl}
                             type="all"
                           />
+                          <AdminVideoListStatus>
+                            <TextRight>
+                              <AdminVideoListStatusLabel htmlFor={user._id}>
+                                Approved
+                              </AdminVideoListStatusLabel>
+                              <AdminVideoListStatusInput
+                                type="radio"
+                                value={APPROVED_STATUS}
+                                name={user._id}
+                                id={user._id}
+                                checked={(user.status === APPROVED_STATUS)}
+                                onChange={() => changeUserStatus(user._id, APPROVED_STATUS)}
+                              />
+                            </TextRight>
+                            <TextRight>
+                              <AdminVideoListStatusLabel htmlFor={user._id}>
+                                Block
+                              </AdminVideoListStatusLabel>
+                              <AdminVideoListStatusInput
+                                type="radio"
+                                value={BLOCK_STATUS}
+                                name={user._id}
+                                id={user._id}
+                                checked={(user.status === BLOCK_STATUS)}
+                                onChange={() => changeUserStatus(user._id, BLOCK_STATUS)}
+                              />
+                            </TextRight>
+                          </AdminVideoListStatus>
                         </AdminUserList>
                       </div>
                     ) : (
@@ -137,6 +122,34 @@ const AdminVideoPage = observer((): JSX.Element => {
                           imageUrl={user.imageUrl}
                           type="all"
                         />
+                        <AdminVideoListStatus>
+                          <TextRight>
+                            <AdminVideoListStatusLabel htmlFor={user._id}>
+                              Approved
+                            </AdminVideoListStatusLabel>
+                            <AdminVideoListStatusInput
+                              type="radio"
+                              value={APPROVED_STATUS}
+                              name={user._id}
+                              id={user._id}
+                              checked={(user.status === APPROVED_STATUS)}
+                              onChange={() => changeUserStatus(user._id, APPROVED_STATUS)}
+                            />
+                          </TextRight>
+                          <TextRight>
+                            <AdminVideoListStatusLabel htmlFor={user._id}>
+                              Block
+                            </AdminVideoListStatusLabel>
+                            <AdminVideoListStatusInput
+                              type="radio"
+                              value={BLOCK_STATUS}
+                              name={user._id}
+                              id={user._id}
+                              checked={(user.status === BLOCK_STATUS)}
+                              onChange={() => changeUserStatus(user._id, BLOCK_STATUS)}
+                            />
+                          </TextRight>
+                        </AdminVideoListStatus>
                       </AdminUserList>
                     )
                   ))
@@ -151,31 +164,21 @@ const AdminVideoPage = observer((): JSX.Element => {
                 <AdminScrollContent className="scrollbar-content">
                   {
                     allVideos.map((video) => (
-                      (currentUser._id === video.user._id) ? (
+                      (currentUser?._id === video.user._id) ? (
                         <AdminVideoList key={video._id}>
                           <AdminUserVideoListPlayer url={video.list[0].url} />
-                          <div style={{ marginLeft: "26px" }}>
-                            <AdminUserListProfile
-                              imageUrl={video.user.imageUrl}
-                              name={video.user.name}
-                              type="all"
-                            />
-                          </div>
                           <AdminVideoListStatus>
                             <TextRight>
                               <AdminVideoListStatusLabel htmlFor={video._id}>
-                                Approved
+                                Public
                               </AdminVideoListStatusLabel>
                               <AdminVideoListStatusInput
                                 type="radio"
                                 value={PUBLIC_STATUS}
                                 name={video._id}
                                 id={video._id}
-                                checked={
-                                  !(blockedVideos.indexOf(video._id) > -1)
-                                  && !(featuredVideos.indexOf(video._id) > -1)
-                                }
-                                onChange={() => changeStatus(video._id, PUBLIC_STATUS)}
+                                checked={(video.status === PUBLIC_STATUS)}
+                                onChange={() => changeVideoStatus(video._id, PUBLIC_STATUS)}
                               />
                             </TextRight>
                             <TextRight>
@@ -187,21 +190,21 @@ const AdminVideoPage = observer((): JSX.Element => {
                                 value={FEATURE_STATUS}
                                 name={video._id}
                                 id={video._id}
-                                checked={(featuredVideos.indexOf(video._id) > -1)}
-                                onChange={() => changeStatus(video._id, FEATURE_STATUS)}
+                                checked={(video.status === FEATURE_STATUS)}
+                                onChange={() => changeVideoStatus(video._id, FEATURE_STATUS)}
                               />
                             </TextRight>
                             <TextRight>
                               <AdminVideoListStatusLabel htmlFor={video._id}>
-                                Private
+                                Block
                               </AdminVideoListStatusLabel>
                               <AdminVideoListStatusInput
                                 type="radio"
                                 value={BLOCK_STATUS}
                                 name={video._id}
                                 id={video._id}
-                                checked={(blockedVideos.indexOf(video._id) > -1)}
-                                onChange={() => changeStatus(video._id, BLOCK_STATUS)}
+                                checked={(video.status === BLOCK_STATUS)}
+                                onChange={() => changeVideoStatus(video._id, BLOCK_STATUS)}
                               />
                             </TextRight>
                           </AdminVideoListStatus>

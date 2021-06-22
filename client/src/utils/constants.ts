@@ -31,3 +31,5 @@ export const PUBLIC_STATUS = "public";
 export const FEATURE_STATUS = "feature";
 
 export const BLOCK_STATUS = "block";
+
+export const APPROVED_STATUS = "approved";
