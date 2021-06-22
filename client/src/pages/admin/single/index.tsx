@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react";
 import { useHistory } from "react-router-dom";
 import { Routes } from "../../../utils/routes";
@@ -144,7 +144,7 @@ const AdminSingleVideoPage = observer((props): JSX.Element => {
                     <source src={item?.list[0].url} />
                   </AdminVideoPlayer>
                 ) : (
-                  <></>
+                  <div key={item._id} />
                 )
               ))
             }
@@ -160,7 +160,7 @@ const AdminSingleVideoPage = observer((props): JSX.Element => {
                         </AdminProfileContent>
                       </AdminProfile>
                     ) : (
-                      <></>
+                      <div key={item._id} />
                     )
                   ))
                 }
@@ -196,7 +196,7 @@ const AdminSingleVideoPage = observer((props): JSX.Element => {
                             />
                           </AdminVideoStatus>
                         ) : (
-                          <></>
+                          <div key={item._id} />
                         )
                       ))
                     }

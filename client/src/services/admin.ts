@@ -6,6 +6,7 @@ import { GetRecordResponse, User } from "../shared/interfaces";
 import {
   getUserList, getVideoList, updateRecordingStatus, updateUserStatusByID, addBlockRecording,
   getUnblockedVideosByUserID, removeBlockRecording, getAvailableVideoList, getRecordingByID,
+  addFeaturedRecording, removeFeaturedRecording, getFeaturedVideosByUserID,
 } from "../axios/routes/admin";
 import { GlobalServiceStatus } from "../interfaces/global";
 import { VIDEO_LOAD_LIMIT } from "../utils/constants";
@@ -21,11 +22,15 @@ class AdminMobxService {
 
   @observable latestVideos: Array<GetRecordResponse> = [];
 
+  @observable videosByUser: Array<GetRecordResponse> = [];
+
   @observable currentVideo: GetRecordResponse = null;
 
   @observable users: Array<User> = [];
 
   @observable blockedIDs: Array<string> = [];
+
+  @observable featuredIDs: Array<string> = [];
 
   @observable allVideosLoaded = false;
 
@@ -54,7 +59,7 @@ class AdminMobxService {
     } finally {
       this.allUsersLoaded = true;
     }
-  }
+  };
 
   // function for get all videos
   private loadAllVideos = async () => {
@@ -72,7 +77,7 @@ class AdminMobxService {
     } finally {
       this.allVideosLoaded = true;
     }
-  }
+  };
 
   // function for get all videos
   private loadAvailableVideos = async () => {
@@ -90,7 +95,7 @@ class AdminMobxService {
     } finally {
       this.allVideosLoaded = true;
     }
-  }
+  };
 
   // function for get all videos
   private loadLatestVideos = async () => {
@@ -108,7 +113,7 @@ class AdminMobxService {
     } finally {
       this.allVideosLoaded = true;
     }
-  }
+  };
 
   // function for update status of video
   public updateVideoStatus = async (
@@ -123,7 +128,7 @@ class AdminMobxService {
     } catch (err) {
       showErrorNotification(err.message);
     }
-  }
+  };
 
   // function for get video by id
   public getVideoByID = async (
@@ -134,7 +139,7 @@ class AdminMobxService {
     } catch (err) {
       showErrorNotification(err.message);
     }
-  }
+  };
 
   // function for update status of user
   public updateUserStatus = async (
@@ -149,7 +154,7 @@ class AdminMobxService {
     } catch (err) {
       showErrorNotification(err.message);
     }
-  }
+  };
 
   // function for get unblocked video ids by user id
   public getUnblockedVideosByID = async (
@@ -167,9 +172,9 @@ class AdminMobxService {
     } catch (err) {
       showErrorNotification(err.message);
     }
-  }
+  };
 
-  // function for get unblocked video ids by user id
+  // function for add video to blocked videos by user id
   public addBlockID = async (
     callrecording: string,
     user: string,
@@ -182,9 +187,9 @@ class AdminMobxService {
     } catch (err) {
       showErrorNotification(err.message);
     }
-  }
+  };
 
-  // function for get unblocked video ids by user id
+  // function for remove video from blocked videos by user id
   public removeBlockID = async (
     callrecording: string,
     user: string,
@@ -197,7 +202,55 @@ class AdminMobxService {
     } catch (err) {
       showErrorNotification(err.message);
     }
-  }
+  };
+
+  // function for get featured video ids by user id
+  public getFeaturedVideosByID = async (
+    _id: string,
+  ) => {
+    this.featuredIDs = [];
+    try {
+      const { ids } = await getFeaturedVideosByUserID({
+        _id,
+      });
+
+      runInAction(() => {
+        this.featuredIDs.push(...ids);
+      });
+    } catch (err) {
+      showErrorNotification(err.message);
+    }
+  };
+
+  // function for add video to featured videos by user id
+  public addFeaturedID = async (
+    callrecording: string,
+    user: string,
+  ) => {
+    try {
+      const { code } = await addFeaturedRecording({
+        callrecording,
+        user,
+      });
+    } catch (err) {
+      showErrorNotification(err.message);
+    }
+  };
+
+  // function for remove video to featured videos by user id
+  public removeFeaturedID = async (
+    callrecording: string,
+    user: string,
+  ) => {
+    try {
+      const { code } = await removeFeaturedRecording({
+        callrecording,
+        user,
+      });
+    } catch (err) {
+      showErrorNotification(err.message);
+    }
+  };
 }
 
 export const AdminStorage = new AdminMobxService();

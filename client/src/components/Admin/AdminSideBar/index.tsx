@@ -1,5 +1,4 @@
 import { useState, useEffect, useContext } from "react";
-import { useHistory } from "react-router-dom";
 import { Modal } from "antd";
 import { GlobalStorageContext } from "../../../services/global";
 import { vibrate } from "../../../utils/vibration";
@@ -15,7 +14,6 @@ interface Data {
 const AdminSideBar = (props:Data): JSX.Element => {
   const [logoutModalStatus, setLogoutModalStatus] = useState(false);
   const [type, setType] = useState("");
-  const [showSubPage, setShowSubPage] = useState(false);
   const { logout } = useContext(GlobalStorageContext);
 
   const handleLogoutModal = () => {
@@ -32,15 +30,8 @@ const AdminSideBar = (props:Data): JSX.Element => {
     logout();
   };
 
-  const changeShowSubPage = () => {
-    setShowSubPage(!showSubPage);
-  };
-
   useEffect(() => {
     setType(props.pageType);
-    if (type === "users" || type === "manage") {
-      setShowSubPage(true);
-    }
   });
 
   return (
@@ -64,42 +55,24 @@ const AdminSideBar = (props:Data): JSX.Element => {
             Video
           </SideBarHref>
         </SideBarLi>
-        <SideBarLi>
+        <SideBarLi className={(type === "users") ? "admin-active" : ""}>
+          {(type === "users") ? <SideBarActive /> : <></>}
           <SideBarHref
-            onClick={changeShowSubPage}
+            className={(type === "users") ? "sidebar-active" : ""}
+            href="/admin/users"
+          >
+            Users
+          </SideBarHref>
+        </SideBarLi>
+        <SideBarLi className={(type === "manage") ? "admin-active" : ""}>
+          {(type === "manage") ? <SideBarActive /> : <></>}
+          <SideBarHref
+            className={(type === "manage") ? "sidebar-active" : ""}
+            href="/admin/manage"
           >
             Manage
           </SideBarHref>
         </SideBarLi>
-        {
-          (showSubPage) ? (
-            <>
-              <SideBarLi className={(type === "users") ? "admin-active" : ""}>
-                {(type === "users") ? <SideBarActive /> : <></>}
-                <SideBarHref
-                  className={(type === "users") ? "sub-sidebar-active" : ""}
-                  href="/admin/users"
-                  style={{ paddingLeft: "70px" }}
-                >
-                  User Manage
-                </SideBarHref>
-
-              </SideBarLi>
-              <SideBarLi className={(type === "manage") ? "admin-active" : ""}>
-                {(type === "manage") ? <SideBarActive /> : <></>}
-                <SideBarHref
-                  className={(type === "manage") ? "sub-sidebar-active" : ""}
-                  href="/admin/manage"
-                  style={{ paddingLeft: "70px" }}
-                >
-                  Video Manage
-                </SideBarHref>
-              </SideBarLi>
-            </>
-          ) : (
-            <></>
-          )
-        }
         <SideBarLi className={(type === "help") ? "admin-active" : ""}>
           {(type === "help") ? <SideBarActive /> : <></>}
           <SideBarHref

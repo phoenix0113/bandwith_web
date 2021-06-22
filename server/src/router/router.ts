@@ -8,6 +8,7 @@ import {
   callRecordingsRouter,
   logsRouter,
   blockRouter,
+  featuredRouter,
 } from './routes';
 
 import { PATH } from '../../../client/src/shared/routes';
@@ -22,3 +23,4 @@ router.use(`/${PATH.COMMENTS}`, roomCommentsRouter);
 router.use(`/${PATH.RECORD}`, callRecordingsRouter);
 router.use(`/${PATH.LOGS}`, logsRouter);
 router.use(`/${PATH.BLOCK}`, blockRouter);
+router.use(`/${PATH.FEATURED}`, featuredRouter);

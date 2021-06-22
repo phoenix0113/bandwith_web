@@ -28,6 +28,7 @@ export const PATH = {
   PHONE: "phone",
   IMPORT: "contactsImport",
   BLOCK: "block",
+  FEATURED: "featured",
   AVAILABLE: "available",
   FORGOT_PASSWORD: "forgot-password",
   RESET_PASSWORD: "reset-password",
@@ -59,5 +60,6 @@ export const API = {
   UPDATE_PHONE: `${PATH.API}/${PATH.USER}/${PATH.PHONE}`,
   IMPORT_CONTACTS: `${PATH.API}/${PATH.CONTACTS}/${PATH.IMPORT}`,
   BLOCK: `/${PATH.API}/${PATH.BLOCK}`,
+  FEATURED: `/${PATH.API}/${PATH.FEATURED}`,
   RECORD_AVAILABLE: `/${PATH.API}/${PATH.RECORD}/${PATH.AVAILABLE}`,
 };

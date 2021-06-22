@@ -134,3 +134,45 @@ export const getRecordingByID = async (id: string): Promise<GetRecordResponse> =
     throw new Error(getError(response));
   }
 };
+
+export const getFeaturedVideosByUserID = async (
+  query: Document,
+): Promise<BlockedVideoIdsResponse> => {
+  const stringified = stringify(query);
+
+  try {
+    const response = await instance.get<BlockedVideoIdsResponse>(`${API.FEATURED}?${stringified}`);
+    return response.data;
+  } catch (err) {
+    const { response } = err as IAxiosError;
+    throw new Error(getError(response));
+  }
+};
+
+export const addFeaturedRecording = async (
+  query: CreateBlockRecordingRequest,
+): Promise<UpdateRecordingResponse> => {
+  const stringified = stringify(query);
+
+  try {
+    const response = await instance.post<UpdateRecordingResponse>(`${API.FEATURED}?${stringified}`);
+    return response.data;
+  } catch (err) {
+    const { response } = err as IAxiosError;
+    throw new Error(getError(response));
+  }
+};
+
+export const removeFeaturedRecording = async (
+  query: CreateBlockRecordingRequest,
+): Promise<UpdateRecordingResponse> => {
+  const stringified = stringify(query);
+
+  try {
+    const response = await instance.delete<UpdateRecordingResponse>(`${API.FEATURED}?${stringified}`);
+    return response.data;
+  } catch (err) {
+    const { response } = err as IAxiosError;
+    throw new Error(getError(response));
+  }
+};
