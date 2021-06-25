@@ -10,6 +10,7 @@ import {
   GetRecordResponse,
   GetAllRecordsQuery,
   GetAllRecordsResponse,
+  ReportRequest,
 } from '../../../client/src/shared/interfaces';
 import { conf } from '../config';
 import { CallInput } from '../../../client/src/shared/socket';
@@ -297,6 +298,31 @@ export class CallRecordingService {
           new: true,
         }
       );
+
+      return { code: 200 };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async sendReport({ id, email, title, body }: ReportRequest) {
+    try {
+      let api_key = process.env['MAILGUN_KEY'];
+      let domain = process.env['MAILGUN_DOMAIN'];
+      let mailgun = require('mailgun-js')({apiKey: api_key, domain: domain});
+
+      let data = {
+        from: email,
+        to: process.env['MAIL_ADDRESS'],
+        subject: title,
+        text: "https://app.bandwith.com/admin/video/" + id + " " + body,
+      };
+
+      mailgun.messages().send(data, function (error) {
+        if (error) {
+          throw error;
+        }
+      });
 
       return { code: 200 };
     } catch (err) {

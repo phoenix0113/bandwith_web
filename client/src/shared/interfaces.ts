@@ -10,6 +10,13 @@ export interface OAuthGoogleRequest {
   isAndroid?: boolean;
 }
 
+export interface OAuthAppleRequest {
+  user: string;
+  email: string;
+  password: string;
+  imageUrl?: string;
+}
+
 export interface OAuthFacebookRequest {
   accessToken: string;
   userID: string;
@@ -36,6 +43,13 @@ export interface ImportedContactItem {
   recordId: string;
   name: string;
   user: ContactItem;
+}
+
+export interface ReportRequest {
+  id: string;
+  email: string;
+  title: string;
+  body: string;
 }
 
 interface UserExtraData {

@@ -3,6 +3,7 @@ export const PATH = {
   OAUTH: "oauth",
   FACEBOOK: "facebook",
   GOOGLE: "google",
+  APPLE: "apple",
   CREDS: "creds",
   LOGIN: "login",
   REGISTRATION: "registration",
@@ -27,16 +28,18 @@ export const PATH = {
   VERIFY_CODE: "verifyCode",
   PHONE: "phone",
   IMPORT: "contactsImport",
+  FORGOT_PASSWORD: "forgot-password",
+  RESET_PASSWORD: "reset-password",
   BLOCK: "block",
   FEATURED: "featured",
   AVAILABLE: "available",
-  FORGOT_PASSWORD: "forgot-password",
-  RESET_PASSWORD: "reset-password",
+  REPORT: "report",
 };
 
 export const API = {
   OAUTH_FACEBOOK: `${PATH.API}/${PATH.OAUTH}/${PATH.FACEBOOK}`,
   OAUTH_GOOGLE: `${PATH.API}/${PATH.OAUTH}/${PATH.GOOGLE}`,
+  OAUTH_APPLE: `${PATH.API}/${PATH.OAUTH}/${PATH.APPLE}`,
   OAUTH_CREDS: `${PATH.API}/${PATH.OAUTH}/${PATH.CREDS}`,
   LOGIN: `${PATH.API}/${PATH.LOGIN}`,
   REGISTRATION: `${PATH.API}/${PATH.REGISTRATION}`,
@@ -62,4 +65,7 @@ export const API = {
   BLOCK: `/${PATH.API}/${PATH.BLOCK}`,
   FEATURED: `/${PATH.API}/${PATH.FEATURED}`,
   RECORD_AVAILABLE: `/${PATH.API}/${PATH.RECORD}/${PATH.AVAILABLE}`,
+  GET_VERIFY_CODE: `/${PATH.API}/${PATH.FORGOT_PASSWORD}`,
+  RESET_PASSWORD: `/${PATH.API}/${PATH.RESET_PASSWORD}`,
+  REPORT: `/${PATH.API}/${PATH.RECORD}/${PATH.REPORT}`,
 };

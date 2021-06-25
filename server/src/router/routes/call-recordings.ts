@@ -14,3 +14,4 @@ callRecordingsRouter.delete('/', CallRecordingsController.deleteRecordByCallId);
 callRecordingsRouter.get('/', CallRecordingsController.getAllRecords);
 callRecordingsRouter.post('/', CallRecordingsController.updateRecordingStatus);
 callRecordingsRouter.post(`/${PATH.AVAILABLE}`, CallRecordingsController.getAvailableRecords);
+callRecordingsRouter.post(`/${PATH.REPORT}`, CallRecordingsController.sendReport);

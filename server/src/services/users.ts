@@ -25,6 +25,7 @@ import {
   NexmoResponse,
   GetVerifyCodeRequest,
   GetVerifyCodeResponse,
+  OAuthAppleRequest,
 } from '../../../client/src/shared/interfaces';
 import { conf } from '../config';
 
@@ -70,6 +71,23 @@ export class UsersService {
       }
     }
     return { _id: u._id.toString() };
+  }
+
+  static async oauthApple(user: OAuthAppleRequest) {
+    let u = await User.findOne({
+      username: user.user,
+      email: user.email,
+      password: user.password,
+      role: "user",
+    });
+
+    if (!u) {
+      u = new User(user);
+    }
+
+    return {
+      token: UsersService.generateServerToken(u._id.toString()),
+    };
   }
 
   static async auth({ email, password, role }: LoginRequest): Promise<AuthResponse> {
@@ -435,33 +453,11 @@ export class UsersService {
 
       const code = Math.floor(Math.random() * 100000000);
 
-      // const nodemailer = require("nodemailer");
-      // const transport = nodemailer.createTransport({
-      //   service: "gmail",
-      //   auth: {
-      //     user: process.env['MAIL_ADDRESS'],
-      //     pass: process.env['MAIL_PASSWORD'],
-      //   },
-      // });
+      let api_key = process.env['MAILGUN_KEY'];
+      let domain = process.env['MAILGUN_DOMAIN'];
+      let mailgun = require('mailgun-js')({apiKey: api_key, domain: domain});
 
-      // let mail_options = {
-      //   from: process.env['MAIL_ADDRESS'],
-      //   to: email,
-      //   subject: "Email verify code",
-      //   html: `<p>${code}</p>`
-      // };
-
-      // transport.sendMail(mail_options, function(error: any) {
-      //   if (error) {
-      //     throw error;
-      //   }
-      // })
-
-      var api_key = process.env['MAILGUN_KEY'];
-      var domain = process.env['MAILGUN_DOMAIN'];
-      var mailgun = require('mailgun-js')({apiKey: api_key, domain: domain});
-
-      var data = {
+      let data = {
         from: process.env['MAIL_ADDRESS'],
         to: email,
         subject: 'Email Verify Code',

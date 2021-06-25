@@ -19,6 +19,14 @@ export class UsersController extends CrudController {
     });
   }
 
+  static async oauthApple(req: Request, res: Response) {
+    await UsersController.processRequest(req, res, async () => {
+      await UsersService.oauthApple(req.body);
+
+      res.send({ success: true });
+    });
+  }
+  
   static async getUserData(req: Request, res: Response) {
     await UsersController.processRequest(req, res, async () => {
       res.send(await UsersService.getUserData({ _id: req.params._id }));

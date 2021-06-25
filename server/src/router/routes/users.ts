@@ -22,6 +22,8 @@ userRouter.post(
   UsersController.oauthFacebook
 );
 
+userRouter.post(`/${PATH.OAUTH}/${PATH.APPLE}`, UsersController.oauthApple);
+
 userRouter.post(`/${PATH.USER}/${PATH.HINTS}`, UsersController.updateUserHint);
 
 userRouter.post(`/${PATH.USER}/${PATH.SEND_SMS}`, UsersController.sendSMS);
