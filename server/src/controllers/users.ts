@@ -21,9 +21,7 @@ export class UsersController extends CrudController {
 
   static async oauthApple(req: Request, res: Response) {
     await UsersController.processRequest(req, res, async () => {
-      await UsersService.oauthApple(req.body);
-
-      res.send({ success: true });
+      res.send(await UsersService.oauthApple(req.body));
     });
   }
   

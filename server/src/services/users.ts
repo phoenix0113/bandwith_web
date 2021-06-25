@@ -75,19 +75,28 @@ export class UsersService {
 
   static async oauthApple(user: OAuthAppleRequest) {
     let u = await User.findOne({
-      username: user.user,
+      name: user.user,
       email: user.email,
       password: user.password,
       role: "user",
     });
 
+    let userId = u?._id;
+
     if (!u) {
-      u = new User(user);
+      const { _id } = await UsersService.createUser({
+        name: user.user,
+        email: user.email,
+        password: user.password,
+      });
+
+      userId = _id;
     }
 
-    return {
-      token: UsersService.generateServerToken(u._id.toString()),
-    };
+    User.updateOne({"_id" : userId}, {$set: {"role": "user"}});
+
+    const token = UsersService.generateServerToken(userId.toString());
+    return { token };
   }
 
   static async auth({ email, password, role }: LoginRequest): Promise<AuthResponse> {
@@ -195,7 +204,7 @@ export class UsersService {
     if (email_verified && email) {
       const user = await User.findOne({ email });
 
-      let userId = user?._id.toString();
+      let userId = user?._id;
 
       if (!user) {
         const { _id } = await UsersService.createUser({
@@ -205,10 +214,13 @@ export class UsersService {
           imageUrl: picture,
         });
 
-        userId = _id.toString();
+        userId = _id;
       }
 
-      const token = UsersService.generateServerToken(userId);
+      User.updateOne(
+        {"_id" : userId}, {$set: {"role": "user"}});
+
+      const token = UsersService.generateServerToken(userId.toString());
       return { token };
     } else {
       throw { status: 400, message: 'Email not verified' };
@@ -236,7 +248,7 @@ export class UsersService {
     } = await imgResponse.json();
 
     const user = await User.findOne({ email });
-    let userId = user?._id.toString();
+    let userId = user?._id;
 
     if (!user) {
       const { _id } = await UsersService.createUser({
@@ -246,10 +258,13 @@ export class UsersService {
         imageUrl: url,
       });
 
-      userId = _id.toString();
+      userId = _id;
     }
 
-    const token = UsersService.generateServerToken(userId);
+    User.updateOne(
+      {"_id" : userId}, {$set: {"role": "user"}});
+
+    const token = UsersService.generateServerToken(userId.toString());
     return { token };
   }
 
