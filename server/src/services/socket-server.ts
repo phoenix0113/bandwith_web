@@ -1349,7 +1349,8 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
   ) {
     await ContactsService.createContact(
       { contactPerson: target_id },
-      notification.user._id
+      notification.user._id,
+      "approved",
     );
 
     await NotificationsService.deleteNotification({
