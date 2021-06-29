@@ -125,7 +125,51 @@ const fetchByChunks = async (
 export class ContactsService {
   static async createContact(
     { contactPerson }: CreateContactRequest,
-    contactOwner: string
+    contactOwner: string,
+    status: string,
+  ): Promise<Document> {
+    try {
+      let c = await Contact.findOne({ contactOwner, contactPerson, status });
+      let c1 = await Contact.findOne({
+        contactOwner: contactPerson,
+        contactPerson: contactOwner,
+        status: status,
+      });
+
+      if (c || c1) {
+        throw { status: 400, message: 'You already have such a contact' };
+      } else {
+        c = new Contact({ contactOwner, contactPerson, status });
+        c1 = new Contact({
+          contactOwner: contactPerson,
+          contactPerson: contactOwner,
+          status: status,
+        });
+
+        await c.save();
+        await c1.save();
+
+        await Contact.findOneAndRemove({
+          contactOwner,
+          contactPerson,
+          status: "invite",
+        });
+        await Contact.findOneAndRemove({
+          contactOwner: contactPerson,
+          contactPerson: contactOwner,
+          status: "invite",
+        });
+
+        return { _id: c._id.toString() };
+      }
+    } catch (e) {
+      throw e;
+    }
+  }
+  static async sendInvite(
+    { contactPerson }: CreateContactRequest,
+    contactOwner: string,
+    status: string,
   ): Promise<Document> {
     try {
       let c = await Contact.findOne({ contactOwner, contactPerson });
@@ -137,10 +181,11 @@ export class ContactsService {
       if (c || c1) {
         throw { status: 400, message: 'You already have such a contact' };
       } else {
-        c = new Contact({ contactOwner, contactPerson });
+        c = new Contact({ contactOwner, contactPerson, status });
         c1 = new Contact({
           contactOwner: contactPerson,
           contactPerson: contactOwner,
+          status: status,
         });
 
         await c.save();
@@ -156,7 +201,28 @@ export class ContactsService {
   static async getAllUserContacts({
     _id,
   }: Document): Promise<GetContactListResponse> {
-    const contacts = await Contact.find({ contactOwner: _id })
+    const contacts = await Contact.find({ contactOwner: _id, status: "approved" })
+      .select('-contactOwner -_id')
+      .populate({
+        path: 'contactPerson',
+        select: '-password -email',
+      });
+
+    return {
+      contacts: Object.assign([], contacts).map(
+        ({ contactPerson: { _id, name, imageUrl } }) => ({
+          _id,
+          name,
+          imageUrl,
+        })
+      ),
+    };
+  }
+
+  static async getInvite({
+    _id,
+  }: Document): Promise<GetContactListResponse> {
+    const contacts = await Contact.find({ contactOwner: _id, status: "invite" })
       .select('-contactOwner -_id')
       .populate({
         path: 'contactPerson',

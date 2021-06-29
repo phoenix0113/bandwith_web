@@ -33,3 +33,5 @@ export const FEATURE_STATUS = "feature";
 export const BLOCK_STATUS = "block";
 
 export const APPROVED_STATUS = "approved";
+
+export const INVITED_STATUS = "invited";

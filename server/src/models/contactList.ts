@@ -9,6 +9,7 @@ export interface IContact extends Omit<ContactInterface, '_id'>, Document {}
 const ContactSchema = new Schema({
   contactPerson: { type: Schema.Types.ObjectId, required: true, ref: 'user' },
   contactOwner: { type: Schema.Types.ObjectId, required: true, ref: 'user' },
+  status: { type: String, required: true, default: "approved" },
 });
 
 export const Contact = model<IContact>('contact', ContactSchema);

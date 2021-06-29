@@ -9,10 +9,33 @@ export class ContactsController extends CrudController {
         {
           contactPerson: req.body.contactPerson,
         },
-        req['user'].userId
+        req['user'].userId,
+        "approved",
       );
 
       res.send({ success: true });
+    });
+  }
+
+  static async sendInvite(req: Request, res: Response) {
+    await ContactsController.processRequest(req, res, async () => {
+      await ContactsService.sendInvite(
+        {
+          contactPerson: req.body.contactPerson,
+        },
+        req['user'].userId,
+        "invite",
+      );
+
+      res.send({ success: true });
+    });
+  }
+
+  static async getInvite(req: Request, res: Response) {
+    await ContactsController.processRequest(req, res, async () => {
+      res.send(
+        await ContactsService.getInvite({ _id: req['user'].userId })
+      );
     });
   }
 
