@@ -22,9 +22,12 @@ export interface OAuthFacebookRequest {
   userID: string;
 }
 
-export interface LoginRequest {
+export interface LoginRequest extends RoleRequest {
   email: string;
   password: string;
+}
+
+export interface RoleRequest {
   role: string;
 }
 
@@ -39,17 +42,17 @@ export interface UserProfileRequest {
   firebaseToken: string;
 }
 
-export interface ImportedContactItem {
-  recordId: string;
-  name: string;
-  user: ContactItem;
-}
-
 export interface ReportRequest {
   id: string;
   email: string;
   title: string;
   body: string;
+}
+
+export interface ImportedContactItem {
+  recordId: string;
+  name: string;
+  user: ContactItem;
 }
 
 interface UserExtraData {
@@ -92,12 +95,29 @@ export interface SubscribeToFirebasePushesRequest {
   token: string;
 }
 
+export interface ResetPasswordRequest extends GetVerifyCodeRequest {
+  password: string;
+}
+
+export interface GetVerifyCodeResponse {
+  code: string;
+}
+
+export interface ResetPasswordResponse {
+  code: string;
+}
+
 export interface NotificationData {
   title: string;
   body: string;
   redirectUrl: string;
   callId: string;
   username: string;
+}
+
+// TODO: most likely some user data has to be here
+export interface SubscribeToFirebasePushesRequest {
+  token: string;
 }
 
 export interface FirebaseNotificationRequest extends NotificationData {
@@ -122,6 +142,8 @@ export interface BasicResponse {
 }
 
 export interface User extends Document, RegistrationRequest, UserProfileRequest, UserExtraData {}
+
+export type ContactType = "in-app"|"imported";
 
 export interface Contact extends Document, CreateContactRequest {}
 
@@ -345,6 +367,10 @@ export interface UpdateRecordingQuery {
 
 export interface UpdateRecordingResponse {
   code: number;
+}
+
+export interface GetFilterRecordsQuery extends Document, GetAllRecordsQuery{
+  
 }
 
 export interface GetAllRecordsResponse {
