@@ -90,21 +90,8 @@ export interface UpdatePhoneRequest {
   countryCode: string;
 }
 
-// TODO: most likely some user data has to be here
-export interface SubscribeToFirebasePushesRequest {
-  token: string;
-}
-
 export interface ResetPasswordRequest extends GetVerifyCodeRequest {
   password: string;
-}
-
-export interface GetVerifyCodeResponse {
-  code: string;
-}
-
-export interface ResetPasswordResponse {
-  code: string;
 }
 
 export interface NotificationData {
@@ -370,7 +357,7 @@ export interface UpdateRecordingResponse {
 }
 
 export interface GetFilterRecordsQuery extends Document, GetAllRecordsQuery{
-  
+
 }
 
 export interface GetAllRecordsResponse {
