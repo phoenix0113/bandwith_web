@@ -90,10 +90,6 @@ export interface UpdatePhoneRequest {
   countryCode: string;
 }
 
-export interface ResetPasswordRequest extends GetVerifyCodeRequest {
-  password: string;
-}
-
 export interface NotificationData {
   title: string;
   body: string;
