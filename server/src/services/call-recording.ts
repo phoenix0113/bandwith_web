@@ -212,7 +212,7 @@ export class CallRecordingService {
         status: { $in: [ "public", "feature" ] }
       })
         .sort({
-          date: 'desc',
+          _id: 'desc',
           status: 'asc',
         })
         .skip((offset && +offset) || 0)
@@ -254,7 +254,7 @@ export class CallRecordingService {
       const amount = await CallRecording.countDocuments();
 
       const recordings = await CallRecording.find()
-        .sort({ date: 'desc' })
+        .sort({ _id: 'desc' })
         .skip((offset && + offset) || 0)
         .limit((limit && + limit) || 0)
         .populate({
@@ -325,6 +325,39 @@ export class CallRecordingService {
       });
 
       return { code: 200 };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async getRecordingsByUserID({ _id }: Document): Promise<GetAllRecordsResponse> {
+    try {
+      const amount = await CallRecording.countDocuments();
+
+      const recordings = await CallRecording.find({ user: _id })
+        .sort({ _id: 'desc' })
+        .populate({
+          path: 'user',
+          select: '-password -email -firebaseToken',
+        })
+        .populate({
+          path: 'participants',
+          select: '-password -email -firebaseToken',
+        });
+        
+      await Promise.all(
+        recordings.map(async (recordItem) => {
+          const signedUrl = await StorageHandler.get().signedUrl(
+            recordItem.list[0].fullKey
+          );
+
+          recordItem.list[0].url = signedUrl;
+
+          await recordItem.save();
+        })
+      );
+
+      return { recordings: Object.assign([], recordings), amount };
     } catch (err) {
       throw err;
     }

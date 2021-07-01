@@ -3,9 +3,7 @@ import { useHistory } from "react-router-dom";
 import {
   Profile, ProfileImage, ProfileText, ProfileName, ProfileStatus, OnlineOffImage,
 } from "./styled";
-
-import onlineImage from "../../../assets/images/admin/online.png";
-import offlineImage from "../../../assets/images/admin/offline.png";
+import tempProfileIcon from "../../../assets/images/admin/default_profile_image.png";
 
 interface Data {
   type: string;
@@ -36,7 +34,7 @@ const AdminUserListProfile = (props: Data):JSX.Element => {
 
   return (
     <Profile>
-      <ProfileImage src={image} />
+      <ProfileImage src={(image !== undefined) ? image : tempProfileIcon} />
       <ProfileText>
         <ProfileName>
           {userName}
