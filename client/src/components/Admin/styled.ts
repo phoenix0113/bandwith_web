@@ -405,6 +405,7 @@ export const AdminVideoListTitle = styled.div`
   color: #FFFFFF;
   margin-top: 47px;
   margin-bottom: 41px;
+  padding: 0 10px;
 `;
 
 export const AdminUserWrapper = styled.div`

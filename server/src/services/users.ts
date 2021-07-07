@@ -38,7 +38,7 @@ export class UsersService {
   static async getAllUsers(): Promise<GetAllUsersResponse> {
     const users = await User.find({
       role: "user",
-    });
+    }).sort({ name: 'asc' });
 
     return { users };
   }

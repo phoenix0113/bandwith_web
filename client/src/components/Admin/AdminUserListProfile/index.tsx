@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import {
-  Profile, ProfileImage, ProfileText, ProfileName, ProfileStatus, OnlineOffImage,
-} from "./styled";
-import tempProfileIcon from "../../../assets/images/admin/default_profile_image.png";
+import { Profile, ProfileImage, ProfileText, ProfileName } from "./styled";
+import tempProfileIcon from "../../../assets/images/call/default_profile_image.png";
 
 interface Data {
   type: string;
@@ -13,7 +11,6 @@ interface Data {
 
 const AdminUserListProfile = (props: Data):JSX.Element => {
   const history = useHistory();
-  const [onlineStatus, setOnlineStatus] = useState(true);
   const [image, setImage] = useState("");
   const [userName, setUserName] = useState("");
   const [pageType, setPageType] = useState("");
