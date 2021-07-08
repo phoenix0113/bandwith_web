@@ -284,6 +284,27 @@ export class CallRecordingService {
     }
   }
 
+  static async checkRecording({ _id, name }) {
+    try {
+      const recording = await CallRecording.findById(_id);
+      if (!recording) {
+        throw { status: 400, message: 'Recording not found' };
+      }
+
+      await CallRecording.findOneAndUpdate(
+        { _id },
+        { $set: { name } },
+        {
+          new: true,
+        }
+      );
+
+      return { code: 200 };
+    } catch (err) {
+      throw err;
+    }
+  }
+
   static async updateRecordingStatus({ _id, status }) {
     try {
       const recording = await CallRecording.findById(_id);

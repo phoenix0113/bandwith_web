@@ -18,6 +18,7 @@ const CallRecordingSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'user' },
   participants: [{ type: Schema.Types.ObjectId, ref: 'user' }],
   status: { type: String, default: "block" },
+  name: { type: String, default: Date.now().toString() },
 });
 
 CallRecordingSchema.pre('remove', async function <CallRecordingSchema>(next) {

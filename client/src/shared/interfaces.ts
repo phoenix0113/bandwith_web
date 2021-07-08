@@ -296,6 +296,11 @@ export interface PublishRecordingRequest {
   participants: string[];
 }
 
+export interface CheckRecordingNameRequest {
+  _id: string;
+  name: string;
+}
+
 export type RecordUser = ContactItem;
 
 export interface GetRecordResponse extends Document {
