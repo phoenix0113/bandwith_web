@@ -254,7 +254,7 @@ export class CallRecordingService {
       const amount = await CallRecording.countDocuments();
 
       const recordings = await CallRecording.find()
-        .sort({ _id: 'desc' })
+        .sort({ _id: 'desc', name: 'asc' })
         .skip((offset && + offset) || 0)
         .limit((limit && + limit) || 0)
         .populate({
@@ -365,7 +365,7 @@ export class CallRecordingService {
           path: 'participants',
           select: '-password -email -firebaseToken',
         });
-        
+
       await Promise.all(
         recordings.map(async (recordItem) => {
           const signedUrl = await StorageHandler.get().signedUrl(

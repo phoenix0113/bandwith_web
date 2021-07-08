@@ -8,7 +8,7 @@ import {
   AdminPageContent, AdminPageWrapper, AdminVideoContent, AdminVideoList, AdminVideoListStatus,
   AdminVideoWrapper, AdminVideoListTitle, AdminUserWrapper, AdminUserList, AdminVideoContentWrapper,
   AdminVideoListWrapper, AdminListActive, AdminListActiveBar, AdminVideoListStatusLabel, TextRight,
-  AdminVideoListStatusInput, AdminScrollContent,
+  AdminVideoListStatusInput, AdminScrollContent, ProfileName,
 } from "../../../components/Admin/styled";
 import { PAGE_TYPE } from "./types";
 import { AdminStorageContext } from "../../../services/admin";
@@ -167,6 +167,9 @@ const AdminVideoPage = observer((): JSX.Element => {
                       (currentUser?._id === video.user._id) ? (
                         <AdminVideoList key={video._id}>
                           <AdminUserVideoListPlayer url={video.list[0].url} />
+                          <ProfileName>
+                            {video.name}
+                          </ProfileName>
                           <AdminVideoListStatus>
                             <TextRight>
                               <AdminVideoListStatusLabel htmlFor={video._id}>

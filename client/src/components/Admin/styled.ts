@@ -139,20 +139,26 @@ export const VideoContentWrapper = styled.div`
 `;
 
 export const VideoPlayerContent = styled.div`
-  @media (min-width: 1110px) {
-    width: 50%;
-    max-width: 383px;
-  }
-  @media (min-width: 1440px) {
-    width: 33.3%;
-    max-width: 383px;
-  }
+  width: 200px;
+  height: 400px;
   border-radius: 32px;
   position: relative;
   padding: 15px;
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+export const ProfileName = styled.div`
+  font-family: 'Avenir-Kefa';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 22px;
+  color: #FFFFFF;
+  margin-left: 10px;
+  max-width: 250px;
+  overflow: hidden;
 `;
 
 export const VideoPlayer = styled.video`

@@ -10,7 +10,7 @@ export const VideoPlayerContent = styled.div`
 
 export const VideoPlayer = styled.video`
   border-radius: 5px;
-  width: auto;
+  width: 60px;
   height: 113px;
   border-radius: 12px;
   border: 1px solid white;
