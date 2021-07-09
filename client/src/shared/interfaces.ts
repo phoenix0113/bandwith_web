@@ -366,6 +366,10 @@ export interface GetAllRecordsResponse {
   recordings: Array<GetRecordResponse>;
 }
 
+export interface GetAllRecordingID {
+  ids: Array<String>;
+}
+
 export interface PipeId {
   pipeId: string;
 }

@@ -6,6 +6,7 @@ export const callRecordingsRouter = Router();
 
 callRecordingsRouter.post(`/${PATH.PUBLISH}`, CallRecordingsController.publishRecording);
 callRecordingsRouter.post(`/${PATH.CHECK}`, CallRecordingsController.checkRecording);
+callRecordingsRouter.post(`/${PATH.ALL}`, CallRecordingsController.getAllRecordingID);
 callRecordingsRouter.get('/:_id', CallRecordingsController.getRecordById);
 callRecordingsRouter.delete('/', CallRecordingsController.deleteRecordByCallId);
 callRecordingsRouter.get('/', CallRecordingsController.getAllRecords);

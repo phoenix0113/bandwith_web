@@ -11,6 +11,7 @@ import {
   GetAllRecordsQuery,
   GetAllRecordsResponse,
   ReportRequest,
+  GetAllRecordingID,
 } from '../../../client/src/shared/interfaces';
 import { conf } from '../config';
 import { CallInput } from '../../../client/src/shared/socket';
@@ -279,6 +280,25 @@ export class CallRecordingService {
       );
 
       return { recordings: Object.assign([], recordings), amount };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async getAllRecordingID(): Promise<GetAllRecordingID> {
+    try {
+      const ids: Array<String> = [];
+      const recordings = await CallRecording.find({
+        status: { $in: [ "public", "feature" ] },
+      });
+
+      await Promise.all(
+        recordings.map((item) => {
+          ids.push(item._id.toString());
+        })
+      );
+
+      return { ids };
     } catch (err) {
       throw err;
     }
