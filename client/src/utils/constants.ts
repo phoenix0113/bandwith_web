@@ -14,7 +14,7 @@ console.log(`> Using ${SERVER_BASE_URL} server`);
 
 export const COMMENTS_LOAD_LIMIT = 20;
 
-export const RECORDINGS_LOAD_LIMIT = 5;
+export const RECORDINGS_LOAD_LIMIT = 11;
 
 export const LOAD_MORE_RECORDINGS_THRESHOLD = 3;
 
