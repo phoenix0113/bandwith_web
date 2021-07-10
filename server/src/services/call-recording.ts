@@ -287,7 +287,7 @@ export class CallRecordingService {
 
   static async getAllRecordingID(): Promise<GetAllRecordingID> {
     try {
-      const ids: Array<String> = [];
+      const ids: Array<string> = [];
       const recordings = await CallRecording.find({
         status: { $in: [ "public", "feature" ] },
       });
@@ -305,6 +305,16 @@ export class CallRecordingService {
   }
 
   static async checkRecording({ _id, name }) {
+    let timestamp = Date.now();
+    let date = new Date(timestamp);
+
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let seconds = date.getSeconds();
+
     try {
       const recording = await CallRecording.findById(_id);
       if (!recording) {
@@ -313,7 +323,7 @@ export class CallRecordingService {
 
       await CallRecording.findOneAndUpdate(
         { _id },
-        { $set: { name } },
+        { $set: { "name" : name + " " + year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds } },
         {
           new: true,
         }

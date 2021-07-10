@@ -22,7 +22,7 @@ export class CallRecordingsController extends CrudController {
     await CallRecordingsController.processRequest(req, res, async () => {
       res.send(
         await CallRecordingService.checkRecording(
-          parseQuery(req.query) as CheckRecordingNameRequest
+          parseQuery(req.body) as CheckRecordingNameRequest
         )
       );
     });
