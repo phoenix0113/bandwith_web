@@ -385,7 +385,7 @@ export class CallRecordingService {
     try {
       const amount = await CallRecording.countDocuments();
 
-      const recordings = await CallRecording.find({ user: _id })
+      const recordings = await CallRecording.find({ user: _id, status: { $in: [ "public", "featured" ]} })
         .sort({ _id: 'desc' })
         .populate({
           path: 'user',
