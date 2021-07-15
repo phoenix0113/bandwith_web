@@ -386,3 +386,7 @@ export interface SendLogsRequest {
 export interface LogOnServerRequest {
   log: string;
 }
+
+export interface ResetPasswordResponse {
+  code: string;
+}

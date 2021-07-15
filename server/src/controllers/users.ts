@@ -13,9 +13,7 @@ export class UsersController extends CrudController {
 
   static async registerUser(req: Request, res: Response) {
     await UsersController.processRequest(req, res, async () => {
-      await UsersService.createUser(req.body);
-
-      res.send({ success: true });
+      res.send(await UsersService.registerUser(req.body));
     });
   }
 

@@ -73,6 +73,13 @@ export class UsersService {
     return { _id: u._id.toString() };
   }
 
+  static async registerUser(user: RegistrationRequest): Promise<AuthResponse> {
+    const { _id } = await UsersService.createUser(user);
+    return {
+      token: UsersService.generateServerToken(_id.toString()),
+    };
+  }
+
   static async oauthApple(user: OAuthAppleRequest) {
     let u = await User.findOne({
       name: user.user,
