@@ -435,6 +435,7 @@ export class UsersService {
     user.phone = phone;
     user.countryCode = countryCode;
     user.verified = true;
+    user.available = true;
 
     await user.save();
 
