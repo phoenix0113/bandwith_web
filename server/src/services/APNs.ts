@@ -1,7 +1,7 @@
 import apn from 'apn';
 import path from 'path';
 import { LobbyCallEventData } from '../../../client/src/shared/socket';
-import { USER_IS_UNAVAILABLE } from '../../../client/src/shared/errors';
+// import { USER_IS_UNAVAILABLE } from '../../../client/src/shared/errors';
 
 import { conf } from '../config/config';
 
@@ -219,12 +219,12 @@ export class APNService {
 
       console.log(`[APN] found deviceID ${targetAPN?.deviceId}`);
 
-      if (!targetAPN.available) {
-        console.log(
-          `[APN] Selected user is unavailable right now. Throwing and error to the client...`
-        );
-        throw new Error(USER_IS_UNAVAILABLE);
-      }
+      // if (!targetAPN.available) {
+      //   console.log(
+      //     `[APN] Selected user is unavailable right now. Throwing and error to the client...`
+      //   );
+      //   throw new Error(USER_IS_UNAVAILABLE);
+      // }
 
       if (!isUserPopulated(targetAPN.user)) {
         throw new Error(
