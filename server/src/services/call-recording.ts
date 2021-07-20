@@ -64,13 +64,23 @@ export class CallRecordingService {
   }
 
   static async publishRecording(
-    { callId, participants }: PublishRecordingRequest,
+    { callId, participants, recordingName }: PublishRecordingRequest,
     user: string
   ) {
     try {
+      let timestamp = Date.now();
+      let date = new Date(timestamp);
+
+      let year = date.getFullYear();
+      let month = date.getMonth() + 1;
+      let day = date.getDate();
+      let hours = date.getHours();
+      let minutes = date.getMinutes();
+      let seconds = date.getSeconds();
+
       const rec = await CallRecording.findOneAndUpdate(
         { callId },
-        { $set: { user, participants } },
+        { $set: { user, participants, "name" : recordingName + " " + year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds } },
         {
           new: true,
         }
@@ -299,37 +309,6 @@ export class CallRecordingService {
       );
 
       return { ids };
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  static async checkRecording({ _id, name }) {
-    let timestamp = Date.now();
-    let date = new Date(timestamp);
-
-    let year = date.getFullYear();
-    let month = date.getMonth() + 1;
-    let day = date.getDate();
-    let hours = date.getHours();
-    let minutes = date.getMinutes();
-    let seconds = date.getSeconds();
-
-    try {
-      const recording = await CallRecording.findById(_id);
-      if (!recording) {
-        throw { status: 400, message: 'Recording not found' };
-      }
-
-      await CallRecording.findOneAndUpdate(
-        { _id },
-        { $set: { "name" : name + " " + year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds } },
-        {
-          new: true,
-        }
-      );
-
-      return { code: 200 };
     } catch (err) {
       throw err;
     }

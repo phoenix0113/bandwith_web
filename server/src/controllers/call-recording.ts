@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { CrudController } from './crudController';
 import { CallRecordingService, RoomCommentsService } from '../services';
-import { GetAllRecordsQuery, UpdateRecordingQuery, CheckRecordingNameRequest } from '../../../client/src/shared/interfaces';
+import { GetAllRecordsQuery, UpdateRecordingQuery } from '../../../client/src/shared/interfaces';
 import { parseQuery } from '../config';
 
 export class CallRecordingsController extends CrudController {
@@ -15,16 +15,6 @@ export class CallRecordingsController extends CrudController {
       await RoomCommentsService.setRecordingIdToComments(req.body.callId, _id);
 
       res.send({ _id: _id });
-    });
-  }
-
-  static async checkRecording(req: Request, res: Response) {
-    await CallRecordingsController.processRequest(req, res, async () => {
-      res.send(
-        await CallRecordingService.checkRecording(
-          parseQuery(req.body) as CheckRecordingNameRequest
-        )
-      );
     });
   }
 
