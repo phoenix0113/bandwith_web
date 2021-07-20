@@ -294,7 +294,7 @@ export interface CreateCallRecordingRequest {
 export interface PublishRecordingRequest {
   callId: string;
   participants: string[];
-  recordingName: string;
+  recordingName?: string;
 }
 
 export type RecordUser = ContactItem;
@@ -306,6 +306,7 @@ export interface GetRecordResponse extends Document {
   pipeId: string;
   callId: string;
   participants?: RecordUser[];
+  authorList?: RecordUser[];
   user?: RecordUser;
 }
 

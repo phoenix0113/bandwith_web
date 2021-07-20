@@ -80,7 +80,12 @@ export class CallRecordingService {
 
       const rec = await CallRecording.findOneAndUpdate(
         { callId },
-        { $set: { user, participants, "name" : recordingName + " " + year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds } },
+        { $set: {
+          user,
+          participants,
+          "name" : recordingName + " " + year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds,
+          "authorList": [user, participants[0]],
+        }},
         {
           new: true,
         }
