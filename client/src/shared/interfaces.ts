@@ -49,6 +49,11 @@ export interface ReportRequest {
   body: string;
 }
 
+export interface DeleteCallRecordingRequest {
+  recordId: string;
+  authorId: string;
+}
+
 export interface ImportedContactItem {
   recordId: string;
   name: string;
@@ -314,6 +319,7 @@ export interface CallRecording extends Document, CreateCallRecordingRequest {
   list: ListRecordingItem[];
   user?: string;
   participiants?: string[];
+  authorList?: string[];
 }
 
 export interface BlockRecordingResponse {

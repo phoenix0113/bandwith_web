@@ -12,6 +12,7 @@ import {
   GetAllRecordsResponse,
   ReportRequest,
   GetAllRecordingID,
+  DeleteCallRecordingRequest,
 } from '../../../client/src/shared/interfaces';
 import { conf } from '../config';
 import { CallInput } from '../../../client/src/shared/socket';
@@ -365,11 +366,41 @@ export class CallRecordingService {
     }
   }
 
+  static async deleteRecord({ recordId, authorId }: DeleteCallRecordingRequest) {
+    try {
+      const recording = await CallRecording.findById(recordId);
+
+      if (!recording) {
+        throw { status: 400, message: 'Recording not found' };
+      }
+      
+      if (recording.authorList?.length === 1) {
+        await CallRecording.deleteOne({
+          "_id": recordId,
+        });
+
+        return { code: 200 };
+      } else {
+        if (recording.authorList?.[0] === authorId) {
+          recording.authorList?.splice(0, 1);
+        } else {
+          recording.authorList?.splice(1, 1);
+        }
+
+        recording.save();
+      }
+      
+      return { code: 200 };
+    } catch (err) {
+      throw err;
+    }
+  }
+
   static async getRecordingsByUserID({ _id }: Document): Promise<GetAllRecordsResponse> {
     try {
       const amount = await CallRecording.countDocuments();
 
-      const recordings = await CallRecording.find({ user: _id, status: { $in: [ "public", "featured" ]} })
+      const recordings = await CallRecording.find({ authorList: { $in: [_id] }, status: { $in: [ "public", "featured" ]} })
         .sort({ _id: 'desc' })
         .populate({
           path: 'user',

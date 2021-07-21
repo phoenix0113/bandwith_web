@@ -87,6 +87,12 @@ export class CallRecordingsController extends CrudController {
     });
   }
 
+  static async deleteRecord(req: Request, res: Response) {
+    await CallRecordingsController.processRequest(req, res, async () => {
+      res.send(await CallRecordingService.deleteRecord(req.body));
+    });
+  }
+
   static async getRecordingsByUserID(req: Request, res: Response) {
     await CallRecordingsController.processRequest(req, res, async () => {
       res.send(
