@@ -26,6 +26,7 @@ import {
   GetVerifyCodeRequest,
   GetVerifyCodeResponse,
   OAuthAppleRequest,
+  UpdateUserProfileRequest,
 } from '../../../client/src/shared/interfaces';
 import { conf } from '../config';
 
@@ -168,6 +169,20 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  static async updateProfile({ id, photoUrl, username }: UpdateUserProfileRequest) {
+    const user = await User.findById(id);
+
+    if (!user) {
+      throw { status: 400, message: 'User with such credentials not found' };
+    }
+
+    user.imageUrl = photoUrl;
+    user.name = username;
+    user.save();
+
+    return { code: 200 };
   }
 
   // TODO: if this function will ever be used, need to specify platform to return valid secret and id

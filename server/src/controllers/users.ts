@@ -41,6 +41,14 @@ export class UsersController extends CrudController {
     });
   }
 
+  static async updateProfile(req: Request, res: Response) {
+    await UsersController.processRequest(req, res, async () => {
+      res.send(
+        await UsersService.updateProfile(req.body)
+      );
+    });
+  }
+
   static async getOAuthCreds(req: Request, res: Response) {
     await UsersController.processRequest(req, res, async () => {
       res.send(UsersService.getOAuthCreds());

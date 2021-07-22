@@ -13,6 +13,8 @@ userRouter.get(`/${PATH.USER}/:_id`, UsersController.getUserData);
 
 userRouter.post(`/${PATH.PROFILE}`, UsersController.getProfileData);
 
+userRouter.post(`/${PATH.PROFILE}/${PATH.UPDATE}`, UsersController.updateProfile);
+
 userRouter.get(`/${PATH.OAUTH}/${PATH.CREDS}`, UsersController.getOAuthCreds);
 
 userRouter.post(`/${PATH.OAUTH}/${PATH.GOOGLE}`, UsersController.oauthGoogle);
