@@ -42,6 +42,7 @@ const main = async () => {
   app.use(`/${PATH.API}/${PATH.RECORD}/*`, jwtProtect);
   app.use(`/${PATH.API}/${PATH.RECORD}`, jwtProtect);
   app.use(`/${PATH.API}`, router);
+  app.use(`/${PATH.SHARED}`, router);
 
   app.use(express.static(path.join(__dirname, conf.frontendPath)));
 

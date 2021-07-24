@@ -1,5 +1,5 @@
 import { stringify } from "query-string";
-import { instance } from "../instance";
+import { instance, shareinstance } from "../instance";
 import { IAxiosError } from "../interfaces";
 import { getError } from "../utils";
 
@@ -39,6 +39,17 @@ export const publishRecording = async (
 export const getRecordingById = async (id: string): Promise<GetRecordResponse> => {
   try {
     const response = await instance.get<GetRecordResponse>(`${API.RECORD}/${id}`);
+
+    return response.data;
+  } catch (err) {
+    const { response } = err as IAxiosError;
+    throw new Error(getError(response));
+  }
+};
+
+export const getSharedRecordingById = async (id: string): Promise<GetRecordResponse> => {
+  try {
+    const response = await shareinstance.get<GetRecordResponse>(`${API.SHARED}/${id}`);
 
     return response.data;
   } catch (err) {

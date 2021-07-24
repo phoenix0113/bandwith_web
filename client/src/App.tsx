@@ -1,5 +1,5 @@
 import { Suspense, lazy, useContext, useRef, useState } from "react";
-import { Switch, useLocation } from "react-router-dom";
+import { Switch, useLocation, Route } from "react-router-dom";
 import { Utils } from "avcore/client";
 import { observer } from "mobx-react";
 
@@ -31,6 +31,7 @@ const LiveCallPage = lazy(() => import("./pages/call/live"));
 const NotificationPage = lazy(() => import("./pages/notifications"));
 const ContactListPage = lazy(() => import("./pages/contacts"));
 const FeedPage = lazy(() => import("./pages/feed"));
+const SharedPage = lazy(() => import("./pages/shared"));
 const AdminLoginPage = lazy(() => import("./pages/admin/login"));
 const AdminHelpPage = lazy(() => import("./pages/admin/help"));
 const AdminDashboardPage = lazy(() => import("./pages/admin/dashboard"));
@@ -71,6 +72,7 @@ export const App = observer((): JSX.Element => {
           <ProtectedRoute exact path={Routes.NOTIFICATIONS} Component={NotificationPage} />
           <ProtectedRoute exact path={Routes.CONTACT_LIST} Component={ContactListPage} />
           <ProtectedRoute exact path={Routes.FEED} Component={FeedPage} />
+          <Route exact path={Routes.SHARED} component={SharedPage} />
           <AdminRouterComponent exact path={Routes.ADMIN_LOGIN} Component={AdminLoginPage} />
           <AdminRouterComponent exact path={Routes.ADMIN_HELP} Component={AdminHelpPage} />
           <AdminRouterComponent

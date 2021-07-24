@@ -9,6 +9,7 @@ export enum Routes {
   OUTGOING_CALL="/call/outgoing",
   LIVE_CALL="/call/live",
   FEED="/feed",
+  SHARED="/shared/:id",
   ADMIN="/admin",
   ADMIN_LOGIN="/admin/login",
   ADMIN_HELP="/admin/help",

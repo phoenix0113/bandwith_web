@@ -59,7 +59,7 @@ const FeedPage = observer((): JSX.Element => {
 
     const shareCallData: ShareData = {
       text: `Check out ${recording.user?.name}'s recording`,
-      url: `${SERVER_BASE_URL}${Routes.FEED}?${Params.RECORDING_ID}=${recording._id}`,
+      url: `${SERVER_BASE_URL}${Routes.SHARED}/${recording._id}`,
     };
 
     navigator.share(shareCallData);
