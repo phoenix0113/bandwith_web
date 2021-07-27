@@ -1,12 +1,20 @@
 import { useRef, useState, useEffect, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import { observer } from "mobx-react";
 
+import { Routes } from "../../utils/routes";
+import { vibrate } from "../../utils/vibration";
 import { SharedStorageContext } from "../../services/shared";
-import { PageWrapper, COLORS } from "../../components/styled";
+import {
+  PageWrapper, NavigationBar, NavigationIcon, CenterItem, LeftItem, RightItem, COLORS,
+} from "../../components/styled";
 import { FeedPlayer, FeedPlayerToolTip, ToolTipImgWrapper } from "../feed/styled";
 import playIcon from "../../assets/images/feed/play.svg";
+import backIcon from "../../assets/images/auth/back.svg";
+import bandwithLogo from "../../assets/images/Bandwith.svg";
 
 const SharedPage = observer((props): JSX.Element => {
+  const history = useHistory();
   const {
     sharedRecording, sharedRecordingID, setShareCurrentRecordingID,
   } = useContext(SharedStorageContext);
@@ -46,6 +54,20 @@ const SharedPage = observer((props): JSX.Element => {
 
   return (
     <PageWrapper color={COLORS.MAIN_LIGHT}>
+      <NavigationBar position="absolute">
+        <LeftItem>
+          <NavigationIcon
+            alt="Feed"
+            src={backIcon}
+            onClick={() => {
+              vibrate("click");
+              history.push(Routes.LOGIN);
+            }}
+          />
+        </LeftItem>
+        <CenterItem>Shared</CenterItem>
+        <RightItem />
+      </NavigationBar>
       <FeedPlayerToolTip>
         <ToolTipImgWrapper
           src={playIcon}
@@ -54,13 +76,14 @@ const SharedPage = observer((props): JSX.Element => {
         />
       </FeedPlayerToolTip>
 
-      {sharedRecording?.list && (
+      {!!sharedRecording?.list?.length && (
         <FeedPlayer
           loop
           playsInline
           ref={playerRef}
           src={sharedRecording.list[0].url}
           onClick={changePlaybackStatus}
+          poster={bandwithLogo}
         />
       )}
     </PageWrapper>
