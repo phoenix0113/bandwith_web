@@ -10,7 +10,7 @@ export const conf = {
   },
   cloud: {
     token:
-      'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRJZCI6IjVmOGQ1NWJhYjBjYTQ1ZTlmZjI0ZjYzNiIsImlhdCI6MTYwMzEwMTM3OH0.-YaT6M42HFG2IsCv2vau0yGISQuRlzvlEdE-LI4ZyXQwgFXG3zzioCSdZIC0X5gH2muz9yUYQuflJakI-NcQzw',
+      'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRJZCI6IjYwZmZkYWFjZmJkOTA4MDAyNjlkM2FmZCIsImlhdCI6MTYyNzM4MDQwOH0.SVWBSEHZDQn7uOSzjComaiUnwtlpdqyPF9sBTC_YiHq7_CBXrUa6w5I5ufcSRanmaBOVF7CxLozYDfJd3ODUpw',
     url: 'https://mesh-admin.codeda.com',
   },
   oauth: {
