@@ -9,3 +9,4 @@ featuredRouter.post('/', FeaturedController.addFeaturedRecording);
 featuredRouter.delete('/', FeaturedController.removeFeaturedRecording);
 featuredRouter.post(`/${PATH.CHECK}/:_id`, FeaturedController.checkFeaturedRecording);
 featuredRouter.post(`/${PATH.UPDATE}`, FeaturedController.updateFeaturedRecording);
+featuredRouter.post(`/${PATH.STATUS}`, FeaturedController.getFeaturedRecording);

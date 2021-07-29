@@ -95,4 +95,26 @@ export class FeaturedService {
       throw err;
     }
   }
+
+  static async getFeaturedRecording({
+    user: user,
+    callrecording: callrecording,
+  }: CreateBlockRecordingRequest): Promise<BasicResponse> {
+    try {
+      const featuredrecording = await FeaturedRecording.findOne({
+        user: user,
+        callrecording: callrecording
+      });
+
+      let status = false;
+
+      if (featuredrecording) {
+        status = true;
+      }
+
+      return { success: status };
+    } catch (err) {
+      throw err;
+    }
+  }
 }

@@ -53,4 +53,11 @@ export class FeaturedController extends CrudController {
       );
     });
   }
+
+  // function for update featured status of call recording
+  static async getFeaturedRecording(req: Request, res: Response) {
+    await FeaturedController.processRequest(req, res, async () => {
+      res.send(await FeaturedService.getFeaturedRecording(req.body));
+    });
+  }
 }
