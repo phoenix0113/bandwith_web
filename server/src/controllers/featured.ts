@@ -37,4 +37,20 @@ export class FeaturedController extends CrudController {
       );
     });
   }
+
+  // function for update featured status of call recording
+  static async updateFeaturedRecording(req: Request, res: Response) {
+    await FeaturedController.processRequest(req, res, async () => {
+      res.send(await FeaturedService.updateFeaturedRecording(req.body));
+    });
+  }
+
+  // function for update featured status of call recording
+  static async checkFeaturedRecording(req: Request, res: Response) {
+    await FeaturedController.processRequest(req, res, async () => {
+      res.send(
+        await FeaturedService.checkFeaturedRecording({ _id: req.params._id })
+      );
+    });
+  }
 }

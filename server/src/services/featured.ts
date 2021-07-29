@@ -1,5 +1,8 @@
 import { FeaturedRecording } from "../models";
-import { BlockRecordingResponse, UpdateRecordingResponse } from "../../../client/src/shared/interfaces";
+import {
+  BlockRecordingResponse, UpdateRecordingResponse, Document, CreateBlockRecordingRequest,
+  BasicResponse,
+} from "../../../client/src/shared/interfaces";
 
 export class FeaturedService {
   static async getFeaturedRecordingsByID({
@@ -48,5 +51,48 @@ export class FeaturedService {
     await recording.remove();
 
     return { code: 200 };
+  }
+
+  static async checkFeaturedRecording({ _id }: Document): Promise<UpdateRecordingResponse> {
+    try {
+      const featuredrecordings = await FeaturedRecording.find({
+        callrecording: _id
+      });
+
+      return { code: featuredrecordings.length };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async updateFeaturedRecording({
+    user: user,
+    callrecording: callrecording,
+  }: CreateBlockRecordingRequest): Promise<BasicResponse> {
+    try {
+      const featuredrecording = await FeaturedRecording.findOne({
+        user: user,
+        callrecording: callrecording
+      });
+
+      let status = false;
+      
+      if(featuredrecording) {
+        await this.removeFeatured({
+          user: user,
+          callrecording: callrecording,
+        });
+      } else {
+        await this.addFeatured({
+          user: user,
+          callrecording: callrecording,
+        });
+        status = true;
+      }
+
+      return { success: status };
+    } catch (err) {
+      throw err;
+    }
   }
 }
