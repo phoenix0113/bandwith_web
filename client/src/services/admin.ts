@@ -6,7 +6,7 @@ import { GetRecordResponse, User } from "../shared/interfaces";
 import {
   getUserList, getVideoList, updateRecordingStatus, updateUserStatusByID, addBlockRecording,
   getUnblockedVideosByUserID, removeBlockRecording, getAvailableVideoList, getRecordingByID,
-  addFeaturedRecording, removeFeaturedRecording, getFeaturedVideosByUserID,
+  addFeaturedRecording, removeFeaturedRecording, getFeaturedVideosByUserID, deleteVideo,
 } from "../axios/routes/admin";
 import { GlobalServiceStatus } from "../interfaces/global";
 import { VIDEO_LOAD_LIMIT } from "../utils/constants";
@@ -63,6 +63,7 @@ class AdminMobxService {
 
   // function for get all videos
   private loadAllVideos = async () => {
+    this.videos = [];
     try {
       const { recordings } = await getVideoList({
         offset: this.videos.length,
@@ -125,6 +126,18 @@ class AdminMobxService {
         _id,
         status,
       });
+    } catch (err) {
+      showErrorNotification(err.message);
+    }
+  };
+
+  // function for delete status of video
+  public deleteVideo = async (
+    callId: string,
+  ) => {
+    try {
+      await deleteVideo(callId);
+      this.loadAllVideos();
     } catch (err) {
       showErrorNotification(err.message);
     }

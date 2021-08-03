@@ -410,7 +410,6 @@ export const AdminVideoListTitle = styled.div`
   line-height: 40px;
   color: #FFFFFF;
   margin-top: 47px;
-  margin-bottom: 41px;
   padding: 0 10px;
 `;
 
@@ -522,8 +521,19 @@ export const AdminVideoManageWrapper = styled.div`
 `;
 
 export const AdminScrollContent = styled.div`
-  height: calc(100vh - 210px);
+  height: calc(100vh - 240px);
   overflow-y: auto;
   overflow-x: hidden;
   padding: 0 10px;
+`;
+
+export const AdminSearch = styled.div`
+  width: 50%;
+  margin-left: auto;
+  margin-right: 20px;
+  padding: 10px 0;
+`;
+
+export const DeleteIcon = styled.img`
+  color: #ffffff;
 `;

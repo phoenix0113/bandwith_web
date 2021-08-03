@@ -53,6 +53,7 @@ const AdminUsersPage = observer((): JSX.Element => {
                       <AdminUserListProfile
                         imageUrl={user.imageUrl}
                         name={user.name}
+                        email={user.email}
                         type="none"
                       />
                     </div>

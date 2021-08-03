@@ -55,6 +55,7 @@ const AdminManagePage = observer((): JSX.Element => {
                       <AdminUserListProfile
                         imageUrl={video.user.imageUrl}
                         name={video.user.name}
+                        email={video.user.email}
                         type="all"
                       />
                     </div>

@@ -23,6 +23,17 @@ export const ProfileName = styled.div`
   font-size: 18px;
   line-height: 22px;
   color: #FFFFFF;
+  padding: 5px 0;
+`;
+
+export const ProfileEmail = styled.div`
+  font-family: 'Avenir-Kefa';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 22px;
+  color: #FFFFFF;
+  padding: 5px 0;
 `;
 
 export const ProfileStatus = styled.div`

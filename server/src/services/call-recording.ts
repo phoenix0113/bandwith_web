@@ -18,6 +18,7 @@ import { conf } from '../config';
 import { CallInput } from '../../../client/src/shared/socket';
 import { SocketServer } from './socket-server';
 import { StorageHandler } from './storage';
+import { FeaturedService } from './featured';
 
 export class CallRecordingService {
   static cloudApi: CloudApi = new CloudApi(conf.cloud.url, conf.cloud.token);
@@ -257,6 +258,8 @@ export class CallRecordingService {
         })
       );
 
+      recordings.sort((a, b) => (FeaturedService.checkFeaturedRecording(a._id) >  FeaturedService.checkFeaturedRecording(b._id)) ? 1 : -1);
+
       return { recordings: Object.assign([], recordings), amount };
     } catch (err) {
       throw err;
@@ -294,6 +297,8 @@ export class CallRecordingService {
           await recordItem.save();
         })
       );
+      
+      recordings.sort((a, b) => (FeaturedService.checkFeaturedRecording(a._id) >  FeaturedService.checkFeaturedRecording(b._id)) ? 1 : -1);
 
       return { recordings: Object.assign([], recordings), amount };
     } catch (err) {
@@ -422,6 +427,8 @@ export class CallRecordingService {
           await recordItem.save();
         })
       );
+
+      recordings.sort((a, b) => (FeaturedService.checkFeaturedRecording(a._id) >  FeaturedService.checkFeaturedRecording(b._id)) ? 1 : -1);
 
       return { recordings: Object.assign([], recordings), amount };
     } catch (err) {

@@ -68,6 +68,16 @@ export const updateRecordingStatus = async (
   }
 };
 
+export const deleteVideo = async (callId: string): Promise<UpdateRecordingResponse> => {
+  try {
+    const response = await instance.delete<UpdateRecordingResponse>(`${API.RECORD}/${callId}`);
+    return response.data;
+  } catch (err) {
+    const { response } = err as IAxiosError;
+    throw new Error(getError(response));
+  }
+};
+
 export const updateUserStatusByID = async (
   query: UpdateRecordingQuery,
 ): Promise<UpdateRecordingResponse> => {

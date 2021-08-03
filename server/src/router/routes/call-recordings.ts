@@ -10,6 +10,7 @@ callRecordingsRouter.get('/:_id', CallRecordingsController.getRecordById);
 callRecordingsRouter.delete('/', CallRecordingsController.deleteRecordByCallId);
 callRecordingsRouter.get('/', CallRecordingsController.getAllRecords);
 callRecordingsRouter.post('/', CallRecordingsController.updateRecordingStatus);
+callRecordingsRouter.delete('/:_id', CallRecordingsController.deleteRecordingByID);
 callRecordingsRouter.post(`/${PATH.AVAILABLE}`, CallRecordingsController.getAvailableRecords);
 callRecordingsRouter.post(`/${PATH.REPORT}`, CallRecordingsController.sendReport);
 callRecordingsRouter.post(`/${PATH.DELETE}`, CallRecordingsController.deleteRecord);
