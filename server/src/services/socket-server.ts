@@ -76,7 +76,7 @@ import {
   NotificationsService,
   StreamMixer,
   RoomCommentsService,
-  CallRecordingService,
+  // CallRecordingService,
 } from '../services';
 import { Comment } from '../../../client/src/shared/interfaces';
 import {
@@ -168,7 +168,7 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
             'got message',
             socket,
             action,
-            JSON.stringify(json)
+            JSON.stringify({ ...json, self_image: '' })
           );
           let response = (data) => {
             if (!callback) {
@@ -778,10 +778,11 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     const targetSocket = this.lobby.get(target_id);
 
     try {
-      const mutualInvitationId = await NotificationsService.defineMutualInvitations(
-        target_id,
-        notification.user._id
-      );
+      const mutualInvitationId =
+        await NotificationsService.defineMutualInvitations(
+          target_id,
+          notification.user._id
+        );
 
       if (mutualInvitationId) {
         this.acceptMutualContactRequest(
@@ -885,9 +886,9 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     const callRoom = SocketServer.callRoom(callId);
     const socketRoom = this.io.sockets.adapter.rooms[callRoom];
     return {
-      participants: Object.keys(
-        (socketRoom && socketRoom.sockets) || {}
-      ).map((socketId) => ({ socketId })),
+      participants: Object.keys((socketRoom && socketRoom.sockets) || {}).map(
+        (socketId) => ({ socketId })
+      ),
     };
   }
   async [ACTIONS.JOIN_CALL](
@@ -1268,13 +1269,9 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
       await mixer.close();
       this.mixers.delete(callId);
 
-      await mixer.saveCallRecord();
-
-      const recordId = setTimeout(() => {
-        CallRecordingService.deleteRecording({ callId: mixer.callId });
-      }, conf.publishTimeOut);
-
-      SocketServer.hangRecords.set(callId, recordId);
+      setTimeout(() => {
+        mixer.saveCallRecord();
+      }, 5000);
     }
   }
   async getMixerByCall({
@@ -1350,7 +1347,7 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
     await ContactsService.createContact(
       { contactPerson: target_id },
       notification.user._id,
-      "approved",
+      'approved'
     );
 
     await NotificationsService.deleteNotification({
@@ -1374,10 +1371,11 @@ export class SocketServer implements Record<ACTIONS, ApiRequest> {
       notification.user._id
     );
 
-    const notificationToReceiver = await NotificationsService.createNotification(
-      receiverNotificationData,
-      target_id
-    );
+    const notificationToReceiver =
+      await NotificationsService.createNotification(
+        receiverNotificationData,
+        target_id
+      );
 
     socket.emit(CLIENT_ONLY_ACTIONS.NOTIFICATION, {
       _id: notificationToSender._id,

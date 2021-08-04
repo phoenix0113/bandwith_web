@@ -16,7 +16,6 @@ import {
 } from '../../../client/src/shared/interfaces';
 import { conf } from '../config';
 import { CallInput } from '../../../client/src/shared/socket';
-import { SocketServer } from './socket-server';
 import { StorageHandler } from './storage';
 import { FeaturedService } from './featured';
 
@@ -46,6 +45,7 @@ export class CallRecordingService {
 
       const rec = new CallRecording({ pipeId, list, callId, status });
       await rec.save();
+      await CallRecordingService.replaceRecording(rec);
 
       return { _id: rec._id.toString() };
     } catch (err) {
@@ -70,6 +70,7 @@ export class CallRecordingService {
     user: string
   ) {
     try {
+      console.log('publishing/n\n\n');
       let timestamp = Date.now();
       let date = new Date(timestamp);
 
@@ -82,25 +83,31 @@ export class CallRecordingService {
 
       const rec = await CallRecording.findOneAndUpdate(
         { callId },
-        { $set: {
-          user,
-          participants,
-          "name" : recordingName + " " + year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds,
-          "authorList": [user, participants[0]],
-        }},
+        {
+          $set: {
+            user,
+            participants,
+            name:
+              recordingName +
+              ' ' +
+              year +
+              '-' +
+              month +
+              '-' +
+              day +
+              ' ' +
+              hours +
+              ':' +
+              minutes +
+              ':' +
+              seconds,
+            authorList: [user, participants[0]],
+          },
+        },
         {
           new: true,
         }
       );
-
-      const recordTimer = SocketServer.hangRecords.get(callId);
-      if (recordTimer) {
-        clearTimeout(recordTimer);
-      }
-
-      if (rec) {
-        CallRecordingService.replaceRecording(rec);
-      }
 
       return { _id: rec?._id.toString() };
     } catch (err) {
@@ -117,9 +124,7 @@ export class CallRecordingService {
   }
 
   static async replaceRecording(rec: ICallRecording) {
-    const list = await CallRecordingService.getListRecordingByPipeId({
-      pipeId: rec.pipeId,
-    });
+    const { list } = rec;
 
     const [fileName] = list[0].fullKey.split('.');
     const mkvToRemove = list[0].key;
@@ -227,7 +232,7 @@ export class CallRecordingService {
   }: GetAllRecordsQuery): Promise<GetAllRecordsResponse> {
     try {
       const recordings = await CallRecording.find({
-        status: { $in: [ "public", "feature" ] }
+        status: { $in: ['public', 'feature'] },
       })
         .sort({
           _id: 'desc',
@@ -258,7 +263,12 @@ export class CallRecordingService {
         })
       );
 
-      recordings.sort((a, b) => (FeaturedService.checkFeaturedRecording(a._id) >  FeaturedService.checkFeaturedRecording(b._id)) ? 1 : -1);
+      recordings.sort((a, b) =>
+        FeaturedService.checkFeaturedRecording(a._id) >
+        FeaturedService.checkFeaturedRecording(b._id)
+          ? 1
+          : -1
+      );
 
       return { recordings: Object.assign([], recordings), amount };
     } catch (err) {
@@ -275,8 +285,8 @@ export class CallRecordingService {
 
       const recordings = await CallRecording.find()
         .sort({ _id: 'desc', name: 'asc' })
-        .skip((offset && + offset) || 0)
-        .limit((limit && + limit) || 0)
+        .skip((offset && +offset) || 0)
+        .limit((limit && +limit) || 0)
         .populate({
           path: 'user',
           select: '-password -email -firebaseToken',
@@ -297,8 +307,13 @@ export class CallRecordingService {
           await recordItem.save();
         })
       );
-      
-      recordings.sort((a, b) => (FeaturedService.checkFeaturedRecording(a._id) >  FeaturedService.checkFeaturedRecording(b._id)) ? 1 : -1);
+
+      recordings.sort((a, b) =>
+        FeaturedService.checkFeaturedRecording(a._id) >
+        FeaturedService.checkFeaturedRecording(b._id)
+          ? 1
+          : -1
+      );
 
       return { recordings: Object.assign([], recordings), amount };
     } catch (err) {
@@ -310,7 +325,7 @@ export class CallRecordingService {
     try {
       const ids: Array<string> = [];
       const recordings = await CallRecording.find({
-        status: { $in: [ "public", "feature" ] },
+        status: { $in: ['public', 'feature'] },
       });
 
       await Promise.all(
@@ -350,13 +365,13 @@ export class CallRecordingService {
     try {
       let api_key = process.env['MAILGUN_KEY'];
       let domain = process.env['MAILGUN_DOMAIN'];
-      let mailgun = require('mailgun-js')({apiKey: api_key, domain: domain});
+      let mailgun = require('mailgun-js')({ apiKey: api_key, domain: domain });
 
       let data = {
         from: email,
         to: process.env['MAIL_ADDRESS'],
         subject: title,
-        text: "https://app.bandwith.com/admin/video/" + id + " " + body,
+        text: 'https://app.bandwith.com/admin/video/' + id + ' ' + body,
       };
 
       mailgun.messages().send(data, function (error) {
@@ -371,17 +386,20 @@ export class CallRecordingService {
     }
   }
 
-  static async deleteRecord({ recordId, authorId }: DeleteCallRecordingRequest) {
+  static async deleteRecord({
+    recordId,
+    authorId,
+  }: DeleteCallRecordingRequest) {
     try {
       const recording = await CallRecording.findById(recordId);
 
       if (!recording) {
         throw { status: 400, message: 'Recording not found' };
       }
-      
+
       if (recording.authorList?.length === 1) {
         await CallRecording.deleteOne({
-          "_id": recordId,
+          _id: recordId,
         });
 
         return { code: 200 };
@@ -394,18 +412,23 @@ export class CallRecordingService {
 
         recording.save();
       }
-      
+
       return { code: 200 };
     } catch (err) {
       throw err;
     }
   }
 
-  static async getRecordingsByUserID({ _id }: Document): Promise<GetAllRecordsResponse> {
+  static async getRecordingsByUserID({
+    _id,
+  }: Document): Promise<GetAllRecordsResponse> {
     try {
       const amount = await CallRecording.countDocuments();
 
-      const recordings = await CallRecording.find({ authorList: { $in: [_id] }, status: { $in: [ "public", "featured" ]} })
+      const recordings = await CallRecording.find({
+        authorList: { $in: [_id] },
+        status: { $in: ['public', 'featured'] },
+      })
         .sort({ _id: 'desc' })
         .populate({
           path: 'user',
@@ -428,7 +451,12 @@ export class CallRecordingService {
         })
       );
 
-      recordings.sort((a, b) => (FeaturedService.checkFeaturedRecording(a._id) >  FeaturedService.checkFeaturedRecording(b._id)) ? 1 : -1);
+      recordings.sort((a, b) =>
+        FeaturedService.checkFeaturedRecording(a._id) >
+        FeaturedService.checkFeaturedRecording(b._id)
+          ? 1
+          : -1
+      );
 
       return { recordings: Object.assign([], recordings), amount };
     } catch (err) {

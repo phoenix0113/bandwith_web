@@ -5,8 +5,8 @@ USER root
 RUN apt-get update \
     && apt-get install -y wget git-core apt-utils software-properties-common \
     && add-apt-repository ppa:jonathonf/ffmpeg-4 -y \
-    && cd /root/ && wget https://deb.nodesource.com/setup_10.x && chmod +x ./setup_10.x && ./setup_10.x \
-    && apt-get install -y nodejs build-essential ffmpeg -y
+    && cd /root/ && wget https://deb.nodesource.com/setup_14.x && chmod +x ./setup_14.x && ./setup_14.x \
+    && apt-get install nodejs build-essential ffmpeg -y
 
 
 #repo
