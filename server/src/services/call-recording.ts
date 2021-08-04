@@ -43,7 +43,13 @@ export class CallRecordingService {
         pipeId,
       });
 
-      const rec = new CallRecording({ pipeId, list, callId, status });
+      const rec = new CallRecording({
+        pipeId,
+        list,
+        callId,
+        status,
+        createDate: Date.now(),
+      });
       await rec.save();
       await CallRecordingService.replaceRecording(rec);
 

@@ -13,12 +13,12 @@ export interface ICallRecording
 const CallRecordingSchema = new Schema({
   pipeId: { type: String, required: true, unique: true },
   callId: { type: String, required: true, unique: true },
-  createDate: { type: Number, default: Date.now() },
+  createDate: { type: Number },
   list: { type: Array },
   user: { type: Schema.Types.ObjectId, ref: 'user' },
   participants: [{ type: Schema.Types.ObjectId, ref: 'user' }],
   authorList: [{ type: Schema.Types.ObjectId, ref: 'user' }],
-  status: { type: String, default: "block" },
+  status: { type: String, default: 'block' },
   name: { type: String },
 });
 
