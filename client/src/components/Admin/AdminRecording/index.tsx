@@ -1,47 +1,88 @@
-import { useEffect, useRef, useState } from "react";
-import { ButtonSection, VideoPlayer, VideoPlayerButton, VideoPauseButton, VideoPlayerContent } from "../styled";
-import playButton from "../../../assets/images/admin/play.svg";
-import pauseButton from "../../../assets/images/admin/pause.png";
+import React from "react";
+import AdminUserRecordingListPlayer from "../AdminRecordingListPlayer";
+import { GetRecordResponse } from "../../../shared/interfaces";
+import { PUBLIC_STATUS, BLOCK_STATUS } from "../../../utils/constants";
+import {
+  AdminRecordingList, RecordingName, TextRight, AdminRecordingListStatus,
+  AdminRecordingListStatusLabel, AdminRecordingListStatusInput, DeleteIcon,
+} from "../styled";
+import deleteIcon from "../../../assets/images/admin/delete.svg";
 
-interface Data {
-  url: string;
+interface IProps {
+  recording: GetRecordResponse;
+  changeRecordingStatus: (id: string, status: string) => void;
+  onDelete: (id: string) => void;
 }
 
-const AdminRecording = (props:Data):JSX.Element => {
-  const [videoUrl, setVideoUrl] = useState("");
-  const playerRef = useRef<HTMLVideoElement>(null);
-  const [showPlayBtn, setShowPlayBtn] = useState(true);
-  const handleVideo = () => {
-    if (playerRef.current.paused) {
-      playerRef.current.play().then(() => setShowPlayBtn(false)).catch(() => {
-        if (playerRef.current.paused) {
-          setShowPlayBtn(true);
-        }
-      });
-    } else if (!playerRef.current.paused) {
-      playerRef.current.pause();
-      setShowPlayBtn(true);
-    }
+const AdminRecording = ({ recording, changeRecordingStatus, onDelete }: IProps): JSX.Element => {
+  const onChangeRecordingStatus = (status: string) => {
+    changeRecordingStatus(recording._id, status);
   };
 
-  useEffect(() => {
-    setVideoUrl(props.url);
-  });
+  const onDeleteRecording = () => {
+    onDelete(recording.callId);
+  };
 
   return (
-    <VideoPlayerContent className="admin-dashboard-video">
+    <AdminRecordingList key={recording._id}>
+      <RecordingName className="text-center">
+        {recording.name}
+      </RecordingName>
+      <div className="dis-flex">
+        <AdminUserRecordingListPlayer url={recording.list[0].url} />
+        <AdminRecordingListStatus>
+          <TextRight>
+            <AdminRecordingListStatusLabel htmlFor={recording._id}>
+              Public
+            </AdminRecordingListStatusLabel>
+            <AdminRecordingListStatusInput
+              type="radio"
+              value={PUBLIC_STATUS}
+              name={recording._id}
+              id={recording._id}
+              checked={(recording.status === PUBLIC_STATUS)}
+              onChange={() => onChangeRecordingStatus(PUBLIC_STATUS)}
+            />
+          </TextRight>
+          <TextRight>
+            <AdminRecordingListStatusLabel htmlFor={recording._id}>
+              Block
+            </AdminRecordingListStatusLabel>
+            <AdminRecordingListStatusInput
+              type="radio"
+              value={BLOCK_STATUS}
+              name={recording._id}
+              id={recording._id}
+              checked={(recording.status === BLOCK_STATUS)}
+              onChange={() => onChangeRecordingStatus(BLOCK_STATUS)}
+            />
+          </TextRight>
+          <TextRight>
+            <AdminRecordingListStatusLabel htmlFor={recording._id}>
+              Delete
+            </AdminRecordingListStatusLabel>
+            <DeleteIcon src={deleteIcon} alt="Delete" onClick={onDeleteRecording} />
+          </TextRight>
+        </AdminRecordingListStatus>
+      </div>
+      <RecordingName className="text-bold">
+        Author Name:
+      </RecordingName>
+      <RecordingName className="text-center">
+        {/* {recording.authorList[0].name} */}
+        {recording.name}
+      </RecordingName>
       {
-        (showPlayBtn) ? (
-          <VideoPlayerButton src={playButton} onClick={handleVideo} />
+        (recording.authorList.length === 2) ? (
+          <RecordingName className="text-center">
+            {/* {recording.authorList[1].name} */}
+            {recording.name}
+          </RecordingName>
         ) : (
-          <VideoPauseButton className="admin-dashboard-video-pause-button" src={pauseButton} onClick={handleVideo} />
+          <></>
         )
       }
-
-      <VideoPlayer ref={playerRef}>
-        <source src={videoUrl} />
-      </VideoPlayer>
-    </VideoPlayerContent>
+    </AdminRecordingList>
   );
 };
 

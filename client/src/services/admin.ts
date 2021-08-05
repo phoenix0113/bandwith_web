@@ -4,114 +4,134 @@ import { CloudClient } from "avcore/client";
 import { showErrorNotification } from "../utils/notification";
 import { GetRecordResponse, User } from "../shared/interfaces";
 import {
-  // getUserList, getRecordingList, updateRecordingStatus, updateUserStatusByID, addBlockRecording,
-  // getUnblockedVideosByUserID, removeBlockRecording, getAvailableVideoList, getRecordingByID,
-  // addFeaturedRecording, removeFeaturedRecording, getFeaturedVideosByUserID, deleteRecording,
-  getRecordingList, loadNewRecordings, updateRecordingStatus, deleteRecording,
+  getRecordingList, loadNewRecordings, updateRecordingStatus, deleteRecording, updateUserStatusByID,
+  loadAvailableRecordings, loadBlockRecordings, loadAllUsers,
 } from "../axios/routes/admin";
 import { GlobalServiceStatus } from "../interfaces/global";
-import { VIDEO_LOAD_LIMIT } from "../utils/constants";
+import { ADMIN_RECORDINGS_LOAD_LIMIT } from "../utils/constants";
 
 class AdminMobxService {
   @observable serviceStatus: GlobalServiceStatus = GlobalServiceStatus.IDLE;
 
   @observable avcoreCloudClient: CloudClient = null;
 
-  @observable videos: Array<GetRecordResponse> = [];
-
-  @observable availableRecordings: Array<GetRecordResponse> = [];
+  @observable recordings: Array<GetRecordResponse> = [];
 
   @observable newRecordings: Array<GetRecordResponse> = [];
 
-  @observable videosByUser: Array<GetRecordResponse> = [];
+  @observable availableRecordings: Array<GetRecordResponse> = [];
 
-  @observable currentVideo: GetRecordResponse = null;
+  @observable blockRecordings: Array<GetRecordResponse> = [];
+
+  @observable currentRecording: GetRecordResponse = null;
 
   @observable users: Array<User> = [];
 
-  @observable blockedIDs: Array<string> = [];
-
-  @observable featuredIDs: Array<string> = [];
-
-  @observable allVideosLoaded = false;
+  @observable allRecordingsLoaded = false;
 
   @observable allUsersLoaded = false;
 
   constructor() {
     makeAutoObservable(this);
     this.loadNewRecordings();
-    // this.loadAllUsers();
-    this.loadAllRecordings();
-    // this.loadAvailableVideos();
+    this.loadAvailableRecordings();
+    this.loadBlockRecordings();
+    this.loadAllUsers();
+    // this.loadAllRecordings();
   }
 
-  // // function for get all users
-  // private loadAllUsers = async () => {
-  //   try {
-  //     const { users } = await getUserList({
-  //       offset: this.users.length,
-  //     });
-
-  //     runInAction(() => {
-  //       this.users.push(...users);
-  //     });
-  //   } catch (err) {
-  //     showErrorNotification(err.message);
-  //   } finally {
-  //     this.allUsersLoaded = true;
-  //   }
-  // };
-
-  // function for get all videos
-  private loadAllRecordings = async () => {
-    this.videos = [];
+  // function for get all users
+  private loadAllUsers = async () => {
     try {
-      const { recordings } = await getRecordingList({
-        offset: this.videos.length,
+      const { users } = await loadAllUsers({
+        offset: this.users.length,
       });
 
-      this.currentVideo = recordings[0];
       runInAction(() => {
-        this.videos.push(...recordings);
+        this.users.push(...users);
       });
     } catch (err) {
       showErrorNotification(err.message);
     } finally {
-      this.allVideosLoaded = true;
+      this.allUsersLoaded = true;
     }
   };
 
+  // // function for get all recordings
+  // private loadAllRecordings = async () => {
+  //   this.recordings = [];
+  //   try {
+  //     const { recordings } = await getRecordingList({
+  //       offset: this.recordings.length,
+  //     });
+
+  //     this.currentRecording = recordings[0];
+  //     runInAction(() => {
+  //       this.recordings.push(...recordings);
+  //     });
+  //   } catch (err) {
+  //     showErrorNotification(err.message);
+  //   } finally {
+  //     this.allRecordingsLoaded = true;
+  //   }
+  // };
+
   // functioin for get all new call recordings
-  private loadNewRecordings = async () => {
+  public loadNewRecordings = async () => {
     try {
-      this.newRecordings = [];
-      const { recordings } = await loadNewRecordings();
+      const { recordings } = await loadNewRecordings({
+        limit: ADMIN_RECORDINGS_LOAD_LIMIT, offset: this.newRecordings.length,
+      });
 
       runInAction(() => {
         this.newRecordings.push(...recordings);
       });
+
+      if (recordings.length < ADMIN_RECORDINGS_LOAD_LIMIT) {
+        console.log("> All stored new recordings were loaded");
+      }
     } catch (err) {
       showErrorNotification(err.message);
     }
   };
 
-  // // function for get all available call recordings
-  // private loadAvailableVideos = async () => {
-  //   try {
-  //     const { recordings } = await getAvailableVideoList({
-  //       offset: this.availableVideos.length,
-  //     });
+  // function for get all available call recordings
+  public loadAvailableRecordings = async () => {
+    try {
+      const { recordings } = await loadAvailableRecordings({
+        limit: ADMIN_RECORDINGS_LOAD_LIMIT, offset: this.availableRecordings.length,
+      });
 
-  //     this.currentVideo = recordings[0];
-  //     runInAction(() => {
-  //       this.availableVideos.push(...recordings);
-  //     });
-  //   } catch (err) {
-  //     showErrorNotification(err.message);
-  //   } finally {
-  //     this.allVideosLoaded = true;
-  //   }
-  // };
+      runInAction(() => {
+        this.availableRecordings.push(...recordings);
+      });
+
+      if (recordings.length < ADMIN_RECORDINGS_LOAD_LIMIT) {
+        console.log("> All stored available recordings were loaded");
+      }
+    } catch (err) {
+      showErrorNotification(err.message);
+    }
+  };
+
+  // function for get all available call recordings
+  public loadBlockRecordings = async () => {
+    try {
+      const { recordings } = await loadBlockRecordings({
+        limit: ADMIN_RECORDINGS_LOAD_LIMIT, offset: this.blockRecordings.length,
+      });
+
+      runInAction(() => {
+        this.blockRecordings.push(...recordings);
+      });
+
+      if (recordings.length < ADMIN_RECORDINGS_LOAD_LIMIT) {
+        console.log("> All stored blocked recordings were loaded");
+      }
+    } catch (err) {
+      showErrorNotification(err.message);
+    }
+  };
 
   // function for update status of video
   public updateRecordingStatus = async (
@@ -125,7 +145,11 @@ class AdminMobxService {
         status,
       });
       if (type === "new") {
-        this.loadNewRecordings();
+        this.newRecordings = this.popupItemID(this.newRecordings, _id);
+      } else if (type === "available") {
+        this.availableRecordings = this.popupItemID(this.availableRecordings, _id);
+      } else if (type === "blocked") {
+        this.blockRecordings = this.popupItemID(this.blockRecordings, _id);
       }
     } catch (err) {
       showErrorNotification(err.message);
@@ -140,138 +164,47 @@ class AdminMobxService {
     try {
       await deleteRecording(callId);
       if (type === "new") {
-        this.loadNewRecordings();
+        this.newRecordings = this.popupItemByCallId(this.newRecordings, callId);
       } else if (type === "available") {
-        this.loadNewRecordings();
+        this.availableRecordings = this.popupItemByCallId(this.availableRecordings, callId);
       } else if (type === "blocked") {
-        this.loadNewRecordings();
+        this.blockRecordings = this.popupItemByCallId(this.blockRecordings, callId);
       }
     } catch (err) {
       showErrorNotification(err.message);
     }
   };
 
-  // // function for get video by id
-  // public getVideoByID = async (
-  //   _id: string,
-  // ) => {
-  //   try {
-  //     this.currentVideo = await getRecordingByID(_id);
-  //   } catch (err) {
-  //     showErrorNotification(err.message);
-  //   }
-  // };
+  // function for update status of user
+  public updateUserStatus = async (
+    _id: string,
+    status: string,
+  ) => {
+    try {
+      const { code } = await updateUserStatusByID({
+        _id,
+        status,
+      });
 
-  // // function for update status of user
-  // public updateUserStatus = async (
-  //   _id: string,
-  //   status: string,
-  // ) => {
-  //   try {
-  //     const { code } = await updateUserStatusByID({
-  //       _id,
-  //       status,
-  //     });
-  //   } catch (err) {
-  //     showErrorNotification(err.message);
-  //   }
-  // };
+      const user = this.users.find((item) => item._id === _id);
+      user.status = status;
+    } catch (err) {
+      showErrorNotification(err.message);
+    }
+  };
 
-  // // function for get unblocked video ids by user id
-  // public getUnblockedVideosByID = async (
-  //   _id: string,
-  // ) => {
-  //   this.blockedIDs = [];
-  //   try {
-  //     const { ids } = await getUnblockedVideosByUserID({
-  //       _id,
-  //     });
+  // function for popup item from arrays by callId
+  private popupItemByCallId = (items: Array<GetRecordResponse>, callId: string) => {
+    const filterItems = items.filter((item) => item.callId !== callId);
+    console.log(filterItems);
+    return filterItems;
+  }
 
-  //     runInAction(() => {
-  //       this.blockedIDs.push(...ids);
-  //     });
-  //   } catch (err) {
-  //     showErrorNotification(err.message);
-  //   }
-  // };
-
-  // // function for add video to blocked videos by user id
-  // public addBlockID = async (
-  //   callrecording: string,
-  //   user: string,
-  // ) => {
-  //   try {
-  //     const { code } = await addBlockRecording({
-  //       callrecording,
-  //       user,
-  //     });
-  //   } catch (err) {
-  //     showErrorNotification(err.message);
-  //   }
-  // };
-
-  // // function for remove video from blocked videos by user id
-  // public removeBlockID = async (
-  //   callrecording: string,
-  //   user: string,
-  // ) => {
-  //   try {
-  //     const { code } = await removeBlockRecording({
-  //       callrecording,
-  //       user,
-  //     });
-  //   } catch (err) {
-  //     showErrorNotification(err.message);
-  //   }
-  // };
-
-  // // function for get featured video ids by user id
-  // public getFeaturedVideosByID = async (
-  //   _id: string,
-  // ) => {
-  //   this.featuredIDs = [];
-  //   try {
-  //     const { ids } = await getFeaturedVideosByUserID({
-  //       _id,
-  //     });
-
-  //     runInAction(() => {
-  //       this.featuredIDs.push(...ids);
-  //     });
-  //   } catch (err) {
-  //     showErrorNotification(err.message);
-  //   }
-  // };
-
-  // // function for add video to featured videos by user id
-  // public addFeaturedID = async (
-  //   callrecording: string,
-  //   user: string,
-  // ) => {
-  //   try {
-  //     const { code } = await addFeaturedRecording({
-  //       callrecording,
-  //       user,
-  //     });
-  //   } catch (err) {
-  //     showErrorNotification(err.message);
-  //   }
-  // };
-
-  // // function for remove video to featured videos by user id
-  // public removeFeaturedID = async (
-  //   callrecording: string,
-  //   user: string,
-  // ) => {
-  //   try {
-  //     const { code } = await removeFeaturedRecording({
-  //       callrecording,
-  //       user,
-  //     });
-  //   } catch (err) {
-  //     showErrorNotification(err.message);
-  //   }
-  // };
+  // function for popup item from arrays by _id
+  private popupItemID = (items: Array<GetRecordResponse>, _id: string) => {
+    const filterItems = items.filter((item) => item._id !== _id);
+    return filterItems;
+  }
 }
 
 export const AdminStorage = new AdminMobxService();

@@ -1,8 +1,7 @@
 import { stringify } from "query-string";
 import {
-  GetAllRecordsQuery, GetAllRecordsResponse, GetAllUsersResponse, UpdateRecordingQuery,
-  UpdateRecordingResponse, Document, BlockedVideoIdsResponse, CreateBlockRecordingRequest,
-  GetRecordResponse,
+  GetAllRecordsQuery, GetAllRecordsResponse, UpdateRecordingQuery, UpdateRecordingResponse,
+  GetAllUsersResponse,
 } from "../../shared/interfaces";
 import { IAxiosError } from "../interfaces";
 import { getError } from "../utils";
@@ -23,38 +22,6 @@ export const getRecordingList = async (
     throw new Error(getError(response));
   }
 };
-
-// export const getAvailableVideoList = async (
-//   query: GetAllRecordsQuery,
-// ): Promise<GetAllRecordsResponse> => {
-//   const stringified = stringify(query);
-
-//   try {
-//     const response = await instance.post<GetAllRecordsResponse>
-// (`${API.RECORD_AVAILABLE}?${stringified}`);
-
-//     return response.data;
-//   } catch (err) {
-//     const { response } = err as IAxiosError;
-//     throw new Error(getError(response));
-//   }
-// };
-
-// export const getUserList = async (
-//   query: GetAllRecordsQuery,
-// ): Promise<GetAllUsersResponse> => {
-//   const stringified = stringify(query);
-
-//   try {
-//     const response = await instance.get<GetAllUsersResponse>
-// (`${API.USER}?${stringified}`);
-
-//     return response.data;
-//   } catch (err) {
-//     const { response } = err as IAxiosError;
-//     throw new Error(getError(response));
-//   }
-// };
 
 export const updateRecordingStatus = async (
   query: UpdateRecordingQuery,
@@ -80,125 +47,72 @@ export const deleteRecording = async (callId: string): Promise<UpdateRecordingRe
   }
 };
 
-// export const updateUserStatusByID = async (
-//   query: UpdateRecordingQuery,
-// ): Promise<UpdateRecordingResponse> => {
-//   const stringified = stringify(query);
+export const updateUserStatusByID = async (
+  query: UpdateRecordingQuery,
+): Promise<UpdateRecordingResponse> => {
+  const stringified = stringify(query);
 
-//   try {
-//     const response = await instance.post<UpdateRecordingResponse>
-// (`${API.USER}?${stringified}`);
-//     return response.data;
-//   } catch (err) {
-//     const { response } = err as IAxiosError;
-//     throw new Error(getError(response));
-//   }
-// };
-
-// export const getUnblockedVideosByUserID = async (
-//   query: Document,
-// ): Promise<BlockedVideoIdsResponse> => {
-//   const stringified = stringify(query);
-
-//   try {
-//     const response = await instance.get<BlockedVideoIdsResponse>
-// (`${API.BLOCK}?${stringified}`);
-//     return response.data;
-//   } catch (err) {
-//     const { response } = err as IAxiosError;
-//     throw new Error(getError(response));
-//   }
-// };
-
-// export const addBlockRecording = async (
-//   query: CreateBlockRecordingRequest,
-// ): Promise<UpdateRecordingResponse> => {
-//   const stringified = stringify(query);
-
-//   try {
-//     const response = await instance.post<UpdateRecordingResponse>
-// (`${API.BLOCK}?${stringified}`);
-//     return response.data;
-//   } catch (err) {
-//     const { response } = err as IAxiosError;
-//     throw new Error(getError(response));
-//   }
-// };
-
-// export const removeBlockRecording = async (
-//   query: CreateBlockRecordingRequest,
-// ): Promise<UpdateRecordingResponse> => {
-//   const stringified = stringify(query);
-
-//   try {
-//     const response = await instance.delete<UpdateRecordingResponse>
-// (`${API.BLOCK}?${stringified}`);
-//     return response.data;
-//   } catch (err) {
-//     const { response } = err as IAxiosError;
-//     throw new Error(getError(response));
-//   }
-// };
-
-// export const getRecordingByID = async (id: string): Promise<GetRecordResponse> => {
-//   try {
-//     const response = await instance.get<GetRecordResponse>(`${API.RECORD}/${id}`);
-
-//     return response.data;
-//   } catch (err) {
-//     const { response } = err as IAxiosError;
-//     throw new Error(getError(response));
-//   }
-// };
-
-// export const getFeaturedVideosByUserID = async (
-//   query: Document,
-// ): Promise<BlockedVideoIdsResponse> => {
-//   const stringified = stringify(query);
-
-//   try {
-//     const response = await instance.get<BlockedVideoIdsResponse>
-// (`${API.FEATURED}?${stringified}`);
-//     return response.data;
-//   } catch (err) {
-//     const { response } = err as IAxiosError;
-//     throw new Error(getError(response));
-//   }
-// };
-
-// export const addFeaturedRecording = async (
-//   query: CreateBlockRecordingRequest,
-// ): Promise<UpdateRecordingResponse> => {
-//   const stringified = stringify(query);
-
-//   try {
-//     const response = await instance.post<UpdateRecordingResponse>
-// (`${API.FEATURED}?${stringified}`);
-//     return response.data;
-//   } catch (err) {
-//     const { response } = err as IAxiosError;
-//     throw new Error(getError(response));
-//   }
-// };
-
-// export const removeFeaturedRecording = async (
-//   query: CreateBlockRecordingRequest,
-// ): Promise<UpdateRecordingResponse> => {
-//   const stringified = stringify(query);
-
-//   try {
-//     const response = await instance.delete<UpdateRecordingResponse>
-// (`${API.FEATURED}?${stringified}`);
-//     return response.data;
-//   } catch (err) {
-//     const { response } = err as IAxiosError;
-//     throw new Error(getError(response));
-//   }
-// };
-
-export const loadNewRecordings = async (): Promise<GetAllRecordsResponse> => {
   try {
-    const response = await instance.post<GetAllRecordsResponse>(`${API.RECORD_NEW}`);
+    const response = await instance.post<UpdateRecordingResponse>(`${API.USER}?${stringified}`);
+    return response.data;
+  } catch (err) {
+    const { response } = err as IAxiosError;
+    throw new Error(getError(response));
+  }
+};
+
+export const loadNewRecordings = async (
+  query: GetAllRecordsQuery,
+): Promise<GetAllRecordsResponse> => {
+  const stringified = stringify(query);
+
+  try {
+    const response = await instance.post<GetAllRecordsResponse>(`${API.RECORD_NEW}?${stringified}`);
+
+    return response.data;
+  } catch (err) {
+    const { response } = err as IAxiosError;
+    throw new Error(getError(response));
+  }
+};
+
+export const loadAvailableRecordings = async (
+  query: GetAllRecordsQuery,
+): Promise<GetAllRecordsResponse> => {
+  const stringified = stringify(query);
+
+  try {
+    const response = await instance.post<GetAllRecordsResponse>(`${API.RECORD_AVAILABLE}?${stringified}`);
+
+    return response.data;
+  } catch (err) {
+    const { response } = err as IAxiosError;
+    throw new Error(getError(response));
+  }
+};
+
+export const loadBlockRecordings = async (
+  query: GetAllRecordsQuery,
+): Promise<GetAllRecordsResponse> => {
+  const stringified = stringify(query);
+
+  try {
+    const response = await instance.post<GetAllRecordsResponse>(`${API.RECORD_BLOCK}?${stringified}`);
+
+    return response.data;
+  } catch (err) {
+    const { response } = err as IAxiosError;
+    throw new Error(getError(response));
+  }
+};
+
+export const loadAllUsers = async (
+  query: GetAllRecordsQuery,
+): Promise<GetAllUsersResponse> => {
+  const stringified = stringify(query);
+
+  try {
+    const response = await instance.get<GetAllUsersResponse>(`${API.USER}?${stringified}`);
 
     return response.data;
   } catch (err) {

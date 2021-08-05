@@ -64,7 +64,9 @@ export class CallRecordingsController extends CrudController {
   static async getNewRecords(req: Request, res: Response) {
     await CallRecordingsController.processRequest(req, res, async () => {
       res.send(
-        await CallRecordingService.getNewRecords()
+        await CallRecordingService.getNewRecords(
+          parseQuery(req.query) as GetAllRecordsQuery
+        )
       );
     });
   }
@@ -73,6 +75,16 @@ export class CallRecordingsController extends CrudController {
     await CallRecordingsController.processRequest(req, res, async () => {
       res.send(
         await CallRecordingService.getAvailableRecords(
+          parseQuery(req.query) as GetAllRecordsQuery
+        )
+      );
+    });
+  }
+
+  static async getBlockRecords(req: Request, res: Response) {
+    await CallRecordingsController.processRequest(req, res, async () => {
+      res.send(
+        await CallRecordingService.getBlcokRecords(
           parseQuery(req.query) as GetAllRecordsQuery
         )
       );

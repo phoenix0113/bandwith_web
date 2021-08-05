@@ -233,12 +233,25 @@ export class CallRecordingService {
   }
 
   // function for get new call recordings
-  static async getNewRecords(): Promise<GetAllRecordsResponse> {
+  static async getNewRecords({
+    limit,
+    offset,
+  }: GetAllRecordsQuery): Promise<GetAllRecordsResponse> {
     try {
       const recordings = await CallRecording.find({
         status: 'new',
       }).sort({
         _id: 'desc',
+      })
+      .skip((offset && +offset) || 0)
+      .limit((limit && +limit) || 0)
+      .populate({
+        path: 'user',
+        select: '-password -email -firebaseToken',
+      })
+      .populate({
+        path: 'participants',
+        select: '-password -email -firebaseToken',
       });
 
       const amount = recordings.length;
@@ -268,11 +281,60 @@ export class CallRecordingService {
   }: GetAllRecordsQuery): Promise<GetAllRecordsResponse> {
     try {
       const recordings = await CallRecording.find({
-        status: { $in: ['public', 'feature'] },
+        status: 'public',
       })
         .sort({
           _id: 'desc',
-          status: 'asc',
+        })
+        .skip((offset && +offset) || 0)
+        .limit((limit && +limit) || 0)
+        .populate({
+          path: 'user',
+          select: '-password -email -firebaseToken',
+        })
+        .populate({
+          path: 'participants',
+          select: '-password -email -firebaseToken',
+        });
+
+      const amount = recordings.length;
+
+      await Promise.all(
+        recordings.map(async (recordItem) => {
+          const signedUrl = await StorageHandler.get().signedUrl(
+            recordItem.list[0].fullKey
+          );
+
+          recordItem.list[0].url = signedUrl;
+
+          await recordItem.save();
+        })
+      );
+
+      recordings.sort((a, b) =>
+        FeaturedService.checkFeaturedRecording(a._id) >
+        FeaturedService.checkFeaturedRecording(b._id)
+          ? 1
+          : -1
+      );
+
+      return { recordings: Object.assign([], recordings), amount };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  // function for get blocked call recordings
+  static async getBlcokRecords({
+    limit,
+    offset,
+  }: GetAllRecordsQuery): Promise<GetAllRecordsResponse> {
+    try {
+      const recordings = await CallRecording.find({
+        status: 'block',
+      })
+        .sort({
+          _id: 'desc',
         })
         .skip((offset && +offset) || 0)
         .limit((limit && +limit) || 0)

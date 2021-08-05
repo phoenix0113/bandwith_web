@@ -434,3 +434,59 @@ export const AdminSearch = styled.div`
   margin-right: 20px;
   padding: 10px 0;
 `;
+
+export const AdminRecordingList = styled.div`
+  width: 300px;
+  padding: 15px;
+  background: #1A1C1E;
+  margin: 20px;
+  align-items: center;
+  border-radius: 6px;
+`;
+
+export const RecordingName = styled.div`
+  font-family: 'Avenir-Kefa';
+  font-style: normal;
+  font-size: 18px;
+  line-height: 22px;
+  color: #FFFFFF;
+  max-width: 250px;
+  padding: 5px 0;
+`;
+
+export const TextRight = styled.div`
+  text-align: right;
+  margin: 5px 0;
+  display: flex;
+  align-items: center;
+`;
+
+export const AdminRecordingListStatus = styled.div`
+  border: none;
+  outline: none;
+  margin-right: 0;
+  margin-left: auto;
+  display: grid;
+`;
+
+export const AdminRecordingListStatusLabel = styled.label`
+  font-family: Lato;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 22px;
+  text-align: right;
+  color: #FFFFFF;
+  margin-right: 24px;
+`;
+
+export const AdminRecordingListStatusInput = styled.input`
+  margin-right: 0;
+  margin-left: auto;
+  width: 17px;
+  height: 17px;
+`;
+
+export const DeleteIcon = styled.img`
+  color: #ffffff;
+`;

@@ -10,12 +10,10 @@ import {
   AdminSingleRecordingContentWrapper, AdminRecordingToolsContent, AdminProfile, AdminProfileImage,
   AdminProfileContent, AdminProfileName, AdminRecordingTools, AdminRecordingToolsMoveButton,
   AdminRecordingStatusTools, AdminRecordingToolsPrevNextButton, AdminRecordingToolsPlayPauseButton,
-  AdminRecordingActiveStatusTools, AdminRecordingToolsAcceptButton, AdminRecordingToolsDeclineButton,
-  AdminRecordingToolsCloseButton, AdminRecordingPlayer, AdminRecordingStatus,
+  AdminRecordingActiveStatusTools, AdminRecordingToolsAcceptButton, AdminRecordingStatus,
+  AdminRecordingToolsCloseButton, AdminRecordingPlayer, AdminRecordingToolsDeclineButton,
 } from "../../../components/Admin/styled";
-import {
-  AdminPageWrapper, AdminPageContent
-} from "../styled";
+import { AdminPageWrapper, AdminPageContent } from "../styled";
 import { PAGE_TYPE } from "./types";
 import moveButton from "../../../assets/images/admin/move.png";
 import prevButton from "../../../assets/images/admin/prev.png";
@@ -31,7 +29,7 @@ const AdminSingleVideoPage = observer((props): JSX.Element => {
   const {
     // latestVideos,
     // availableVideos,
-    videos,
+    recordings,
     // updateRecordingStatus,
   } = useContext(AdminStorageContext);
 
@@ -128,7 +126,7 @@ const AdminSingleVideoPage = observer((props): JSX.Element => {
     } else if (type === APPROVED_STATUS) {
       // setVideoList(availableVideos);
     } else if (type === "all") {
-      setVideoList(videos);
+      setVideoList(recordings);
     }
     getPrevVideoID(currentID);
     getNextVideoID(currentID);
@@ -176,7 +174,10 @@ const AdminSingleVideoPage = observer((props): JSX.Element => {
                     <AdminRecordingToolsPrevNextButton src={prevButton} onClick={prevPlay} />
                     {
                       (showPlayBtn) ? (
-                        <AdminRecordingToolsPlayPauseButton src={playButton} onClick={changePlayBtn} />
+                        <AdminRecordingToolsPlayPauseButton
+                          src={playButton}
+                          onClick={changePlayBtn}
+                        />
                       ) : (
                         <AdminRecordingToolsPlayPauseButton className="admin-dashboard-video-pause-button" src={pauseButton} onClick={changePlayBtn} />
                       )

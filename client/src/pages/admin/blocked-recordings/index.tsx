@@ -6,17 +6,17 @@ import { PAGE_TYPE } from "./types";
 
 const AdminNewRecordingsPage = observer((): JSX.Element => {
   const {
-    newRecordings,
-    loadNewRecordings,
+    blockRecordings,
+    loadBlockRecordings,
   } = useContext(AdminStorageContext);
 
   return (
     <AdminRecordingsPage
-      title="New "
-      param="new"
+      title="Blocked "
+      param="blocked"
       page={PAGE_TYPE}
-      recordings={newRecordings}
-      onLoad={loadNewRecordings}
+      recordings={blockRecordings}
+      onLoad={loadBlockRecordings}
     />
   );
 });

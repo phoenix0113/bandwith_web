@@ -4,35 +4,25 @@ import AdminHeader from "../../../components/Admin/AdminHeader";
 import AdminSideBar from "../../../components/Admin/AdminSideBar";
 import AdminUserListProfile from "../../../components/Admin/AdminUserListProfile";
 import { AdminStorageContext } from "../../../services/admin";
-import { AdminRecordingManageContent, AdminRecordingManageWrapper, AdminRecordingListTitle } from "../../../components/Admin/styled";
 import {
-  AdminPageWrapper, AdminPageContent, AdminScrollContent, AdminRecordingList, TextRight,
-  AdminRecordingListStatus, AdminRecordingListStatusLabel, AdminRecordingListStatusInput,
-} from "../styled";
+  AdminRecordingManageContent, AdminRecordingManageWrapper, AdminRecordingListTitle,
+  AdminRecordingList, TextRight, AdminRecordingListStatus, AdminRecordingListStatusLabel,
+  AdminRecordingListStatusInput,
+} from "../../../components/Admin/styled";
+import { AdminPageWrapper, AdminPageContent, AdminScrollContent } from "../styled";
 import { PAGE_TYPE } from "./types";
 import { PUBLIC_STATUS, BLOCK_STATUS, APPROVED_STATUS } from "../../../utils/constants";
 
 const AdminUsersPage = observer((): JSX.Element => {
   const {
     users,
-    // updateUserStatus,
+    updateUserStatus,
   } = useContext(AdminStorageContext);
-  const [allUsers, setAllUsers] = useState([]);
-
-  useEffect(() => {
-    setAllUsers(users);
-  }, [users]);
-
-  const setStatus = (id: string, status: string) => {
-    const user = allUsers.find((item) => item._id === id);
-    user.status = status;
-  };
 
   const onChangeStatus = (
     id: string, status: string,
   ) => {
-    // updateUserStatus(id, status);
-    setStatus(id, status);
+    updateUserStatus(id, status);
   };
 
   return (
@@ -42,12 +32,12 @@ const AdminUsersPage = observer((): JSX.Element => {
         <AdminSideBar pageType={PAGE_TYPE} />
         <AdminRecordingManageContent>
           <AdminRecordingListTitle>
-            User List
+            Users List
           </AdminRecordingListTitle>
           <AdminRecordingManageWrapper>
             <AdminScrollContent className="scrollbar-content">
               {
-                allUsers.map((user) => (
+                users.map((user) => (
                   <AdminRecordingList key={user?._id}>
                     <div style={{ marginLeft: "26px", marginRight: "26px" }}>
                       <AdminUserListProfile
