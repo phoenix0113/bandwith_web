@@ -78,7 +78,7 @@ const RegistrationPage = (): JSX.Element => {
                       <InputIconWrapper>
                         <img src={profileIcon} alt="Name" />
                       </InputIconWrapper>
-                )}
+                    )}
                   />
                 </Form.Item>
                 <Form.Item name={FormFields.EMAIL} rules={[{ required: true, type: "email", message: "Enter a valid email" }]}>
@@ -88,7 +88,7 @@ const RegistrationPage = (): JSX.Element => {
                       <InputIconWrapper>
                         <img src={emailIcon} alt="Email" />
                       </InputIconWrapper>
-                )}
+                    )}
                   />
                 </Form.Item>
                 <Form.Item name={FormFields.PASSWORD} rules={[{ required: true, message: "Password is required" }]}>
@@ -100,7 +100,7 @@ const RegistrationPage = (): JSX.Element => {
                       <InputIconWrapper>
                         <img src={passwordIcon} alt="Password" />
                       </InputIconWrapper>
-              )}
+                    )}
                   />
                 </Form.Item>
                 <Form.Item
@@ -125,7 +125,7 @@ const RegistrationPage = (): JSX.Element => {
                       <InputIconWrapper>
                         <img src={passwordIcon} alt="Password" />
                       </InputIconWrapper>
-              )}
+                    )}
                   />
                 </Form.Item>
                 <AuthButton type="submit">Sign Up</AuthButton>
