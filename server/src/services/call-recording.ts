@@ -49,6 +49,7 @@ export class CallRecordingService {
         callId,
         status,
         createDate: Date.now(),
+        name: Date.now().toString(),
       });
       await rec.save();
       await CallRecordingService.replaceRecording(rec);

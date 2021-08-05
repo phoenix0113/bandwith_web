@@ -11,7 +11,10 @@ const AdminUserRecordingListPlayer = (props:Data):JSX.Element => {
   const playerRef = useRef<HTMLVideoElement>(null);
   const [videoSourceUrl, setVideoSourceUrl] = useState("");
   const [showPlayBtn, setShowPlayBtn] = useState(true);
-  const handleVideo = () => {
+
+  let timer;
+
+  const onClickRecording = () => {
     if (playerRef.current.paused) {
       playerRef.current.play().then(() => setShowPlayBtn(false)).catch(() => {
         if (playerRef.current.paused) {
@@ -21,6 +24,20 @@ const AdminUserRecordingListPlayer = (props:Data):JSX.Element => {
     } else if (!playerRef.current.paused) {
       playerRef.current.pause();
       setShowPlayBtn(true);
+    }
+  };
+
+  const onDoubleClickRecording = () => {
+    playerRef.current.pause();
+    setShowPlayBtn(true);
+  };
+
+  const handleVideo = (event) => {
+    clearTimeout(timer);
+    if (event.detail === 1) {
+      timer = setTimeout(onClickRecording, 200);
+    } else if (event.detail === 2) {
+      onDoubleClickRecording();
     }
   };
 

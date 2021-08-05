@@ -37,7 +37,6 @@ const AdminLoginPage = lazy(() => import("./pages/admin/login"));
 const AdminNewRecordingsPage = lazy(() => import("./pages/admin/new-recordings"));
 const AdminAvailableRecordingsPage = lazy(() => import("./pages/admin/available-recordings"));
 const AdminBlockedRecordingsPage = lazy(() => import("./pages/admin/blocked-recordings"));
-const AdminRecordingPage = lazy(() => import("./pages/admin/recording"));
 const AdminUsersPage = lazy(() => import("./pages/admin/users"));
 const AdminHelpPage = lazy(() => import("./pages/admin/help"));
 
@@ -80,7 +79,6 @@ export const App = observer((): JSX.Element => {
             path={Routes.ADMIN_NEW_RECORDINGS}
             Component={AdminNewRecordingsPage}
           />
-          <AdminRouterComponent exact path={Routes.ADMIN_VIDEO} Component={AdminRecordingPage} />
           <AdminRouterComponent
             exact
             path={Routes.ADMIN_AVAILABLE_RECORDINGS}

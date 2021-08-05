@@ -1,6 +1,6 @@
-import { useEffect, useContext } from "react";
+import { useContext } from "react";
 import { observer } from "mobx-react";
-import AdminRecordingsPage from "../recordings";
+import AdminRecordingsPage from "../recording";
 import { AdminStorageContext } from "../../../services/admin";
 import { PAGE_TYPE } from "./types";
 
