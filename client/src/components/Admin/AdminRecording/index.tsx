@@ -3,7 +3,7 @@ import AdminUserRecordingListPlayer from "../AdminRecordingListPlayer";
 import { GetRecordResponse } from "../../../shared/interfaces";
 import { PUBLIC_STATUS, BLOCK_STATUS } from "../../../utils/constants";
 import {
-  AdminRecordingList, RecordingName, TextRight, AdminRecordingListStatus,
+  AdminRecordingList, RecordingName, TextRight, AdminRecordingListStatus, AdminRecordingprofile,
   AdminRecordingListStatusLabel, AdminRecordingListStatusInput, DeleteIcon,
 } from "../styled";
 import deleteIcon from "../../../assets/images/admin/delete.svg";
@@ -24,11 +24,11 @@ const AdminRecording = ({ recording, changeRecordingStatus, onDelete }: IProps):
   };
 
   return (
-    <AdminRecordingList key={recording._id}>
+    <AdminRecordingList>
       <RecordingName className="text-center">
         {recording.name}
       </RecordingName>
-      <div className="dis-flex">
+      <AdminRecordingprofile>
         <AdminUserRecordingListPlayer url={recording.list[0].url} />
         <AdminRecordingListStatus>
           <TextRight>
@@ -64,19 +64,17 @@ const AdminRecording = ({ recording, changeRecordingStatus, onDelete }: IProps):
             <DeleteIcon src={deleteIcon} alt="Delete" onClick={onDeleteRecording} />
           </TextRight>
         </AdminRecordingListStatus>
-      </div>
-      <RecordingName className="text-bold">
+      </AdminRecordingprofile>
+      <RecordingName className="text-bold text-center">
         Author Name:
       </RecordingName>
       <RecordingName className="text-center">
-        {/* {recording.authorList[0].name} */}
-        {recording.name}
+        {recording.authorList[0].name}
       </RecordingName>
       {
         (recording.authorList.length === 2) ? (
           <RecordingName className="text-center">
-            {/* {recording.authorList[1].name} */}
-            {recording.name}
+            {recording.authorList[1].name}
           </RecordingName>
         ) : (
           <></>

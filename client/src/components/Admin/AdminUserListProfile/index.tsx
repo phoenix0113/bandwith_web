@@ -35,14 +35,12 @@ const AdminUserListProfile = (props: Data):JSX.Element => {
   return (
     <Profile>
       <ProfileImage src={(image !== undefined) ? image : tempProfileIcon} />
-      <ProfileText>
-        <ProfileName>
-          {userName}
-        </ProfileName>
-        <ProfileEmail>
-          {userEmail}
-        </ProfileEmail>
-      </ProfileText>
+      <ProfileName>
+        {userName}
+      </ProfileName>
+      <ProfileEmail>
+        {userEmail}
+      </ProfileEmail>
     </Profile>
   );
 };

@@ -454,6 +454,11 @@ export const RecordingName = styled.div`
   padding: 5px 0;
 `;
 
+export const AdminRecordingprofile = styled.div`
+  display: flex;
+  justify-content: space-around;
+`;
+
 export const TextRight = styled.div`
   text-align: right;
   margin: 5px 0;
@@ -465,8 +470,16 @@ export const AdminRecordingListStatus = styled.div`
   border: none;
   outline: none;
   margin-right: 0;
-  margin-left: auto;
   display: grid;
+`;
+
+export const AdminUserListStatus = styled.div`
+  border: none;
+  outline: none;
+  margin-right: 0;
+  margin-left: auto;
+  display: flex;
+  justify-content: space-around;
 `;
 
 export const AdminRecordingListStatusLabel = styled.label`

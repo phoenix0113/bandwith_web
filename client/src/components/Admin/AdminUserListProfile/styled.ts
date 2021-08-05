@@ -2,8 +2,7 @@ import styled from "styled-components";
 
 export const Profile = styled.div`
   position: relative;
-  display: flex;
-  align-items: center;
+  text-align: center;
 `;
 
 export const ProfileImage = styled.img`

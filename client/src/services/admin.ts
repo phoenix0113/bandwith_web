@@ -4,7 +4,7 @@ import { CloudClient } from "avcore/client";
 import { showErrorNotification } from "../utils/notification";
 import { GetRecordResponse, User } from "../shared/interfaces";
 import {
-  getRecordingList, loadNewRecordings, updateRecordingStatus, deleteRecording, updateUserStatusByID,
+  loadNewRecordings, updateRecordingStatus, deleteRecording, updateUserStatusByID,
   loadAvailableRecordings, loadBlockRecordings, loadAllUsers,
 } from "../axios/routes/admin";
 import { GlobalServiceStatus } from "../interfaces/global";
@@ -37,14 +37,13 @@ class AdminMobxService {
     this.loadAvailableRecordings();
     this.loadBlockRecordings();
     this.loadAllUsers();
-    // this.loadAllRecordings();
   }
 
   // function for get all users
-  private loadAllUsers = async () => {
+  public loadAllUsers = async () => {
     try {
       const { users } = await loadAllUsers({
-        offset: this.users.length,
+        limit: ADMIN_RECORDINGS_LOAD_LIMIT, offset: this.users.length,
       });
 
       runInAction(() => {
@@ -56,25 +55,6 @@ class AdminMobxService {
       this.allUsersLoaded = true;
     }
   };
-
-  // // function for get all recordings
-  // private loadAllRecordings = async () => {
-  //   this.recordings = [];
-  //   try {
-  //     const { recordings } = await getRecordingList({
-  //       offset: this.recordings.length,
-  //     });
-
-  //     this.currentRecording = recordings[0];
-  //     runInAction(() => {
-  //       this.recordings.push(...recordings);
-  //     });
-  //   } catch (err) {
-  //     showErrorNotification(err.message);
-  //   } finally {
-  //     this.allRecordingsLoaded = true;
-  //   }
-  // };
 
   // functioin for get all new call recordings
   public loadNewRecordings = async () => {

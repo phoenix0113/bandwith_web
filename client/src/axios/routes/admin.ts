@@ -53,7 +53,7 @@ export const updateUserStatusByID = async (
   const stringified = stringify(query);
 
   try {
-    const response = await instance.post<UpdateRecordingResponse>(`${API.USER}?${stringified}`);
+    const response = await instance.post<UpdateRecordingResponse>(`${API.USER_UPDATE}?${stringified}`);
     return response.data;
   } catch (err) {
     const { response } = err as IAxiosError;
@@ -112,7 +112,7 @@ export const loadAllUsers = async (
   const stringified = stringify(query);
 
   try {
-    const response = await instance.get<GetAllUsersResponse>(`${API.USER}?${stringified}`);
+    const response = await instance.post<GetAllUsersResponse>(`${API.USER}?${stringified}`);
 
     return response.data;
   } catch (err) {

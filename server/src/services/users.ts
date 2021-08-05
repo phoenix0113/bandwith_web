@@ -5,28 +5,12 @@ import Nexmo from 'nexmo';
 import { Algorithm, sign } from 'jsonwebtoken';
 import { User } from '../models';
 import {
-  RegistrationRequest,
-  LoginRequest,
-  AuthResponse,
-  Document,
-  GetUserDataResponse,
-  UserProfileResponse,
-  UserProfileRequest,
-  GetAllUsersResponse,
-  GetUserResponse,
-  OAuthGoogleRequest,
-  OAuthFacebookRequest,
-  SetReadHintRequest,
-  HintTypes,
-  SendSMSRequest,
-  VerifyCodeRequest,
-  UpdatePhoneRequest,
-  BasicResponse,
-  NexmoResponse,
-  GetVerifyCodeRequest,
-  GetVerifyCodeResponse,
-  OAuthAppleRequest,
-  UpdateUserProfileRequest,
+  RegistrationRequest, LoginRequest, AuthResponse, Document, GetUserDataResponse,
+  UserProfileResponse, UserProfileRequest, GetAllUsersResponse, GetUserResponse,
+  OAuthGoogleRequest, OAuthFacebookRequest, SetReadHintRequest, HintTypes,
+  SendSMSRequest, VerifyCodeRequest, UpdatePhoneRequest, BasicResponse, NexmoResponse,
+  GetVerifyCodeRequest, GetVerifyCodeResponse, OAuthAppleRequest, UpdateUserProfileRequest,
+  GetAllRecordsQuery,
 } from '../../../client/src/shared/interfaces';
 import { conf } from '../config';
 
@@ -36,10 +20,23 @@ export class UsersService {
     apiSecret: conf.phoneVerification.apiSecret,
   });
 
-  static async getAllUsers(): Promise<GetAllUsersResponse> {
+  static async getAllUsers({
+    limit,
+    offset,
+  }: GetAllRecordsQuery): Promise<GetAllUsersResponse> {
     const users = await User.find({
       role: "user",
-    }).sort({ name: 'asc' });
+    }).sort({ name: 'asc' })
+    .skip((offset && +offset) || 0)
+    .limit((limit && +limit) || 0)
+    .populate({
+      path: 'user',
+      select: '-password -email -firebaseToken',
+    })
+    .populate({
+      path: 'participants',
+      select: '-password -email -firebaseToken',
+    });;
 
     return { users };
   }
