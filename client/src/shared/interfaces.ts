@@ -356,6 +356,7 @@ export interface CreateBlockRecordingRequest {
 export interface GetAllRecordsQuery {
   limit?: number;
   offset?: number;
+  key?: string;
 }
 
 export interface UpdateRecordingQuery {

@@ -76,16 +76,7 @@ export class CallRecordingService {
     user: string
   ) {
     try {
-      console.log('publishing/n\n\n');
       let timestamp = Date.now();
-      let date = new Date(timestamp);
-
-      let year = date.getFullYear();
-      let month = date.getMonth() + 1;
-      let day = date.getDate();
-      let hours = date.getHours();
-      let minutes = date.getMinutes();
-      let seconds = date.getSeconds();
 
       const rec = await CallRecording.findOneAndUpdate(
         { callId },
@@ -96,17 +87,7 @@ export class CallRecordingService {
             name:
               recordingName +
               ' ' +
-              year +
-              '-' +
-              month +
-              '-' +
-              day +
-              ' ' +
-              hours +
-              ':' +
-              minutes +
-              ':' +
-              seconds,
+              timestamp,
             authorList: [user, participants[0]],
           },
         },
@@ -236,10 +217,15 @@ export class CallRecordingService {
   static async getNewRecords({
     limit,
     offset,
+    key,
   }: GetAllRecordsQuery): Promise<GetAllRecordsResponse> {
     try {
+      if (key === undefined) {
+        key = "";
+      }
       const recordings = await CallRecording.find({
         status: 'new',
+        name: { $regex : key, $options: 'i' },
       }).sort({
         _id: 'desc',
       })
@@ -278,10 +264,15 @@ export class CallRecordingService {
   static async getAvailableRecords({
     limit,
     offset,
+    key,
   }: GetAllRecordsQuery): Promise<GetAllRecordsResponse> {
     try {
+      if (key === undefined) {
+        key = "";
+      }
       const recordings = await CallRecording.find({
         status: 'public',
+        name: { $regex : key, $options: 'i' },
       })
         .sort({
           _id: 'desc',
@@ -328,10 +319,15 @@ export class CallRecordingService {
   static async getBlcokRecords({
     limit,
     offset,
+    key,
   }: GetAllRecordsQuery): Promise<GetAllRecordsResponse> {
     try {
+      if (key === undefined) {
+        key = "";
+      }
       const recordings = await CallRecording.find({
         status: 'block',
+        name: { $regex : key, $options: 'i' },
       })
         .sort({
           _id: 'desc',

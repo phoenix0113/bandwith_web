@@ -1,17 +1,18 @@
 import { useContext, useState, useEffect, useRef } from "react";
 import { observer } from "mobx-react";
-import { Spin } from "antd";
+import { Input, Spin } from "antd";
 import { Utils } from "avcore/client";
 import { AdminStorageContext } from "../../../services/admin";
 import AdminHeader from "../../../components/Admin/AdminHeader";
 import AdminSideBar from "../../../components/Admin/AdminSideBar";
 import AdminRecording from "../../../components/Admin/AdminRecording";
 import { GetRecordResponse } from "../../../shared/interfaces";
-import { LoaderWrapper } from "../../../components/styled";
+import { InputIconWrapper, LoaderWrapper } from "../../../components/styled";
 import {
   AdminPageWrapper, AdminPageContent, AdminContentWrapper, AdminRecordingContent,
-  AdminRecordingContentTitle, AdminScrollContent, RecordingContentWrapper,
+  AdminRecordingContentTitle, AdminScrollContent, RecordingContentWrapper, AdminSearch,
 } from "../styled";
+import feedIcon from "../../../assets/images/home/feed.svg";
 
 interface IProps {
   title: string,
@@ -21,15 +22,20 @@ interface IProps {
   onLoad: () => void;
 }
 
+const { Search } = Input;
+
 const AdminRecordingsPage = observer(({
   title, param, page, recordings, onLoad,
 }: IProps): JSX.Element => {
   const {
+    onLoaded,
     updateRecordingStatus,
     deleteRecording,
+    setSearchRecordingsKey,
   } = useContext(AdminStorageContext);
 
   const [loading, setLoading] = useState(false);
+  const [searchKey, setSearchKey] = useState("");
 
   const changeRecordingStatus = async (id: string, status: string) => {
     if (window.confirm(`Are you sure you wish to ${status} this call recording?`)) {
@@ -45,6 +51,12 @@ const AdminRecordingsPage = observer(({
       await deleteRecording(id, param);
       setLoading(false);
     }
+  };
+
+  const onSearch = async () => {
+    setLoading(true);
+    await setSearchRecordingsKey(searchKey, param);
+    setLoading(false);
   };
 
   const [scrollTop, setScrollTop] = useState(0);
@@ -75,10 +87,14 @@ const AdminRecordingsPage = observer(({
     }
   }, [scrollTop]);
 
+  useEffect(() => {
+    setSearchRecordingsKey("", param);
+  }, []);
+
   return (
     <AdminPageWrapper>
       {
-        (!loading) ? (
+        (!loading || !onLoaded) ? (
           <>
             <AdminHeader />
             <AdminPageContent>
@@ -89,6 +105,19 @@ const AdminRecordingsPage = observer(({
                     {title}
                     Call Recordings
                   </AdminRecordingContentTitle>
+                  <AdminSearch>
+                    <Input
+                      placeholder="Search"
+                      value={searchKey}
+                      suffix={(
+                        <InputIconWrapper className="cursor-pointer" onClick={onSearch}>
+                          <img src={feedIcon} alt="Search" />
+                        </InputIconWrapper>
+                      )}
+                      onChange={(e) => setSearchKey(e.target.value)}
+                      autoFocus
+                    />
+                  </AdminSearch>
                   <AdminScrollContent
                     className="scrollbar-content"
                     ref={scrollRef}

@@ -428,13 +428,6 @@ export const AdminRecordingManageWrapper = styled.div`
   margin: 0 auto;
 `;
 
-export const AdminSearch = styled.div`
-  width: 50%;
-  margin-left: auto;
-  margin-right: 20px;
-  padding: 10px 0;
-`;
-
 export const AdminRecordingList = styled.div`
   width: 300px;
   padding: 15px;

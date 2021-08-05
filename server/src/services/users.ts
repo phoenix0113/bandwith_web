@@ -23,22 +23,31 @@ export class UsersService {
   static async getAllUsers({
     limit,
     offset,
+    key,
   }: GetAllRecordsQuery): Promise<GetAllUsersResponse> {
-    const users = await User.find({
-      role: "user",
-    }).sort({ name: 'asc' })
-    .skip((offset && +offset) || 0)
-    .limit((limit && +limit) || 0)
-    .populate({
-      path: 'user',
-      select: '-password -email -firebaseToken',
-    })
-    .populate({
-      path: 'participants',
-      select: '-password -email -firebaseToken',
-    });;
-
-    return { users };
+    try {
+      if (key === undefined) {
+        key = "";
+      }
+      const users = await User.find({
+        role: "user",
+        name: { $regex : key, $options: 'i' },
+      }).sort({ name: 'asc' })
+      .skip((offset && +offset) || 0)
+      .limit((limit && +limit) || 0)
+      .populate({
+        path: 'user',
+        select: '-password -email -firebaseToken',
+      })
+      .populate({
+        path: 'participants',
+        select: '-password -email -firebaseToken',
+      });;
+  
+      return { users };
+    } catch (err) {
+      throw err;
+    }
   }
 
   static async getUserByFirebaseToken(

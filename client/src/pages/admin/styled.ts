@@ -57,3 +57,10 @@ export const RecordingContentWrapper = styled.div`
   width: fit-content;
   flex-flow: row wrap;
 `;
+
+export const AdminSearch = styled.div`
+  width: 50%;
+  margin-left: auto;
+  margin-right: 20px;
+  padding: 10px 0;
+`;

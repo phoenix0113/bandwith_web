@@ -23,27 +23,28 @@ class AdminMobxService {
 
   @observable blockRecordings: Array<GetRecordResponse> = [];
 
+  @observable searchRecordingKey = "";
+
+  @observable searchUserKey = "";
+
   @observable currentRecording: GetRecordResponse = null;
 
   @observable users: Array<User> = [];
 
-  @observable allRecordingsLoaded = false;
-
-  @observable allUsersLoaded = false;
+  @observable onLoaded = false;
 
   constructor() {
     makeAutoObservable(this);
-    this.loadNewRecordings();
-    this.loadAvailableRecordings();
-    this.loadBlockRecordings();
-    this.loadAllUsers();
   }
 
   // function for get all users
   public loadAllUsers = async () => {
+    this.onLoaded = false;
     try {
       const { users } = await loadAllUsers({
-        limit: ADMIN_RECORDINGS_LOAD_LIMIT, offset: this.users.length,
+        limit: ADMIN_RECORDINGS_LOAD_LIMIT,
+        offset: this.newRecordings.length,
+        key: this.searchUserKey,
       });
 
       runInAction(() => {
@@ -52,15 +53,18 @@ class AdminMobxService {
     } catch (err) {
       showErrorNotification(err.message);
     } finally {
-      this.allUsersLoaded = true;
+      this.onLoaded = true;
     }
   };
 
   // functioin for get all new call recordings
   public loadNewRecordings = async () => {
+    this.onLoaded = false;
     try {
       const { recordings } = await loadNewRecordings({
-        limit: ADMIN_RECORDINGS_LOAD_LIMIT, offset: this.newRecordings.length,
+        limit: ADMIN_RECORDINGS_LOAD_LIMIT,
+        offset: this.newRecordings.length,
+        key: this.searchRecordingKey,
       });
 
       runInAction(() => {
@@ -72,14 +76,19 @@ class AdminMobxService {
       }
     } catch (err) {
       showErrorNotification(err.message);
+    } finally {
+      this.onLoaded = true;
     }
   };
 
   // function for get all available call recordings
   public loadAvailableRecordings = async () => {
+    this.onLoaded = false;
     try {
       const { recordings } = await loadAvailableRecordings({
-        limit: ADMIN_RECORDINGS_LOAD_LIMIT, offset: this.availableRecordings.length,
+        limit: ADMIN_RECORDINGS_LOAD_LIMIT,
+        offset: this.availableRecordings.length,
+        key: this.searchRecordingKey,
       });
 
       runInAction(() => {
@@ -91,14 +100,19 @@ class AdminMobxService {
       }
     } catch (err) {
       showErrorNotification(err.message);
+    } finally {
+      this.onLoaded = true;
     }
   };
 
   // function for get all available call recordings
   public loadBlockRecordings = async () => {
+    this.onLoaded = false;
     try {
       const { recordings } = await loadBlockRecordings({
-        limit: ADMIN_RECORDINGS_LOAD_LIMIT, offset: this.blockRecordings.length,
+        limit: ADMIN_RECORDINGS_LOAD_LIMIT,
+        offset: this.blockRecordings.length,
+        key: this.searchRecordingKey,
       });
 
       runInAction(() => {
@@ -110,6 +124,8 @@ class AdminMobxService {
       }
     } catch (err) {
       showErrorNotification(err.message);
+    } finally {
+      this.onLoaded = true;
     }
   };
 
@@ -150,6 +166,41 @@ class AdminMobxService {
       } else if (type === "blocked") {
         this.blockRecordings = this.popupItemByCallId(this.blockRecordings, callId);
       }
+    } catch (err) {
+      showErrorNotification(err.message);
+    }
+  };
+
+  // function for search recordings
+  public setSearchRecordingsKey = async (
+    key: string,
+    type: string,
+  ) => {
+    try {
+      this.searchRecordingKey = key;
+      if (type === "new") {
+        this.newRecordings = [];
+        this.loadNewRecordings();
+      } else if (type === "available") {
+        this.availableRecordings = [];
+        this.loadAvailableRecordings();
+      } else if (type === "blocked") {
+        this.blockRecordings = [];
+        this.loadBlockRecordings();
+      }
+    } catch (err) {
+      showErrorNotification(err.message);
+    }
+  };
+
+  // function for search recordings
+  public setSearchUserKey = async (
+    key: string,
+  ) => {
+    try {
+      this.searchUserKey = key;
+      this.users = [];
+      this.loadAllUsers();
     } catch (err) {
       showErrorNotification(err.message);
     }
