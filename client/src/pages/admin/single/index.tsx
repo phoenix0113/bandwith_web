@@ -6,13 +6,16 @@ import { AdminStorageContext } from "../../../services/admin";
 import AdminHeader from "../../../components/Admin/AdminHeader";
 import AdminSideBar from "../../../components/Admin/AdminSideBar";
 import {
-  AdminPageContent, AdminPageWrapper, AdminSingleVideoContent, AdminSingleVideoProfileContent,
-  AdminSingleVideoContentWrapper, AdminVideoToolsContent, AdminProfile, AdminProfileImage,
-  AdminProfileContent, AdminProfileName, AdminVideoTools, AdminVideoToolsMoveButton,
-  AdminVideoStatusTools, AdminVideoToolsPrevNextButton, AdminVideoToolsPlayPauseButton,
-  AdminVideoActiveStatusTools, AdminVideoToolsAcceptButton, AdminVideoToolsDeclineButton,
-  AdminVideoToolsCloseButton, AdminVideoPlayer, AdminVideoStatus,
+  AdminSingleVideoContent, AdminSingleVideoProfileContent,
+  AdminSingleRecordingContentWrapper, AdminRecordingToolsContent, AdminProfile, AdminProfileImage,
+  AdminProfileContent, AdminProfileName, AdminRecordingTools, AdminRecordingToolsMoveButton,
+  AdminRecordingStatusTools, AdminRecordingToolsPrevNextButton, AdminRecordingToolsPlayPauseButton,
+  AdminRecordingActiveStatusTools, AdminRecordingToolsAcceptButton, AdminRecordingToolsDeclineButton,
+  AdminRecordingToolsCloseButton, AdminRecordingPlayer, AdminRecordingStatus,
 } from "../../../components/Admin/styled";
+import {
+  AdminPageWrapper, AdminPageContent
+} from "../styled";
 import { PAGE_TYPE } from "./types";
 import moveButton from "../../../assets/images/admin/move.png";
 import prevButton from "../../../assets/images/admin/prev.png";
@@ -26,10 +29,10 @@ import { APPROVED_STATUS } from "../../../utils/constants";
 
 const AdminSingleVideoPage = observer((props): JSX.Element => {
   const {
-    latestVideos,
-    availableVideos,
+    // latestVideos,
+    // availableVideos,
     videos,
-    updateVideoStatus,
+    // updateRecordingStatus,
   } = useContext(AdminStorageContext);
 
   const [currentID, setCurrentID] = useState("");
@@ -94,14 +97,14 @@ const AdminSingleVideoPage = observer((props): JSX.Element => {
   };
 
   const acceptVideo = (_id: string) => {
-    updateVideoStatus(_id, "public");
+    // updateRecordingStatus(_id, "public");
     window.location.reload(false);
   };
 
   const declineVideo = (_id: string) => {
-    updateVideoStatus(_id, "block");
+    // updateRecordingStatus(_id, "block");
     if (type === "latest") {
-      history.push(Routes.ADMIN_DASHBOARD);
+      history.push(Routes.ADMIN_NEW_RECORDINGS);
     } else if (type === APPROVED_STATUS) {
       history.push(Routes.ADMIN_VIDEO);
     }
@@ -121,9 +124,9 @@ const AdminSingleVideoPage = observer((props): JSX.Element => {
     setCurrentID(props.match.params.id);
     setType(props.match.params.type);
     if (type === "latest") {
-      setVideoList(latestVideos);
+      // setVideoList(latestVideos);
     } else if (type === APPROVED_STATUS) {
-      setVideoList(availableVideos);
+      // setVideoList(availableVideos);
     } else if (type === "all") {
       setVideoList(videos);
     }
@@ -137,13 +140,13 @@ const AdminSingleVideoPage = observer((props): JSX.Element => {
       <AdminPageContent>
         <AdminSideBar pageType={PAGE_TYPE} />
         <AdminSingleVideoContent>
-          <AdminSingleVideoContentWrapper>
+          <AdminSingleRecordingContentWrapper>
             {
               videoList.map((item) => (
                 (item._id === currentID) ? (
-                  <AdminVideoPlayer ref={playerRef} controls key={item._id}>
+                  <AdminRecordingPlayer ref={playerRef} controls key={item._id}>
                     <source src={item?.list[0].url} />
-                  </AdminVideoPlayer>
+                  </AdminRecordingPlayer>
                 ) : (
                   <div key={item._id} />
                 )
@@ -166,47 +169,47 @@ const AdminSingleVideoPage = observer((props): JSX.Element => {
                   ))
                 }
               </AdminSingleVideoProfileContent>
-              <AdminVideoToolsContent>
-                <AdminVideoTools>
-                  <AdminVideoToolsMoveButton src={moveButton} />
-                  <AdminVideoStatusTools>
-                    <AdminVideoToolsPrevNextButton src={prevButton} onClick={prevPlay} />
+              <AdminRecordingToolsContent>
+                <AdminRecordingTools>
+                  <AdminRecordingToolsMoveButton src={moveButton} />
+                  <AdminRecordingStatusTools>
+                    <AdminRecordingToolsPrevNextButton src={prevButton} onClick={prevPlay} />
                     {
                       (showPlayBtn) ? (
-                        <AdminVideoToolsPlayPauseButton src={playButton} onClick={changePlayBtn} />
+                        <AdminRecordingToolsPlayPauseButton src={playButton} onClick={changePlayBtn} />
                       ) : (
-                        <AdminVideoToolsPlayPauseButton className="admin-dashboard-video-pause-button" src={pauseButton} onClick={changePlayBtn} />
+                        <AdminRecordingToolsPlayPauseButton className="admin-dashboard-video-pause-button" src={pauseButton} onClick={changePlayBtn} />
                       )
                     }
-                    <AdminVideoToolsPrevNextButton src={nextButton} onClick={nextPlay} />
-                  </AdminVideoStatusTools>
-                  <AdminVideoActiveStatusTools>
+                    <AdminRecordingToolsPrevNextButton src={nextButton} onClick={nextPlay} />
+                  </AdminRecordingStatusTools>
+                  <AdminRecordingActiveStatusTools>
                     {
                       videoList.map((item) => (
                         (item._id === currentID) ? (
-                          <AdminVideoStatus key={item._id}>
-                            <AdminVideoToolsAcceptButton
+                          <AdminRecordingStatus key={item._id}>
+                            <AdminRecordingToolsAcceptButton
                               src={acceptButton}
                               style={(item.status !== "block") ? ({ opacity: 0.1, cursor: "auto" }) : ({ opacity: 1, cursor: "pointer" })}
                               onClick={() => acceptVideo(item._id)}
                             />
-                            <AdminVideoToolsDeclineButton
+                            <AdminRecordingToolsDeclineButton
                               style={(item.status === "block") ? ({ opacity: 0.11, cursor: "auto" }) : ({ opacity: 1, cursor: "pointer" })}
                               src={declineButton}
                               onClick={() => declineVideo(item._id)}
                             />
-                          </AdminVideoStatus>
+                          </AdminRecordingStatus>
                         ) : (
                           <div key={item._id} />
                         )
                       ))
                     }
-                  </AdminVideoActiveStatusTools>
-                  <AdminVideoToolsCloseButton src={closeButton} />
-                </AdminVideoTools>
-              </AdminVideoToolsContent>
+                  </AdminRecordingActiveStatusTools>
+                  <AdminRecordingToolsCloseButton src={closeButton} />
+                </AdminRecordingTools>
+              </AdminRecordingToolsContent>
             </div>
-          </AdminSingleVideoContentWrapper>
+          </AdminSingleRecordingContentWrapper>
         </AdminSingleVideoContent>
       </AdminPageContent>
     </AdminPageWrapper>

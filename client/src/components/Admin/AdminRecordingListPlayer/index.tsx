@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { ButtonSection, VideoPlayer, VideoPlayerButton, VideoPauseButton, VideoPlayerContent } from "../styled";
-import playButton from "../../../assets/images/admin/play.svg";
-import pauseButton from "../../../assets/images/admin/pause.png";
+import { VideoPlayer, VideoPauseButton, VideoPlayerButton, VideoPlayerContent, PauseButtonSection } from "./styled";
+import playButton from "../../../assets/images/play.png";
+import pauseButton from "../../../assets/images/pause.png";
 
 interface Data {
   url: string;
 }
 
-const AdminVideo = (props:Data):JSX.Element => {
-  const [videoUrl, setVideoUrl] = useState("");
+const AdminUserRecordingListPlayer = (props:Data):JSX.Element => {
   const playerRef = useRef<HTMLVideoElement>(null);
+  const [videoSourceUrl, setVideoSourceUrl] = useState("");
   const [showPlayBtn, setShowPlayBtn] = useState(true);
   const handleVideo = () => {
     if (playerRef.current.paused) {
@@ -25,7 +25,7 @@ const AdminVideo = (props:Data):JSX.Element => {
   };
 
   useEffect(() => {
-    setVideoUrl(props.url);
+    setVideoSourceUrl(props.url);
   });
 
   return (
@@ -37,12 +37,11 @@ const AdminVideo = (props:Data):JSX.Element => {
           <VideoPauseButton className="admin-dashboard-video-pause-button" src={pauseButton} onClick={handleVideo} />
         )
       }
-
       <VideoPlayer ref={playerRef}>
-        <source src={videoUrl} />
+        <source src={videoSourceUrl} />
       </VideoPlayer>
     </VideoPlayerContent>
   );
 };
 
-export default AdminVideo;
+export default AdminUserRecordingListPlayer;

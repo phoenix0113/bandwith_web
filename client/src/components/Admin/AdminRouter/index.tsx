@@ -56,7 +56,7 @@ export const AdminRouterComponent = observer(({ Component, path, exact }: IProps
       });
       onAuthCallback = null;
     } else {
-      return <Redirect to={Routes.ADMIN_DASHBOARD} />;
+      return <Redirect to={Routes.ADMIN_NEW_RECORDINGS} />;
     }
   }
 

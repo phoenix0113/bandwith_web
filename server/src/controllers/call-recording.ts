@@ -61,6 +61,14 @@ export class CallRecordingsController extends CrudController {
     });
   }
 
+  static async getNewRecords(req: Request, res: Response) {
+    await CallRecordingsController.processRequest(req, res, async () => {
+      res.send(
+        await CallRecordingService.getNewRecords()
+      );
+    });
+  }
+
   static async getAvailableRecords(req: Request, res: Response) {
     await CallRecordingsController.processRequest(req, res, async () => {
       res.send(

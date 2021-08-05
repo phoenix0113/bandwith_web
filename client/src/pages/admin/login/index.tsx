@@ -3,10 +3,11 @@ import { Form, Input } from "antd";
 import md5 from "md5";
 import AdminHeader from "../../../components/Admin/AdminHeader";
 import {
-  AdminPageWrapper, AdminAuthForm, AdminPanelTitle, AdminPanelDescription, EmailIcon,
+  AdminAuthForm, AdminPanelTitle, AdminPanelDescription, EmailIcon,
   AdminPanelImage, AdminContent, AdminAuthButton, AdminForgotPassword, AdminContentWrapper,
   TitleScale,
 } from "../../../components/Admin/styled";
+import { AdminPageWrapper } from "../styled";
 import { InputIconWrapper } from "../../../components/styled";
 import ArtistLoader from "../../../assets/images/ArtistLoader.svg";
 import emailIcon from "../../../assets/images/admin/icon_mail.svg";

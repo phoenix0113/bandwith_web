@@ -1,10 +1,5 @@
 import styled from "styled-components";
 
-export const AdminPageWrapper = styled.div`
-  width: 100%;
-  background-color: #0E0C09;
-`;
-
 export const AdminAuthForm = styled.div`
   width: 44.263%;
   max-width: 540px;
@@ -95,49 +90,6 @@ export const AdminContentWrapper = styled.div`
   }
 `;
 
-export const AdminPageContent = styled.div`
-  display: flex;
-  height: 100%;
-`;
-
-export const AdminDashboardContent = styled.div`
-  margin-top: 70px;
-  margin-left: 250px;
-  width: 100%;
-  justify-content: center;
-  display: flex;
-`;
-
-export const AdminDashboardVideoContent = styled.div`
-  @media (min-width: 648px) {
-    width: 383px;
-  }
-  @media (min-width: 1110px) {
-    width: 766px;
-  }
-  @media (min-width: 1440px) {
-    width: 1144px;
-  }
-`;
-
-export const AdminDashboardVideoTitle = styled.div`
-  margin-left: 15px;
-  margin-top: 47px;
-  margin-bottom: 20px;
-  font-family: 'Avenir-Kefa';
-  font-style: normal;
-  font-weight: bold;
-  font-size: 34px;
-  line-height: 40px;
-  color: #FFFFFF;
-`;
-
-export const VideoContentWrapper = styled.div`
-  display: flex;
-  width: fit-content;
-  flex-flow: row wrap;
-`;
-
 export const VideoPlayerContent = styled.div`
   width: 200px;
   height: 400px;
@@ -224,7 +176,7 @@ export const AdminHelpDescription = styled.div`
   color: #6D7278;
 `;
 
-export const AdminVideoPlayer = styled.video`
+export const AdminRecordingPlayer = styled.video`
   // width: 100%;
   width: auto;
   // max-width: 1120px;
@@ -234,7 +186,7 @@ export const AdminVideoPlayer = styled.video`
   border: 2px solid white;
 `;
 
-export const AdminVideoToolsContent = styled.div`
+export const AdminRecordingToolsContent = styled.div`
   margin-top: 35px;
   max-width: 1120px;
   width: 100%;
@@ -269,25 +221,25 @@ export const AdminProfileName = styled.a`
   color: #0091FF;
 `;
 
-export const AdminVideoStatus = styled.div`
+export const AdminRecordingStatus = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-around;
 `;
 
-export const AdminVideoTools = styled.div`
+export const AdminRecordingTools = styled.div`
   padding: 20px 25px;
   display: flex;
   align-items: center;
 `;
 
-export const AdminVideoToolsMoveButton = styled.img`
+export const AdminRecordingToolsMoveButton = styled.img`
   width: 10px;
   height: 16px;
   cursor: pointer;
 `;
 
-export const AdminVideoStatusTools = styled.div`
+export const AdminRecordingStatusTools = styled.div`
   // width: 36.6%;
   width: 50%;
   display: flex;
@@ -296,19 +248,19 @@ export const AdminVideoStatusTools = styled.div`
   padding: 0 11.74%;
 `;
 
-export const AdminVideoToolsPrevNextButton = styled.img`
+export const AdminRecordingToolsPrevNextButton = styled.img`
   width: 19.46px;
   height: 17px;
   cursor: pointer;
 `;
 
-export const AdminVideoToolsPlayPauseButton = styled.img`
+export const AdminRecordingToolsPlayPauseButton = styled.img`
   width: 13.34px;
   height: 17px;
   cursor: pointer;
 `;
 
-export const AdminVideoActiveStatusTools = styled.div`
+export const AdminRecordingActiveStatusTools = styled.div`
   // width: 24.9%;
   width: 50%;
   border-left: 1px solid #979797;
@@ -320,25 +272,25 @@ export const AdminVideoActiveStatusTools = styled.div`
   align-items: center;
 `;
 
-export const AdminVideoToolsAcceptButton = styled.img`
+export const AdminRecordingToolsAcceptButton = styled.img`
   width: 21px;
   height: 18px;
   cursor: pointer;
 `;
 
-export const AdminVideoToolsDeclineButton = styled.img`
+export const AdminRecordingToolsDeclineButton = styled.img`
   width: 17px;
   height: 17px;
   cursor: pointer;
 `;
 
-export const AdminVideoToolsVoiceButton = styled.img`
+export const AdminRecordingToolsVoiceButton = styled.img`
   width: 19.92px;
   height: 17.97px;
   cursor: pointer;
 `;
 
-export const AdminVideoSettingsTools = styled.div`
+export const AdminRecordingSettingsTools = styled.div`
   width: 31.7%;
   padding: 0 6.96%;
   display: flex;
@@ -346,63 +298,44 @@ export const AdminVideoSettingsTools = styled.div`
   align-items: center;
 `;
 
-export const AdminVideoToolsOptionButton = styled.img`
+export const AdminRecordingToolsOptionButton = styled.img`
   width: 17px;
   height: 17px;
   cursor: pointer;
 `;
 
-export const AdminVideoToolsFullScreenButton = styled.img`
+export const AdminRecordingToolsFullScreenButton = styled.img`
   width: 17px;
   height: 17px;
   cursor: pointer;
 `;
 
-export const AdminVideoToolsCloseButton = styled.img`
+export const AdminRecordingToolsCloseButton = styled.img`
   width: 14px;
   height: 14px;
   cursor: pointer;
   margin-left: auto;
 `;
 
-export const AdminVideoWrapper = styled.div`
+export const AdminRecordingWrapper = styled.div`
   max-width: 550px;
   margin: 0 auto;
   min-height: 100%;
 `;
 
-export const AdminVideoContent = styled.div`
+export const AdminRecordingContent = styled.div`
   margin-top: 70px;
   margin-left: 250px;
   width: 100%;
   background-color: #151617;
 `;
 
-export const AdminVideoContentWrapper = styled.div`
+export const AdminRecordingContentWrapper = styled.div`
   display: flex;
   min-height: 100%;
 `;
 
-export const AdminVideoList = styled.div`
-  display: flex;
-  width: 100%;
-  height: 143px;
-  padding: 15px;
-  background: #1A1C1E;
-  margin: 20px 0;
-  align-items: center;
-  border-radius: 6px;
-`;
-
-export const AdminVideoListStatus = styled.div`
-  border: none;
-  outline: none;
-  margin-right: 0;
-  margin-left: auto;
-  display: grid;
-`;
-
-export const AdminVideoListTitle = styled.div`
+export const AdminRecordingListTitle = styled.div`
   font-family: 'Avenir-Kefa';
   font-style: normal;
   font-weight: bold;
@@ -420,7 +353,7 @@ export const AdminUserWrapper = styled.div`
   min-height: 100%;
 `;
 
-export const AdminVideoListWrapper = styled.div`
+export const AdminRecordingListWrapper = styled.div`
   width: 55%;
   background-color: #0E0C09;
 `;
@@ -458,32 +391,7 @@ export const AdminListActiveBar = styled.div`
   border-radius: 6px 0 0 6px;
 `;
 
-export const AdminVideoListStatusLabel = styled.label`
-  font-family: Lato;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 22px;
-  text-align: right;
-  color: #FFFFFF;
-  margin-right: 24px;
-`;
-
-export const AdminVideoListStatusInput = styled.input`
-  margin-right: 0;
-  margin-left: auto;
-  width: 17px;
-  height: 17px;
-`;
-
-export const TextRight = styled.div`
-  text-align: right;
-  margin: 5px 0;
-  display: flex;
-  align-items: center;
-`;
-
-export const AdminSingleVideoContentWrapper = styled.div`
+export const AdminSingleRecordingContentWrapper = styled.div`
   max-width: 1190px;
   margin: auto;
   padding: 0 35px;
@@ -506,7 +414,7 @@ export const AdminSingleVideoProfileContent = styled.div`
   margin-bottom: 18px;
 `;
 
-export const AdminVideoManageContent = styled.div`
+export const AdminRecordingManageContent = styled.div`
   margin-top: 70px;
   margin-left: 295px;
   margin-right: 55px;
@@ -514,17 +422,10 @@ export const AdminVideoManageContent = styled.div`
   width: 100%;
 `;
 
-export const AdminVideoManageWrapper = styled.div`
+export const AdminRecordingManageWrapper = styled.div`
   max-width: 1120px;
   width: 100%;
   margin: 0 auto;
-`;
-
-export const AdminScrollContent = styled.div`
-  height: calc(100vh - 240px);
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 0 10px;
 `;
 
 export const AdminSearch = styled.div`
@@ -532,8 +433,4 @@ export const AdminSearch = styled.div`
   margin-left: auto;
   margin-right: 20px;
   padding: 10px 0;
-`;
-
-export const DeleteIcon = styled.img`
-  color: #ffffff;
 `;

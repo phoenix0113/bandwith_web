@@ -58,7 +58,7 @@
 }
 
 .sidebar-active {
-  padding-left: 46px !important;
+  padding-left: 36px !important;
 }
 
 .sub-sidebar-active {
@@ -70,8 +70,8 @@
   opacity: 1 !important;
 }
 
-.pa-left-50 {
-  padding-left: 50px;
+.pa-left-40 {
+  padding-left: 40px;
 }
 
 .cursor-pointer {
@@ -86,4 +86,16 @@
 
 .user-list-active {
   background: #292F4C;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-bold {
+  font-weight: bold;
+}
+
+.dis-flex {
+  display: flex;
 }

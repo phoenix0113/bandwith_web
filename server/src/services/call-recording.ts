@@ -232,6 +232,36 @@ export class CallRecordingService {
     }
   }
 
+  // function for get new call recordings
+  static async getNewRecords(): Promise<GetAllRecordsResponse> {
+    try {
+      const recordings = await CallRecording.find({
+        status: 'new',
+      }).sort({
+        _id: 'desc',
+      });
+
+      const amount = recordings.length;
+
+      await Promise.all(
+        recordings.map(async (recordItem) => {
+          const signedUrl = await StorageHandler.get().signedUrl(
+            recordItem.list[0].fullKey
+          );
+
+          recordItem.list[0].url = signedUrl;
+
+          await recordItem.save();
+        })
+      );
+
+      return { recordings: Object.assign([], recordings), amount };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  // function for get available call recordings
   static async getAvailableRecords({
     limit,
     offset,

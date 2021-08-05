@@ -12,12 +12,12 @@ export enum Routes {
   SHARED="/shared/:id",
   ADMIN="/admin",
   ADMIN_LOGIN="/admin/login",
-  ADMIN_HELP="/admin/help",
-  ADMIN_DASHBOARD="/admin/dashboard",
-  ADMIN_VIDEO="/admin/video",
+  ADMIN_NEW_RECORDINGS="/admin/new-recordings",
+  ADMIN_AVAILABLE_RECORDINGS="/admin/available-recordings",
+  ADMIN_BLOCKED_RECORDINGS="/admin/blocked-recordings",
   ADMIN_USERS="/admin/users",
-  ADMIN_VIDEOS="/admin/manage",
-  ADMIN_SINGLE_VIDEO="/admin/video/:id/:type",
+  ADMIN_VIDEO="/admin/video/:id/:type",
+  ADMIN_HELP="/admin/help",
 }
 
 export enum Params {

@@ -4,18 +4,18 @@ import AdminHeader from "../../../components/Admin/AdminHeader";
 import AdminSideBar from "../../../components/Admin/AdminSideBar";
 import AdminUserListProfile from "../../../components/Admin/AdminUserListProfile";
 import { AdminStorageContext } from "../../../services/admin";
+import { AdminRecordingManageContent, AdminRecordingManageWrapper, AdminRecordingListTitle } from "../../../components/Admin/styled";
 import {
-  AdminPageContent, AdminPageWrapper, AdminVideoManageContent, AdminVideoManageWrapper,
-  AdminVideoList, AdminVideoListStatus, TextRight, AdminVideoListStatusLabel,
-  AdminVideoListStatusInput, AdminScrollContent, AdminVideoListTitle,
-} from "../../../components/Admin/styled";
+  AdminPageWrapper, AdminPageContent, AdminScrollContent, AdminRecordingList, TextRight,
+  AdminRecordingListStatus, AdminRecordingListStatusLabel, AdminRecordingListStatusInput,
+} from "../styled";
 import { PAGE_TYPE } from "./types";
 import { PUBLIC_STATUS, BLOCK_STATUS, APPROVED_STATUS } from "../../../utils/constants";
 
 const AdminUsersPage = observer((): JSX.Element => {
   const {
     users,
-    updateUserStatus,
+    // updateUserStatus,
   } = useContext(AdminStorageContext);
   const [allUsers, setAllUsers] = useState([]);
 
@@ -31,7 +31,7 @@ const AdminUsersPage = observer((): JSX.Element => {
   const onChangeStatus = (
     id: string, status: string,
   ) => {
-    updateUserStatus(id, status);
+    // updateUserStatus(id, status);
     setStatus(id, status);
   };
 
@@ -40,15 +40,15 @@ const AdminUsersPage = observer((): JSX.Element => {
       <AdminHeader />
       <AdminPageContent>
         <AdminSideBar pageType={PAGE_TYPE} />
-        <AdminVideoManageContent>
-          <AdminVideoListTitle>
+        <AdminRecordingManageContent>
+          <AdminRecordingListTitle>
             User List
-          </AdminVideoListTitle>
-          <AdminVideoManageWrapper>
+          </AdminRecordingListTitle>
+          <AdminRecordingManageWrapper>
             <AdminScrollContent className="scrollbar-content">
               {
                 allUsers.map((user) => (
-                  <AdminVideoList key={user._id}>
+                  <AdminRecordingList key={user?._id}>
                     <div style={{ marginLeft: "26px", marginRight: "26px" }}>
                       <AdminUserListProfile
                         imageUrl={user.imageUrl}
@@ -57,40 +57,40 @@ const AdminUsersPage = observer((): JSX.Element => {
                         type="none"
                       />
                     </div>
-                    <AdminVideoListStatus>
+                    <AdminRecordingListStatus>
                       <TextRight>
-                        <AdminVideoListStatusLabel htmlFor={user._id}>
+                        <AdminRecordingListStatusLabel htmlFor={user?._id}>
                           Available
-                        </AdminVideoListStatusLabel>
-                        <AdminVideoListStatusInput
+                        </AdminRecordingListStatusLabel>
+                        <AdminRecordingListStatusInput
                           type="radio"
                           value={PUBLIC_STATUS}
-                          name={user._id}
-                          id={user._id}
+                          name={user?._id}
+                          id={user?._id}
                           checked={(user.status === APPROVED_STATUS)}
-                          onChange={() => onChangeStatus(user._id, APPROVED_STATUS)}
+                          onChange={() => onChangeStatus(user?._id, APPROVED_STATUS)}
                         />
                       </TextRight>
                       <TextRight>
-                        <AdminVideoListStatusLabel htmlFor={user._id}>
+                        <AdminRecordingListStatusLabel htmlFor={user?._id}>
                           Block
-                        </AdminVideoListStatusLabel>
-                        <AdminVideoListStatusInput
+                        </AdminRecordingListStatusLabel>
+                        <AdminRecordingListStatusInput
                           type="radio"
                           value={BLOCK_STATUS}
-                          name={user._id}
-                          id={user._id}
+                          name={user?._id}
+                          id={user?._id}
                           checked={(user.status === "block")}
-                          onChange={() => onChangeStatus(user._id, "block")}
+                          onChange={() => onChangeStatus(user?._id, "block")}
                         />
                       </TextRight>
-                    </AdminVideoListStatus>
-                  </AdminVideoList>
+                    </AdminRecordingListStatus>
+                  </AdminRecordingList>
                 ))
               }
             </AdminScrollContent>
-          </AdminVideoManageWrapper>
-        </AdminVideoManageContent>
+          </AdminRecordingManageWrapper>
+        </AdminRecordingManageContent>
       </AdminPageContent>
     </AdminPageWrapper>
   );

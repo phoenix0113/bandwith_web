@@ -18,7 +18,7 @@ const CallRecordingSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'user' },
   participants: [{ type: Schema.Types.ObjectId, ref: 'user' }],
   authorList: [{ type: Schema.Types.ObjectId, ref: 'user' }],
-  status: { type: String, default: 'block' },
+  status: { type: String, default: 'new' },
   name: { type: String },
 });
 

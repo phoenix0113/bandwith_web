@@ -2,21 +2,21 @@ import React, { useState, useEffect, useContext } from "react";
 import { observer } from "mobx-react";
 import AdminHeader from "../../../components/Admin/AdminHeader";
 import AdminSideBar from "../../../components/Admin/AdminSideBar";
-import AdminUserVideoListPlayer from "../../../components/Admin/AdminVideoListPlayer";
+import AdminUserRecordingListPlayer from "../../../components/Admin/AdminRecordingListPlayer";
 import AdminUserListProfile from "../../../components/Admin/AdminUserListProfile";
 import { AdminStorageContext } from "../../../services/admin";
+import { AdminRecordingManageContent, AdminRecordingManageWrapper, AdminRecordingListTitle } from "../../../components/Admin/styled";
 import {
-  AdminPageContent, AdminPageWrapper, AdminVideoManageContent, AdminVideoManageWrapper,
-  AdminVideoList, AdminVideoListStatus, TextRight, AdminVideoListStatusLabel,
-  AdminVideoListStatusInput, AdminScrollContent, AdminVideoListTitle,
-} from "../../../components/Admin/styled";
+  AdminPageWrapper, AdminPageContent, AdminScrollContent, AdminRecordingList, TextRight,
+  AdminRecordingListStatus, AdminRecordingListStatusLabel, AdminRecordingListStatusInput,
+} from "../styled";
 import { PAGE_TYPE } from "./types";
-import { PUBLIC_STATUS, BLOCK_STATUS, FEATURE_STATUS } from "../../../utils/constants";
+import { PUBLIC_STATUS, BLOCK_STATUS } from "../../../utils/constants";
 
 const AdminManagePage = observer((): JSX.Element => {
   const {
     videos,
-    updateVideoStatus,
+    // updateRecordingStatus,
   } = useContext(AdminStorageContext);
   const [allVideos, setAllVideos] = useState([]);
 
@@ -32,7 +32,7 @@ const AdminManagePage = observer((): JSX.Element => {
   const onChangeStatus = (
     id: string, status: string,
   ) => {
-    updateVideoStatus(id, status);
+    // updateRecordingStatus(id, status);
     setStatus(id, status);
   };
 
@@ -41,16 +41,16 @@ const AdminManagePage = observer((): JSX.Element => {
       <AdminHeader />
       <AdminPageContent>
         <AdminSideBar pageType={PAGE_TYPE} />
-        <AdminVideoManageContent>
-          <AdminVideoListTitle>
+        <AdminRecordingManageContent>
+          <AdminRecordingListTitle>
             Video List
-          </AdminVideoListTitle>
-          <AdminVideoManageWrapper>
+          </AdminRecordingListTitle>
+          <AdminRecordingManageWrapper>
             <AdminScrollContent className="scrollbar-content">
               {
                 allVideos.map((video) => (
-                  <AdminVideoList key={video._id}>
-                    <AdminUserVideoListPlayer url={video.list[0].url} />
+                  <AdminRecordingList key={video._id}>
+                    <AdminUserRecordingListPlayer url={video.list[0].url} />
                     <div style={{ marginLeft: "26px", marginRight: "26px" }}>
                       <AdminUserListProfile
                         imageUrl={video.user.imageUrl}
@@ -59,12 +59,12 @@ const AdminManagePage = observer((): JSX.Element => {
                         type="all"
                       />
                     </div>
-                    <AdminVideoListStatus>
+                    <AdminRecordingListStatus>
                       <TextRight>
-                        <AdminVideoListStatusLabel htmlFor={video._id}>
+                        <AdminRecordingListStatusLabel htmlFor={video._id}>
                           Public
-                        </AdminVideoListStatusLabel>
-                        <AdminVideoListStatusInput
+                        </AdminRecordingListStatusLabel>
+                        <AdminRecordingListStatusInput
                           type="radio"
                           value={PUBLIC_STATUS}
                           name={video._id}
@@ -74,10 +74,10 @@ const AdminManagePage = observer((): JSX.Element => {
                         />
                       </TextRight>
                       <TextRight>
-                        <AdminVideoListStatusLabel htmlFor={video._id}>
+                        <AdminRecordingListStatusLabel htmlFor={video._id}>
                           Block
-                        </AdminVideoListStatusLabel>
-                        <AdminVideoListStatusInput
+                        </AdminRecordingListStatusLabel>
+                        <AdminRecordingListStatusInput
                           type="radio"
                           value="block"
                           name={video._id}
@@ -86,13 +86,13 @@ const AdminManagePage = observer((): JSX.Element => {
                           onChange={() => onChangeStatus(video._id, BLOCK_STATUS)}
                         />
                       </TextRight>
-                    </AdminVideoListStatus>
-                  </AdminVideoList>
+                    </AdminRecordingListStatus>
+                  </AdminRecordingList>
                 ))
               }
             </AdminScrollContent>
-          </AdminVideoManageWrapper>
-        </AdminVideoManageContent>
+          </AdminRecordingManageWrapper>
+        </AdminRecordingManageContent>
       </AdminPageContent>
     </AdminPageWrapper>
   );

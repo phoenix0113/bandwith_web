@@ -1,7 +1,9 @@
 import { useState, useEffect, useContext } from "react";
+import { useLocation, useHistory } from "react-router-dom";
 import { Modal } from "antd";
 import { GlobalStorageContext } from "../../../services/global";
 import { vibrate } from "../../../utils/vibration";
+import { Routes } from "../../../utils/routes";
 import {
   SideBarSection, SideBarUl, SideBarLi, SideBarActive, SideBarHref,
   LogoutModalTitle, LogoutModalFooter, LogoutModalButton,
@@ -12,6 +14,9 @@ interface Data {
 }
 
 const AdminSideBar = (props:Data): JSX.Element => {
+  const { pathname } = useLocation();
+  const history = useHistory();
+
   const [logoutModalStatus, setLogoutModalStatus] = useState(false);
   const [type, setType] = useState("");
   const { logout } = useContext(GlobalStorageContext);
@@ -37,36 +42,54 @@ const AdminSideBar = (props:Data): JSX.Element => {
   return (
     <SideBarSection>
       <SideBarUl>
-        <SideBarLi className={(type === "dashboard") ? "admin-active" : ""}>
-          {(type === "dashboard") ? <SideBarActive /> : <></>}
+        <SideBarLi className={(type === "new recordings") ? "admin-active" : ""}>
+          {(type === "new recordings") ? <SideBarActive /> : <></>}
           <SideBarHref
-            className={(type === "dashboard") ? "sidebar-active" : ""}
-            href="/admin/dashboard"
+            className={(type === "new recordings") ? "sidebar-active" : ""}
+            onClick={() => history.push(Routes.ADMIN_NEW_RECORDINGS)}
           >
-            Dashboard
+            New Reocrdings
           </SideBarHref>
         </SideBarLi>
-        <SideBarLi className={(type === "manage") ? "admin-active" : ""}>
-          {(type === "manage") ? <SideBarActive /> : <></>}
+        <SideBarLi className={(type === "available recordings") ? "admin-active" : ""}>
+          {(type === "available recordings") ? <SideBarActive /> : <></>}
           <SideBarHref
-            className={(type === "manage") ? "sidebar-active" : ""}
-            href="/admin/manage"
+            className={(type === "available recordings") ? "sidebar-active" : ""}
+            onClick={() => history.push(Routes.ADMIN_AVAILABLE_RECORDINGS)}
           >
-            Manage
+            Available Recordings
+          </SideBarHref>
+        </SideBarLi>
+        <SideBarLi className={(type === "blocked recordings") ? "admin-active" : ""}>
+          {(type === "blocked recordings") ? <SideBarActive /> : <></>}
+          <SideBarHref
+            className={(type === "blocked recordings") ? "sidebar-active" : ""}
+            onClick={() => history.push(Routes.ADMIN_BLOCKED_RECORDINGS)}
+          >
+            Blocked Recordings
+          </SideBarHref>
+        </SideBarLi>
+        <SideBarLi className={(type === "users") ? "admin-active" : ""}>
+          {(type === "users") ? <SideBarActive /> : <></>}
+          <SideBarHref
+            className={(type === "users") ? "sidebar-active" : ""}
+            onClick={() => history.push(Routes.ADMIN_USERS)}
+          >
+            Users
           </SideBarHref>
         </SideBarLi>
         <SideBarLi className={(type === "help") ? "admin-active" : ""}>
           {(type === "help") ? <SideBarActive /> : <></>}
           <SideBarHref
             className={(type === "help") ? "sidebar-active" : ""}
-            href="/admin/help"
+            onClick={() => history.push(Routes.ADMIN_HELP)}
           >
             Help
           </SideBarHref>
         </SideBarLi>
         <SideBarLi
           onClick={handleLogoutModal}
-          className="pa-left-50 cursor-pointer"
+          className="pa-left-40 cursor-pointer"
         >
           Log Out
         </SideBarLi>

@@ -1,9 +1,7 @@
 import AdminHeader from "../../../components/Admin/AdminHeader";
 import AdminSideBar from "../../../components/Admin/AdminSideBar";
-import {
-  AdminPageContent, AdminPageWrapper, AdminHelpContent, AdminHelpTitle, AdminHelpDescription,
-  AdminScrollContent,
-} from "../../../components/Admin/styled";
+import { AdminHelpContent, AdminHelpTitle, AdminHelpDescription } from "../../../components/Admin/styled";
+import { AdminPageWrapper, AdminPageContent, AdminScrollContent } from "../styled";
 import { PAGE_TYPE } from "./types";
 
 const AdminHelpPage = (): JSX.Element => {

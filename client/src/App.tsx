@@ -33,12 +33,16 @@ const ContactListPage = lazy(() => import("./pages/contacts"));
 const FeedPage = lazy(() => import("./pages/feed"));
 const SharedPage = lazy(() => import("./pages/shared"));
 const AdminLoginPage = lazy(() => import("./pages/admin/login"));
-const AdminHelpPage = lazy(() => import("./pages/admin/help"));
-const AdminDashboardPage = lazy(() => import("./pages/admin/dashboard"));
-const AdminVideoPage = lazy(() => import("./pages/admin/video"));
-const AdminSingleVideoPage = lazy(() => import("./pages/admin/single"));
-const AdminManagePage = lazy(() => import("./pages/admin/manage"));
+const AdminNewRecordingsPage = lazy(() => import("./pages/admin/new-recordings"));
+// const AdminAvailableRecordingsPage = lazy(() => import("./pages/admin/available-recordings"));
+// const AdminBlockedRecordingsPage = lazy(() => import("./pages/admin/blocked-recordings"));
+const AdminRecordingPage = lazy(() => import("./pages/admin/video"));
 const AdminUsersPage = lazy(() => import("./pages/admin/users"));
+const AdminHelpPage = lazy(() => import("./pages/admin/help"));
+// const AdminRecordingPage = lazy(() => import("./pages/admin/video"));
+// const AdminSingleVideoPage = lazy(() => import("./pages/admin/single"));
+// const AdminManagePage = lazy(() => import("./pages/admin/manage"));
+// const AdminUsersPage = lazy(() => import("./pages/admin/users"));
 
 export const App = observer((): JSX.Element => {
   const { pathname } = useLocation();
@@ -74,20 +78,24 @@ export const App = observer((): JSX.Element => {
           <ProtectedRoute exact path={Routes.FEED} Component={FeedPage} />
           <Route exact path={Routes.SHARED} component={SharedPage} />
           <AdminRouterComponent exact path={Routes.ADMIN_LOGIN} Component={AdminLoginPage} />
-          <AdminRouterComponent exact path={Routes.ADMIN_HELP} Component={AdminHelpPage} />
           <AdminRouterComponent
             exact
-            path={Routes.ADMIN_DASHBOARD}
-            Component={AdminDashboardPage}
+            path={Routes.ADMIN_NEW_RECORDINGS}
+            Component={AdminNewRecordingsPage}
           />
-          <AdminRouterComponent exact path={Routes.ADMIN_VIDEO} Component={AdminVideoPage} />
+          <AdminRouterComponent exact path={Routes.ADMIN_VIDEO} Component={AdminRecordingPage} />
           <AdminRouterComponent
             exact
-            path={Routes.ADMIN_SINGLE_VIDEO}
-            Component={AdminSingleVideoPage}
+            path={Routes.ADMIN_AVAILABLE_RECORDINGS}
+            Component={AdminUsersPage}
           />
-          <AdminRouterComponent exact path={Routes.ADMIN_VIDEOS} Component={AdminManagePage} />
+          <AdminRouterComponent
+            exact
+            path={Routes.ADMIN_BLOCKED_RECORDINGS}
+            Component={AdminUsersPage}
+          />
           <AdminRouterComponent exact path={Routes.ADMIN_USERS} Component={AdminUsersPage} />
+          <AdminRouterComponent exact path={Routes.ADMIN_HELP} Component={AdminHelpPage} />
         </Switch>
       </Suspense>
     </AppWrapper>

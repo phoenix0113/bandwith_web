@@ -43,7 +43,7 @@ export const SideBarHref = styled.a`
   height: 100%;
   width: 100%;
   padding-top: 16px;
-  padding-left: 50px;
+  padding-left: 40px;
   :hover {
     color: #ffffff !important;
     opacity: 1 !important;

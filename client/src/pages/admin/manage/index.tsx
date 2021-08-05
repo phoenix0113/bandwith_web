@@ -4,27 +4,30 @@ import { observer } from "mobx-react";
 import AdminHeader from "../../../components/Admin/AdminHeader";
 import AdminSideBar from "../../../components/Admin/AdminSideBar";
 import AdminUserListProfile from "../../../components/Admin/AdminUserListProfile";
-import AdminUserVideoListPlayer from "../../../components/Admin/AdminVideoListPlayer";
+import AdminUserRecordingListPlayer from "../../../components/Admin/AdminRecordingListPlayer";
 import feedIcon from "../../../assets/images/home/feed.svg";
 import deleteIcon from "../../../assets/images/admin/delete.svg";
 import {
-  AdminPageContent, AdminPageWrapper, AdminVideoContent, AdminVideoList, AdminVideoListStatus,
-  AdminVideoWrapper, AdminVideoListTitle, AdminUserWrapper, AdminUserList, AdminVideoContentWrapper,
-  AdminVideoListWrapper, AdminListActive, AdminListActiveBar, AdminVideoListStatusLabel, TextRight,
-  AdminVideoListStatusInput, AdminScrollContent, ProfileName, AdminSearch, DeleteIcon,
+  AdminRecordingContent, AdminRecordingWrapper, AdminRecordingListTitle, AdminUserWrapper, AdminUserList,
+  AdminRecordingContentWrapper,
+  AdminRecordingListWrapper, AdminListActive, AdminListActiveBar, ProfileName, AdminSearch,
 } from "../../../components/Admin/styled";
+import {
+  AdminPageWrapper, AdminPageContent, AdminScrollContent, AdminRecordingList, TextRight,
+  AdminRecordingListStatus, AdminRecordingListStatusLabel, AdminRecordingListStatusInput, DeleteIcon,
+} from "../styled";
 import { InputIconWrapper, LoaderWrapper } from "../../../components/styled";
 import { PAGE_TYPE } from "./types";
 import { AdminStorageContext } from "../../../services/admin";
 import { PUBLIC_STATUS, BLOCK_STATUS, APPROVED_STATUS } from "../../../utils/constants";
 
-const AdminVideoPage = observer((): JSX.Element => {
+const AdminRecordingPage = observer((): JSX.Element => {
   const {
     users,
     videos,
-    updateUserStatus,
-    updateVideoStatus,
-    deleteVideo,
+    // updateUserStatus,
+    // updateRecordingStatus,
+    // deleteRecording,
     allUsersLoaded,
     allVideosLoaded,
   } = useContext(AdminStorageContext);
@@ -45,7 +48,7 @@ const AdminVideoPage = observer((): JSX.Element => {
   };
 
   const changeUserStatus = (id: string, status: string) => {
-    updateUserStatus(id, status);
+    // updateUserStatus(id, status);
     setUserStatus(id, status);
   };
 
@@ -54,15 +57,15 @@ const AdminVideoPage = observer((): JSX.Element => {
     video.status = status;
   };
 
-  const changeVideoStatus = (id: string, status: string) => {
-    updateVideoStatus(id, status);
+  const changeRecordingStatus = (id: string, status: string) => {
+    // updateRecordingStatus(id, status);
     setVideoStatus(id, status);
   };
 
   const onDelete = async (id: string) => {
     if (window.confirm("Are you sure you wish to delete this call recording?")) {
       setLoading(true);
-      await deleteVideo(id);
+      // await deleteRecording(id);
       setLoading(false);
     }
   };
@@ -99,12 +102,12 @@ const AdminVideoPage = observer((): JSX.Element => {
             <AdminHeader />
             <AdminPageContent>
               <AdminSideBar pageType={PAGE_TYPE} />
-              <AdminVideoContent>
-                <AdminVideoContentWrapper>
+              <AdminRecordingContent>
+                <AdminRecordingContentWrapper>
                   <AdminUserWrapper>
-                    <AdminVideoListTitle>
+                    <AdminRecordingListTitle>
                       Users List
-                    </AdminVideoListTitle>
+                    </AdminRecordingListTitle>
                     <AdminSearch>
                       <Input
                         placeholder="Search"
@@ -120,7 +123,7 @@ const AdminVideoPage = observer((): JSX.Element => {
                       {
                         allUsers.map((user) => (
                           (user?._id === currentUser?._id) ? (
-                            <div style={{ position: "relative", borderRadius: "6px" }} key={user._id}>
+                            <div style={{ position: "relative", borderRadius: "6px" }} key={user?._id}>
                               <AdminListActiveBar />
                               <AdminListActive />
                               <AdminUserList onClick={() => changeCurrentUser(user)} className="user-list-active">
@@ -130,137 +133,137 @@ const AdminVideoPage = observer((): JSX.Element => {
                                   imageUrl={user.imageUrl}
                                   type="all"
                                 />
-                                <AdminVideoListStatus>
+                                <AdminRecordingListStatus>
                                   <TextRight>
-                                    <AdminVideoListStatusLabel htmlFor={user._id}>
+                                    <AdminRecordingListStatusLabel htmlFor={user?._id}>
                                       Approved
-                                    </AdminVideoListStatusLabel>
-                                    <AdminVideoListStatusInput
+                                    </AdminRecordingListStatusLabel>
+                                    <AdminRecordingListStatusInput
                                       type="radio"
                                       value={APPROVED_STATUS}
-                                      name={user._id}
-                                      id={user._id}
+                                      name={user?._id}
+                                      id={user?._id}
                                       checked={(user.status === APPROVED_STATUS)}
-                                      onChange={() => changeUserStatus(user._id, APPROVED_STATUS)}
+                                      onChange={() => changeUserStatus(user?._id, APPROVED_STATUS)}
                                     />
                                   </TextRight>
                                   <TextRight>
-                                    <AdminVideoListStatusLabel htmlFor={user._id}>
+                                    <AdminRecordingListStatusLabel htmlFor={user?._id}>
                                       Block
-                                    </AdminVideoListStatusLabel>
-                                    <AdminVideoListStatusInput
+                                    </AdminRecordingListStatusLabel>
+                                    <AdminRecordingListStatusInput
                                       type="radio"
                                       value={BLOCK_STATUS}
-                                      name={user._id}
-                                      id={user._id}
+                                      name={user?._id}
+                                      id={user?._id}
                                       checked={(user.status === BLOCK_STATUS)}
-                                      onChange={() => changeUserStatus(user._id, BLOCK_STATUS)}
+                                      onChange={() => changeUserStatus(user?._id, BLOCK_STATUS)}
                                     />
                                   </TextRight>
-                                </AdminVideoListStatus>
+                                </AdminRecordingListStatus>
                               </AdminUserList>
                             </div>
                           ) : (
-                            <AdminUserList onClick={() => changeCurrentUser(user)} key={user._id}>
+                            <AdminUserList onClick={() => changeCurrentUser(user)} key={user?._id}>
                               <AdminUserListProfile
                                 name={user.name}
                                 email={user.email}
                                 imageUrl={user.imageUrl}
                                 type="all"
                               />
-                              <AdminVideoListStatus>
+                              <AdminRecordingListStatus>
                                 <TextRight>
-                                  <AdminVideoListStatusLabel htmlFor={user._id}>
+                                  <AdminRecordingListStatusLabel htmlFor={user?._id}>
                                     Approved
-                                  </AdminVideoListStatusLabel>
-                                  <AdminVideoListStatusInput
+                                  </AdminRecordingListStatusLabel>
+                                  <AdminRecordingListStatusInput
                                     type="radio"
                                     value={APPROVED_STATUS}
-                                    name={user._id}
-                                    id={user._id}
+                                    name={user?._id}
+                                    id={user?._id}
                                     checked={(user.status === APPROVED_STATUS)}
-                                    onChange={() => changeUserStatus(user._id, APPROVED_STATUS)}
+                                    onChange={() => changeUserStatus(user?._id, APPROVED_STATUS)}
                                   />
                                 </TextRight>
                                 <TextRight>
-                                  <AdminVideoListStatusLabel htmlFor={user._id}>
+                                  <AdminRecordingListStatusLabel htmlFor={user?._id}>
                                     Block
-                                  </AdminVideoListStatusLabel>
-                                  <AdminVideoListStatusInput
+                                  </AdminRecordingListStatusLabel>
+                                  <AdminRecordingListStatusInput
                                     type="radio"
                                     value={BLOCK_STATUS}
-                                    name={user._id}
-                                    id={user._id}
+                                    name={user?._id}
+                                    id={user?._id}
                                     checked={(user.status === BLOCK_STATUS)}
-                                    onChange={() => changeUserStatus(user._id, BLOCK_STATUS)}
+                                    onChange={() => changeUserStatus(user?._id, BLOCK_STATUS)}
                                   />
                                 </TextRight>
-                              </AdminVideoListStatus>
+                              </AdminRecordingListStatus>
                             </AdminUserList>
                           )
                         ))
                       }
                     </AdminScrollContent>
                   </AdminUserWrapper>
-                  <AdminVideoListWrapper>
-                    <AdminVideoWrapper>
-                      <AdminVideoListTitle style={{ marginBottom: 70 }}>
+                  <AdminRecordingListWrapper>
+                    <AdminRecordingWrapper>
+                      <AdminRecordingListTitle style={{ marginBottom: 70 }}>
                         Video List By User
-                      </AdminVideoListTitle>
+                      </AdminRecordingListTitle>
                       <AdminScrollContent className="scrollbar-content">
                         {
                           allVideos.map((video) => (
-                            (currentUser?._id === video.user._id) ? (
-                              <AdminVideoList key={video._id}>
-                                <AdminUserVideoListPlayer url={video.list[0].url} />
+                            (currentUser?._id === video.user?._id) ? (
+                              <AdminRecordingList key={video._id}>
+                                <AdminUserRecordingListPlayer url={video.list[0].url} />
                                 <ProfileName>
                                   {video.name}
                                 </ProfileName>
-                                <AdminVideoListStatus>
+                                <AdminRecordingListStatus>
                                   <TextRight>
-                                    <AdminVideoListStatusLabel htmlFor={video._id}>
+                                    <AdminRecordingListStatusLabel htmlFor={video._id}>
                                       Public
-                                    </AdminVideoListStatusLabel>
-                                    <AdminVideoListStatusInput
+                                    </AdminRecordingListStatusLabel>
+                                    <AdminRecordingListStatusInput
                                       type="radio"
                                       value={PUBLIC_STATUS}
                                       name={video._id}
                                       id={video._id}
                                       checked={(video.status === PUBLIC_STATUS)}
-                                      onChange={() => changeVideoStatus(video._id, PUBLIC_STATUS)}
+                                      onChange={() => changeRecordingStatus(video._id, PUBLIC_STATUS)}
                                     />
                                   </TextRight>
                                   <TextRight>
-                                    <AdminVideoListStatusLabel htmlFor={video._id}>
+                                    <AdminRecordingListStatusLabel htmlFor={video._id}>
                                       Block
-                                    </AdminVideoListStatusLabel>
-                                    <AdminVideoListStatusInput
+                                    </AdminRecordingListStatusLabel>
+                                    <AdminRecordingListStatusInput
                                       type="radio"
                                       value={BLOCK_STATUS}
                                       name={video._id}
                                       id={video._id}
                                       checked={(video.status === BLOCK_STATUS)}
-                                      onChange={() => changeVideoStatus(video._id, BLOCK_STATUS)}
+                                      onChange={() => changeRecordingStatus(video._id, BLOCK_STATUS)}
                                     />
                                   </TextRight>
                                   <TextRight>
-                                    <AdminVideoListStatusLabel htmlFor={video._id}>
+                                    <AdminRecordingListStatusLabel htmlFor={video._id}>
                                       Delete
-                                    </AdminVideoListStatusLabel>
+                                    </AdminRecordingListStatusLabel>
                                     <DeleteIcon src={deleteIcon} alt="Delete" onClick={() => onDelete(video.callId)} />
                                   </TextRight>
-                                </AdminVideoListStatus>
-                              </AdminVideoList>
+                                </AdminRecordingListStatus>
+                              </AdminRecordingList>
                             ) : (
                               <div key={video._id} />
                             )
                           ))
                         }
                       </AdminScrollContent>
-                    </AdminVideoWrapper>
-                  </AdminVideoListWrapper>
-                </AdminVideoContentWrapper>
-              </AdminVideoContent>
+                    </AdminRecordingWrapper>
+                  </AdminRecordingListWrapper>
+                </AdminRecordingContentWrapper>
+              </AdminRecordingContent>
             </AdminPageContent>
           </>
         ) : (
@@ -273,4 +276,4 @@ const AdminVideoPage = observer((): JSX.Element => {
   );
 });
 
-export default AdminVideoPage;
+export default AdminRecordingPage;

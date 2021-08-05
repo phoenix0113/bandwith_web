@@ -6,7 +6,7 @@ interface Data {
   id: string;
 }
 
-const AdminUserVideoList = (props:Data):JSX.Element => {
+const AdminUserRecordingList = (props:Data):JSX.Element => {
   const [videoSourceUrl, setVideoSourceUrl] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
 
@@ -26,4 +26,4 @@ const AdminUserVideoList = (props:Data):JSX.Element => {
   );
 };
 
-export default AdminUserVideoList;
+export default AdminUserRecordingList;
