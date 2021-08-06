@@ -5,7 +5,7 @@ import { showErrorNotification } from "../utils/notification";
 import { GetRecordResponse, User } from "../shared/interfaces";
 import {
   loadNewRecordings, updateRecordingStatus, deleteRecording, updateUserStatusByID,
-  loadAvailableRecordings, loadBlockRecordings, loadAllUsers,
+  loadAvailableRecordings, loadBlockRecordings, loadUsers,
 } from "../axios/routes/admin";
 import { GlobalServiceStatus } from "../interfaces/global";
 import { ADMIN_RECORDINGS_LOAD_LIMIT } from "../utils/constants";
@@ -38,10 +38,10 @@ class AdminMobxService {
   }
 
   // function for get all users
-  public loadAllUsers = async () => {
+  public loadUsers = async () => {
     this.onLoaded = false;
     try {
-      const { users } = await loadAllUsers({
+      const { users } = await loadUsers({
         limit: ADMIN_RECORDINGS_LOAD_LIMIT,
         offset: this.newRecordings.length,
         key: this.searchUserKey,
@@ -200,7 +200,7 @@ class AdminMobxService {
     try {
       this.searchUserKey = key;
       this.users = [];
-      this.loadAllUsers();
+      this.loadUsers();
     } catch (err) {
       showErrorNotification(err.message);
     }

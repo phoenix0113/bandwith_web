@@ -27,7 +27,7 @@ const AdminUsersPage = observer((): JSX.Element => {
     users,
     updateUserStatus,
     setSearchUserKey,
-    loadAllUsers,
+    loadUsers,
   } = useContext(AdminStorageContext);
 
   const [loading, setLoading] = useState(false);
@@ -67,7 +67,7 @@ const AdminUsersPage = observer((): JSX.Element => {
 
   useEffect(() => {
     if (scrollTop + scrollRef.current.offsetHeight === heightRef.current.offsetHeight) {
-      loadAllUsers();
+      loadUsers();
     }
   }, [scrollTop]);
 

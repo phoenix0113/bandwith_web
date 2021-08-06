@@ -106,7 +106,7 @@ export const loadBlockRecordings = async (
   }
 };
 
-export const loadAllUsers = async (
+export const loadUsers = async (
   query: GetAllRecordsQuery,
 ): Promise<GetAllUsersResponse> => {
   const stringified = stringify(query);

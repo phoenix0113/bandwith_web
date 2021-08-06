@@ -37,7 +37,7 @@ userRouter.post(
 
 userRouter.post(`/${PATH.USER}/${PATH.PHONE}`, UsersController.updatePhone);
 
-userRouter.post(`/${PATH.USER}`, UsersController.getAllUsers);
+userRouter.post(`/${PATH.USER}`, UsersController.getUsers);
 
 userRouter.post(`/${PATH.USER}/${PATH.UPDATE}`, UsersController.updateUserStatus);
 

@@ -96,7 +96,15 @@ export class UsersController extends CrudController {
   static async getAllUsers(req: Request, res:Response) {
     await UsersController.processRequest(req, res, async () => {
       res.send(
-        await UsersService.getAllUsers(
+        await UsersService.getAllUsers()
+      );
+    });
+  }
+
+  static async getUsers(req: Request, res:Response) {
+    await UsersController.processRequest(req, res, async () => {
+      res.send(
+        await UsersService.getUsers(
           parseQuery(req.query) as GetAllRecordsQuery
         )
       );
