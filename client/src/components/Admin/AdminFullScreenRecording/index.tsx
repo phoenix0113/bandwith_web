@@ -3,8 +3,6 @@ import { observer } from "mobx-react";
 import { useHistory } from "react-router-dom";
 import { Routes } from "../../../utils/routes";
 import { AdminStorageContext } from "../../../services/admin";
-import AdminHeader from "../AdminHeader";
-import AdminSideBar from "../AdminSideBar";
 import {
   AdminSingleVideoContent, AdminSingleVideoProfileContent,
   AdminSingleRecordingContentWrapper, AdminRecordingToolsContent, AdminProfile, AdminProfileImage,
@@ -14,7 +12,6 @@ import {
   AdminRecordingToolsCloseButton, AdminRecordingPlayer, AdminRecordingToolsDeclineButton,
 } from "../styled";
 import { AdminPageWrapper, AdminPageContent } from "../../../pages/admin/styled";
-import { PAGE_TYPE } from "./types";
 import moveButton from "../../../assets/images/admin/move.png";
 import prevButton from "../../../assets/images/admin/prev.png";
 import nextButton from "../../../assets/images/admin/next.png";
@@ -134,9 +131,7 @@ const AdminSingleVideoPage = observer((props): JSX.Element => {
 
   return (
     <AdminPageWrapper>
-      <AdminHeader />
       <AdminPageContent>
-        <AdminSideBar pageType={PAGE_TYPE} />
         <AdminSingleVideoContent>
           <AdminSingleRecordingContentWrapper>
             {
