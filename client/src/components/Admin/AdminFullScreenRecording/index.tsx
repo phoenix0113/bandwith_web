@@ -56,7 +56,7 @@ const AdminFullScreenRecording = observer(({
   };
 
   const declineRecording = (id: string) => {
-    updateRecordingStatus(id, "blocked", currentRecording?.status);
+    updateRecordingStatus(id, "block", currentRecording?.status);
   };
 
   return (
