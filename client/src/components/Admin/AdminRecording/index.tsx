@@ -10,11 +10,14 @@ import deleteIcon from "../../../assets/images/admin/delete.svg";
 
 interface IProps {
   recording: GetRecordResponse;
+  type: string;
   changeRecordingStatus: (id: string, status: string) => void;
   onDelete: (id: string) => void;
 }
 
-const AdminRecording = ({ recording, changeRecordingStatus, onDelete }: IProps): JSX.Element => {
+const AdminRecording = ({
+  recording, type, changeRecordingStatus, onDelete,
+}: IProps): JSX.Element => {
   const onChangeRecordingStatus = (status: string) => {
     changeRecordingStatus(recording._id, status);
   };
@@ -29,7 +32,10 @@ const AdminRecording = ({ recording, changeRecordingStatus, onDelete }: IProps):
         {recording.name}
       </RecordingName>
       <AdminRecordingprofile>
-        <AdminUserRecordingListPlayer url={recording.list[0].url} />
+        <AdminUserRecordingListPlayer
+          type={type}
+          currentRecording={recording}
+        />
         <AdminRecordingListStatus>
           <TextRight>
             <AdminRecordingListStatusLabel htmlFor={recording._id}>

@@ -82,7 +82,7 @@ const AdminRecordingsPage = observer(({
   }, [scrollRef]);
 
   useEffect(() => {
-    if (scrollTop + scrollRef.current.offsetHeight === heightRef.current.offsetHeight) {
+    if (scrollTop + scrollRef.current?.offsetHeight === heightRef.current?.offsetHeight) {
       onLoad();
     }
   }, [scrollTop]);
@@ -94,7 +94,11 @@ const AdminRecordingsPage = observer(({
   return (
     <AdminPageWrapper>
       {
-        (!loading || !onLoaded) ? (
+        (loading || !onLoaded) ? (
+          <LoaderWrapper>
+            <Spin size="large" />
+          </LoaderWrapper>
+        ) : (
           <>
             <AdminHeader />
             <AdminPageContent>
@@ -130,6 +134,7 @@ const AdminRecordingsPage = observer(({
                             recording={item}
                             changeRecordingStatus={changeRecordingStatus}
                             onDelete={onDelete}
+                            type={param}
                             key={item._id}
                           />
                         ))
@@ -140,10 +145,6 @@ const AdminRecordingsPage = observer(({
               </AdminContentWrapper>
             </AdminPageContent>
           </>
-        ) : (
-          <LoaderWrapper>
-            <Spin size="large" />
-          </LoaderWrapper>
         )
       }
     </AdminPageWrapper>

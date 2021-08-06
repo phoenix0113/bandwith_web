@@ -16,7 +16,7 @@ export enum Routes {
   ADMIN_AVAILABLE_RECORDINGS="/admin/available-recordings",
   ADMIN_BLOCKED_RECORDINGS="/admin/blocked-recordings",
   ADMIN_USERS="/admin/users",
-  ADMIN_VIDEO="/admin/video/:id/:type",
+  ADMIN_FULL_RECORDING="/admin/recording/:type/:id",
   ADMIN_HELP="/admin/help",
 }
 

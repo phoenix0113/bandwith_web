@@ -1,15 +1,20 @@
 import { useEffect, useRef, useState } from "react";
-import { VideoPlayer, VideoPauseButton, VideoPlayerButton, VideoPlayerContent, PauseButtonSection } from "./styled";
+import { useHistory } from "react-router-dom";
+import { VideoPlayer, VideoPauseButton, VideoPlayerButton, VideoPlayerContent } from "./styled";
+import { GetRecordResponse } from "../../../shared/interfaces";
 import playButton from "../../../assets/images/play.png";
 import pauseButton from "../../../assets/images/pause.png";
 
-interface Data {
-  url: string;
+const tempRecordingFile = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+
+interface IProps {
+  currentRecording: GetRecordResponse;
+  type: string;
 }
 
-const AdminUserRecordingListPlayer = (props:Data):JSX.Element => {
+const AdminUserRecordingListPlayer = ({ currentRecording, type }:IProps):JSX.Element => {
+  const history = useHistory();
   const playerRef = useRef<HTMLVideoElement>(null);
-  const [videoSourceUrl, setVideoSourceUrl] = useState("");
   const [showPlayBtn, setShowPlayBtn] = useState(true);
 
   let timer;
@@ -28,8 +33,11 @@ const AdminUserRecordingListPlayer = (props:Data):JSX.Element => {
   };
 
   const onDoubleClickRecording = () => {
-    playerRef.current.pause();
-    setShowPlayBtn(true);
+    let router = "/admin/recording/";
+    router += type;
+    router += "/";
+    router += currentRecording._id;
+    history.push(router);
   };
 
   const handleVideo = (event) => {
@@ -41,10 +49,6 @@ const AdminUserRecordingListPlayer = (props:Data):JSX.Element => {
     }
   };
 
-  useEffect(() => {
-    setVideoSourceUrl(props.url);
-  });
-
   return (
     <VideoPlayerContent className="admin-dashboard-video">
       {
@@ -55,7 +59,8 @@ const AdminUserRecordingListPlayer = (props:Data):JSX.Element => {
         )
       }
       <VideoPlayer ref={playerRef}>
-        <source src={videoSourceUrl} />
+        <source src={currentRecording.list[0].url} />
+        {/* <source src={tempRecordingFile} /> */}
       </VideoPlayer>
     </VideoPlayerContent>
   );

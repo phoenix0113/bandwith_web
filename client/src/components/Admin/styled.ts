@@ -177,10 +177,9 @@ export const AdminHelpDescription = styled.div`
 `;
 
 export const AdminRecordingPlayer = styled.video`
-  // width: 100%;
-  width: auto;
-  // max-width: 1120px;
-  max-width: 50vh;
+  // width: auto;
+  width: 350px;
+  height: 100%;
   border-radius: 38px;
   height: calc(100% - 20px);
   border: 2px solid white;
@@ -401,15 +400,14 @@ export const AdminSingleRecordingContentWrapper = styled.div`
 `;
 
 export const AdminSingleVideoContent = styled.div`
-  margin-top: 165px;
-  margin-left: 250px;
+  margin: 50px;
   width: 100%;
   display: flex;
 `;
 
 export const AdminSingleVideoProfileContent = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   max-width: 1120px;
   margin-bottom: 18px;
 `;
@@ -495,4 +493,19 @@ export const AdminRecordingListStatusInput = styled.input`
 
 export const DeleteIcon = styled.img`
   color: #ffffff;
+`;
+
+export const AdminPageWrapper = styled.div`
+  width: 100%;
+  background-color: #0E0C09;
+  position: absolute;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 100;
+`;
+
+export const AdminPageContent = styled.div`
+  display: flex;
+  height: 100%;
 `;

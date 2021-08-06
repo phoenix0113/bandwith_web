@@ -3,43 +3,34 @@ import { useHistory } from "react-router-dom";
 import { Profile, ProfileImage, ProfileText, ProfileName, ProfileEmail } from "./styled";
 import tempProfileIcon from "../../../assets/images/call/default_profile_image.png";
 
-interface Data {
+interface IProps {
   type: string;
   imageUrl: string;
   name: string;
   email: string;
 }
 
-const AdminUserListProfile = (props: Data):JSX.Element => {
+const AdminUserListProfile = ({
+  type, imageUrl, name, email,
+}: IProps):JSX.Element => {
   const history = useHistory();
-  const [image, setImage] = useState("");
-  const [userName, setUserName] = useState("");
-  const [userEmail, setUserEmail] = useState("");
-  const [pageType, setPageType] = useState("");
 
   const handleVideo = (id: string) => {
     let router = "/admin/video/";
     router += id;
     router += "/";
-    router += pageType;
+    router += type;
     history.push(router);
   };
 
-  useEffect(() => {
-    setPageType(props.type);
-    setImage(props.imageUrl);
-    setUserName(props.name);
-    setUserEmail(props.email);
-  }, [props]);
-
   return (
     <Profile>
-      <ProfileImage src={(image !== undefined) ? image : tempProfileIcon} />
+      <ProfileImage src={(imageUrl !== undefined) ? imageUrl : tempProfileIcon} />
       <ProfileName>
-        {userName}
+        {name}
       </ProfileName>
       <ProfileEmail>
-        {userEmail}
+        {email}
       </ProfileEmail>
     </Profile>
   );

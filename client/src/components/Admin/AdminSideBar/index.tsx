@@ -48,7 +48,7 @@ const AdminSideBar = (props:Data): JSX.Element => {
             className={(type === "new recordings") ? "sidebar-active" : ""}
             onClick={() => history.push(Routes.ADMIN_NEW_RECORDINGS)}
           >
-            New Reocrdings
+            New Recordings
           </SideBarHref>
         </SideBarLi>
         <SideBarLi className={(type === "available recordings") ? "admin-active" : ""}>

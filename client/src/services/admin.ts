@@ -2,10 +2,10 @@ import { makeAutoObservable, observable, runInAction } from "mobx";
 import { createContext } from "react";
 import { CloudClient } from "avcore/client";
 import { showErrorNotification } from "../utils/notification";
-import { GetRecordResponse, User } from "../shared/interfaces";
+import { GetRecordResponse, User, GetUserDataResponse } from "../shared/interfaces";
 import {
   loadNewRecordings, updateRecordingStatus, deleteRecording, updateUserStatusByID,
-  loadAvailableRecordings, loadBlockRecordings, loadUsers,
+  loadAvailableRecordings, loadBlockRecordings, loadUsers, getRecordingByID, getUserDataByID,
 } from "../axios/routes/admin";
 import { GlobalServiceStatus } from "../interfaces/global";
 import { ADMIN_RECORDINGS_LOAD_LIMIT } from "../utils/constants";
@@ -28,6 +28,8 @@ class AdminMobxService {
   @observable searchUserKey = "";
 
   @observable currentRecording: GetRecordResponse = null;
+
+  @observable currentAuthorList: Array<GetUserDataResponse> = [];
 
   @observable users: Array<User> = [];
 
@@ -166,6 +168,28 @@ class AdminMobxService {
       } else if (type === "blocked") {
         this.blockRecordings = this.popupItemByCallId(this.blockRecordings, callId);
       }
+    } catch (err) {
+      showErrorNotification(err.message);
+    }
+  };
+
+  // function for set current recording from ID
+  public setCurrentRecording = async (
+    id: string,
+  ) => {
+    try {
+      this.onLoaded = false;
+      const recording = await getRecordingByID(id);
+      this.currentRecording = recording;
+      const authorId1 = this.currentRecording.authorList[0].toString();
+      this.currentAuthorList[0] = await getUserDataByID(authorId1);
+      if (this.currentRecording.authorList.length === 2) {
+        const authorId2 = this.currentRecording.authorList[1].toString();
+        this.currentAuthorList[1] = await getUserDataByID(authorId2);
+      } else {
+        this.currentAuthorList[1] = null;
+      }
+      this.onLoaded = true;
     } catch (err) {
       showErrorNotification(err.message);
     }

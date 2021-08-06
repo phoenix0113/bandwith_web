@@ -37,6 +37,7 @@ const AdminLoginPage = lazy(() => import("./pages/admin/login"));
 const AdminNewRecordingsPage = lazy(() => import("./pages/admin/new-recordings"));
 const AdminAvailableRecordingsPage = lazy(() => import("./pages/admin/available-recordings"));
 const AdminBlockedRecordingsPage = lazy(() => import("./pages/admin/blocked-recordings"));
+const AdminFullScreenRecording = lazy(() => import("./pages/admin/fullscreen-recording"));
 const AdminUsersPage = lazy(() => import("./pages/admin/users"));
 const AdminHelpPage = lazy(() => import("./pages/admin/help"));
 
@@ -88,6 +89,11 @@ export const App = observer((): JSX.Element => {
             exact
             path={Routes.ADMIN_BLOCKED_RECORDINGS}
             Component={AdminBlockedRecordingsPage}
+          />
+          <AdminRouterComponent
+            exact
+            path={Routes.ADMIN_FULL_RECORDING}
+            Component={AdminFullScreenRecording}
           />
           <AdminRouterComponent exact path={Routes.ADMIN_USERS} Component={AdminUsersPage} />
           <AdminRouterComponent exact path={Routes.ADMIN_HELP} Component={AdminHelpPage} />

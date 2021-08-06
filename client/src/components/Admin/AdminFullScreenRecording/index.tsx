@@ -1,17 +1,15 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { observer } from "mobx-react";
-import { useHistory } from "react-router-dom";
-import { Routes } from "../../../utils/routes";
 import { AdminStorageContext } from "../../../services/admin";
+import AdminUserListProfile from "../AdminUserListProfile";
+import { GetRecordResponse } from "../../../shared/interfaces";
 import {
-  AdminSingleVideoContent, AdminSingleVideoProfileContent,
-  AdminSingleRecordingContentWrapper, AdminRecordingToolsContent, AdminProfile, AdminProfileImage,
-  AdminProfileContent, AdminProfileName, AdminRecordingTools, AdminRecordingToolsMoveButton,
-  AdminRecordingStatusTools, AdminRecordingToolsPrevNextButton, AdminRecordingToolsPlayPauseButton,
-  AdminRecordingActiveStatusTools, AdminRecordingToolsAcceptButton, AdminRecordingStatus,
-  AdminRecordingToolsCloseButton, AdminRecordingPlayer, AdminRecordingToolsDeclineButton,
+  AdminSingleVideoProfileContent, AdminSingleRecordingContentWrapper, AdminRecordingToolsContent,
+  AdminRecordingTools, AdminRecordingToolsMoveButton, AdminRecordingStatusTools,
+  AdminRecordingToolsPrevNextButton, AdminRecordingToolsPlayPauseButton, AdminRecordingStatus,
+  AdminRecordingToolsAcceptButton, AdminRecordingActiveStatusTools, AdminRecordingToolsCloseButton,
+  AdminRecordingPlayer, AdminRecordingToolsDeclineButton,
 } from "../styled";
-import { AdminPageWrapper, AdminPageContent } from "../../../pages/admin/styled";
 import moveButton from "../../../assets/images/admin/move.png";
 import prevButton from "../../../assets/images/admin/prev.png";
 import nextButton from "../../../assets/images/admin/next.png";
@@ -20,56 +18,27 @@ import pauseButton from "../../../assets/images/admin/pause.png";
 import acceptButton from "../../../assets/images/admin/accept.png";
 import declineButton from "../../../assets/images/admin/decline.png";
 import closeButton from "../../../assets/images/admin/close.png";
-import { APPROVED_STATUS } from "../../../utils/constants";
 
-const AdminSingleVideoPage = observer((props): JSX.Element => {
+const tempRecordingFile = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+
+interface IProps {
+  currentRecording: GetRecordResponse;
+  onPrevPlay: (id: string) => void;
+  onNextPlay: (id: string) => void;
+}
+
+const AdminFullScreenRecording = observer(({
+  currentRecording, onPrevPlay, onNextPlay,
+}: IProps): JSX.Element => {
   const {
-    // latestVideos,
-    // availableVideos,
-    recordings,
-    // updateRecordingStatus,
+    currentAuthorList,
+    updateRecordingStatus,
   } = useContext(AdminStorageContext);
 
-  const [currentID, setCurrentID] = useState("");
-  const [type, setType] = useState("");
-  const [videoList, setVideoList] = useState([]);
-  const [nextID, setNextID] = useState("");
-  const [prevID, setPrevID] = useState("");
-  const [showPlayBtn, setShowPlayBtn] = useState(true);
-  const history = useHistory();
+  const [showPlayBtn, setShowPlayBtn] = useState(false);
   const playerRef = useRef<HTMLVideoElement>(null);
 
-  const getIndex = (videoID: string) => {
-    let count = 0;
-    let index = 0;
-    for (let i = 0; i < videoList.length; i += 1) {
-      if (videoList[i]._id === videoID) {
-        index = count;
-      }
-      count += 1;
-    }
-    return index;
-  };
-
-  const getNextVideoID = (videoID: string) => {
-    const index = getIndex(videoID);
-    if (index < videoList.length - 1) {
-      setNextID(videoList[index + 1]._id);
-    } else if (videoList[0] !== undefined) {
-      setNextID(videoList[0]._id);
-    }
-  };
-
-  const getPrevVideoID = (videoID: string) => {
-    const index = getIndex(videoID);
-    if (index === 0) {
-      setPrevID(videoList[videoList.length - 1]?._id);
-    } else if (videoList[index - 1] !== undefined) {
-      setPrevID(videoList[index - 1]._id);
-    }
-  };
-
-  const changePlayBtn = () => {
+  const onChangePlayStatus = () => {
     if (playerRef.current.paused) {
       playerRef.current.play().then(() => setShowPlayBtn(false)).catch(() => {
         if (playerRef.current.paused) {
@@ -82,134 +51,93 @@ const AdminSingleVideoPage = observer((props): JSX.Element => {
     }
   };
 
-  const prevPlay = () => {
-    getPrevVideoID(currentID);
-    let prevUrl = "/admin/video/";
-    prevUrl += prevID;
-    prevUrl += "/";
-    prevUrl += type;
-    history.push(prevUrl);
+  const acceptRecording = (id: string) => {
+    updateRecordingStatus(id, "public", currentRecording?.status);
   };
 
-  const acceptVideo = (_id: string) => {
-    // updateRecordingStatus(_id, "public");
-    window.location.reload(false);
+  const declineRecording = (id: string) => {
+    updateRecordingStatus(id, "blocked", currentRecording?.status);
   };
-
-  const declineVideo = (_id: string) => {
-    // updateRecordingStatus(_id, "block");
-    if (type === "latest") {
-      history.push(Routes.ADMIN_NEW_RECORDINGS);
-    } else if (type === APPROVED_STATUS) {
-      history.push(Routes.ADMIN_VIDEO);
-    }
-    window.location.reload(false);
-  };
-
-  const nextPlay = () => {
-    getNextVideoID(currentID);
-    let nextUrl = "/admin/video/";
-    nextUrl += nextID;
-    nextUrl += "/";
-    nextUrl += type;
-    history.push(nextUrl);
-  };
-
-  useEffect(() => {
-    setCurrentID(props.match.params.id);
-    setType(props.match.params.type);
-    if (type === "latest") {
-      // setVideoList(latestVideos);
-    } else if (type === APPROVED_STATUS) {
-      // setVideoList(availableVideos);
-    } else if (type === "all") {
-      setVideoList(recordings);
-    }
-    getPrevVideoID(currentID);
-    getNextVideoID(currentID);
-  });
 
   return (
-    <AdminPageWrapper>
-      <AdminPageContent>
-        <AdminSingleVideoContent>
-          <AdminSingleRecordingContentWrapper>
+    <AdminSingleRecordingContentWrapper className="padding-30">
+      <AdminRecordingPlayer
+        ref={playerRef}
+        controls
+        autoPlay
+        loop
+      >
+        <source src={currentRecording?.list[0].url} />
+        {/* <source src={tempRecordingFile} /> */}
+      </AdminRecordingPlayer>
+      <div className="dis-flex w-full padding-0-30 item-center">
+        <div className="w-full">
+          <AdminSingleVideoProfileContent>
+            <AdminUserListProfile
+              imageUrl={currentAuthorList[0]?.imageUrl}
+              name={currentAuthorList[0]?.name}
+              email={currentAuthorList[0]?.email}
+              type="none"
+            />
             {
-              videoList.map((item) => (
-                (item._id === currentID) ? (
-                  <AdminRecordingPlayer ref={playerRef} controls key={item._id}>
-                    <source src={item?.list[0].url} />
-                  </AdminRecordingPlayer>
-                ) : (
-                  <div key={item._id} />
-                )
-              ))
+              (currentAuthorList[1]) && (
+                <AdminUserListProfile
+                  imageUrl={currentAuthorList[1]?.imageUrl}
+                  name={currentAuthorList[1]?.name}
+                  email={currentAuthorList[1]?.email}
+                  type="none"
+                />
+              )
             }
-            <div style={{ padding: "0 30px", width: "100%" }}>
-              <AdminSingleVideoProfileContent>
+          </AdminSingleVideoProfileContent>
+          <AdminRecordingToolsContent>
+            <AdminRecordingTools>
+              <AdminRecordingToolsMoveButton src={moveButton} />
+              <AdminRecordingStatusTools>
+                <AdminRecordingToolsPrevNextButton
+                  src={prevButton}
+                  onClick={() => onPrevPlay(currentRecording?._id)}
+                />
                 {
-                  videoList.map((item) => (
-                    (item._id === currentID) ? (
-                      <AdminProfile key={item._id}>
-                        <AdminProfileImage src={item?.user.imageUrl} />
-                        <AdminProfileContent>
-                          <AdminProfileName>{item?.user.name}</AdminProfileName>
-                        </AdminProfileContent>
-                      </AdminProfile>
-                    ) : (
-                      <div key={item._id} />
-                    )
-                  ))
+                  (showPlayBtn) ? (
+                    <AdminRecordingToolsPlayPauseButton
+                      src={playButton}
+                      onClick={onChangePlayStatus}
+                    />
+                  ) : (
+                    <AdminRecordingToolsPlayPauseButton
+                      className="admin-dashboard-video-pause-button"
+                      src={pauseButton}
+                      onClick={onChangePlayStatus}
+                    />
+                  )
                 }
-              </AdminSingleVideoProfileContent>
-              <AdminRecordingToolsContent>
-                <AdminRecordingTools>
-                  <AdminRecordingToolsMoveButton src={moveButton} />
-                  <AdminRecordingStatusTools>
-                    <AdminRecordingToolsPrevNextButton src={prevButton} onClick={prevPlay} />
-                    {
-                      (showPlayBtn) ? (
-                        <AdminRecordingToolsPlayPauseButton
-                          src={playButton}
-                          onClick={changePlayBtn}
-                        />
-                      ) : (
-                        <AdminRecordingToolsPlayPauseButton className="admin-dashboard-video-pause-button" src={pauseButton} onClick={changePlayBtn} />
-                      )
-                    }
-                    <AdminRecordingToolsPrevNextButton src={nextButton} onClick={nextPlay} />
-                  </AdminRecordingStatusTools>
-                  <AdminRecordingActiveStatusTools>
-                    {
-                      videoList.map((item) => (
-                        (item._id === currentID) ? (
-                          <AdminRecordingStatus key={item._id}>
-                            <AdminRecordingToolsAcceptButton
-                              src={acceptButton}
-                              style={(item.status !== "block") ? ({ opacity: 0.1, cursor: "auto" }) : ({ opacity: 1, cursor: "pointer" })}
-                              onClick={() => acceptVideo(item._id)}
-                            />
-                            <AdminRecordingToolsDeclineButton
-                              style={(item.status === "block") ? ({ opacity: 0.11, cursor: "auto" }) : ({ opacity: 1, cursor: "pointer" })}
-                              src={declineButton}
-                              onClick={() => declineVideo(item._id)}
-                            />
-                          </AdminRecordingStatus>
-                        ) : (
-                          <div key={item._id} />
-                        )
-                      ))
-                    }
-                  </AdminRecordingActiveStatusTools>
-                  <AdminRecordingToolsCloseButton src={closeButton} />
-                </AdminRecordingTools>
-              </AdminRecordingToolsContent>
-            </div>
-          </AdminSingleRecordingContentWrapper>
-        </AdminSingleVideoContent>
-      </AdminPageContent>
-    </AdminPageWrapper>
+                <AdminRecordingToolsPrevNextButton
+                  src={nextButton}
+                  onClick={() => onNextPlay(currentRecording?._id)}
+                />
+              </AdminRecordingStatusTools>
+              <AdminRecordingActiveStatusTools>
+                <AdminRecordingStatus>
+                  <AdminRecordingToolsAcceptButton
+                    src={acceptButton}
+                    style={(currentRecording?.status === "public") ? ({ opacity: 0.1, cursor: "auto" }) : ({ opacity: 1, cursor: "pointer" })}
+                    onClick={() => acceptRecording(currentRecording?._id)}
+                  />
+                  <AdminRecordingToolsDeclineButton
+                    style={(currentRecording?.status === "block") ? ({ opacity: 0.11, cursor: "auto" }) : ({ opacity: 1, cursor: "pointer" })}
+                    src={declineButton}
+                    onClick={() => declineRecording(currentRecording?._id)}
+                  />
+                </AdminRecordingStatus>
+              </AdminRecordingActiveStatusTools>
+              <AdminRecordingToolsCloseButton src={closeButton} />
+            </AdminRecordingTools>
+          </AdminRecordingToolsContent>
+        </div>
+      </div>
+    </AdminSingleRecordingContentWrapper>
   );
 });
 
-export default AdminSingleVideoPage;
+export default AdminFullScreenRecording;

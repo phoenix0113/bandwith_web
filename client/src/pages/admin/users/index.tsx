@@ -78,7 +78,11 @@ const AdminUsersPage = observer((): JSX.Element => {
   return (
     <AdminPageWrapper>
       {
-        (!loading || !onLoaded) ? (
+        (loading || !onLoaded) ? (
+          <LoaderWrapper>
+            <Spin size="large" />
+          </LoaderWrapper>
+        ) : (
           <>
             <AdminHeader />
             <AdminPageContent>
@@ -155,10 +159,6 @@ const AdminUsersPage = observer((): JSX.Element => {
               </AdminContentWrapper>
             </AdminPageContent>
           </>
-        ) : (
-          <LoaderWrapper>
-            <Spin size="large" />
-          </LoaderWrapper>
         )
       }
     </AdminPageWrapper>

@@ -1,7 +1,7 @@
 import { stringify } from "query-string";
 import {
   GetAllRecordsQuery, GetAllRecordsResponse, UpdateRecordingQuery, UpdateRecordingResponse,
-  GetAllUsersResponse,
+  GetAllUsersResponse, GetRecordResponse, GetUserDataResponse,
 } from "../../shared/interfaces";
 import { IAxiosError } from "../interfaces";
 import { getError } from "../utils";
@@ -113,6 +113,28 @@ export const loadUsers = async (
 
   try {
     const response = await instance.post<GetAllUsersResponse>(`${API.USER}?${stringified}`);
+
+    return response.data;
+  } catch (err) {
+    const { response } = err as IAxiosError;
+    throw new Error(getError(response));
+  }
+};
+
+export const getRecordingByID = async (id: string): Promise<GetRecordResponse> => {
+  try {
+    const response = await instance.get<GetRecordResponse>(`${API.RECORD}/${id}`);
+
+    return response.data;
+  } catch (err) {
+    const { response } = err as IAxiosError;
+    throw new Error(getError(response));
+  }
+};
+
+export const getUserDataByID = async (id: string): Promise<GetUserDataResponse> => {
+  try {
+    const response = await instance.get<GetUserDataResponse>(`${API.USER}/${id}`);
 
     return response.data;
   } catch (err) {
