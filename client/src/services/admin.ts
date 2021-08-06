@@ -6,7 +6,7 @@ import {
   loadNewRecordings, updateRecordingStatus, deleteRecording, updateUserStatusByID,
   loadAvailableRecordings, loadBlockRecordings, loadUsers, getRecordingByID, getUserDataByID,
 } from "../axios/routes/admin";
-import { ADMIN_RECORDINGS_LOAD_LIMIT } from "../utils/constants";
+import { ADMIN_RECORDINGS_LOAD_LIMIT, ADMIN_USERS_LOAD_LIMIT } from "../utils/constants";
 
 class AdminMobxService {
   @observable newRecordings: Array<GetRecordResponse> = [];
@@ -42,7 +42,7 @@ class AdminMobxService {
     this.onLoaded = false;
     try {
       const { users } = await loadUsers({
-        limit: ADMIN_RECORDINGS_LOAD_LIMIT,
+        limit: ADMIN_USERS_LOAD_LIMIT,
         offset: this.users.length,
         key: this.searchUserKey,
       });
