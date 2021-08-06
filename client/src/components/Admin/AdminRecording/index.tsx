@@ -42,6 +42,7 @@ const AdminRecording = ({ recording, changeRecordingStatus, onDelete }: IProps):
               id={recording._id}
               checked={(recording.status === PUBLIC_STATUS)}
               onChange={() => onChangeRecordingStatus(PUBLIC_STATUS)}
+              disabled={(recording.authorList.length === 0)}
             />
           </TextRight>
           <TextRight>
@@ -55,29 +56,60 @@ const AdminRecording = ({ recording, changeRecordingStatus, onDelete }: IProps):
               id={recording._id}
               checked={(recording.status === BLOCK_STATUS)}
               onChange={() => onChangeRecordingStatus(BLOCK_STATUS)}
+              disabled={(recording.authorList.length === 0)}
             />
           </TextRight>
           <TextRight>
-            <AdminRecordingListStatusLabel htmlFor={recording._id}>
-              Delete
-            </AdminRecordingListStatusLabel>
-            <DeleteIcon src={deleteIcon} alt="Delete" onClick={onDeleteRecording} />
+            {
+              (recording.authorList.length !== 0) ? (
+                <>
+                  <AdminRecordingListStatusLabel htmlFor={recording._id}>
+                    Delete
+                  </AdminRecordingListStatusLabel>
+                  <DeleteIcon src={deleteIcon} alt="Delete" onClick={onDeleteRecording} />
+                </>
+              ) : (
+                <></>
+              )
+            }
           </TextRight>
         </AdminRecordingListStatus>
       </AdminRecordingprofile>
-      <RecordingName className="text-bold text-center">
-        Author Name:
-      </RecordingName>
-      <RecordingName className="text-center">
-        {recording.authorList[0].name}
-      </RecordingName>
       {
-        (recording.authorList.length === 2) ? (
-          <RecordingName className="text-center">
-            {recording.authorList[1].name}
+        (recording.authorList.length === 0) ? (
+          <RecordingName className="text-bold text-center margin-top-30">
+            Creating Now...
           </RecordingName>
         ) : (
-          <></>
+          <>
+            <RecordingName className="text-bold text-center">
+              Author Name:
+            </RecordingName>
+            <RecordingName className="text-center">
+              {
+                (recording.authorList[0].toString() === recording.user._id) ? (
+                  recording.user.name
+                ) : (
+                  recording.participants[0].name
+                )
+              }
+            </RecordingName>
+            {
+              (recording.authorList.length === 2) ? (
+                <RecordingName className="text-center">
+                  {
+                    (recording.authorList[1].toString() === recording.user._id) ? (
+                      recording.user.name
+                    ) : (
+                      recording.participants[0].name
+                    )
+                  }
+                </RecordingName>
+              ) : (
+                <></>
+              )
+            }
+          </>
         )
       }
     </AdminRecordingList>
