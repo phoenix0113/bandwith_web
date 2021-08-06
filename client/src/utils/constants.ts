@@ -26,6 +26,8 @@ export const NAVIGATOR_SHARE_ERROR = "Your browser doesn't support Social Share"
 
 export const ADMIN_RECORDINGS_LOAD_LIMIT = 12;
 
+export const ADMIN_USERS_LOAD_LIMIT = 24;
+
 export const PUBLIC_STATUS = "public";
 
 export const FEATURE_STATUS = "feature";
