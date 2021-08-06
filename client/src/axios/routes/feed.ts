@@ -23,13 +23,13 @@ export const getRecordingsList = async (
 
 export const publishRecording = async (
   request: PublishRecordingRequest,
-): Promise<boolean> => {
+): Promise<Document> => {
   try {
-    const response = await instance.post<BasicResponse>(API.RECORD_PUBLISH, request);
+    const response = await instance.post<Document>(API.RECORD_PUBLISH, request);
 
     console.log("Publish response: ", response.data);
 
-    return response.data.success;
+    return response.data;
   } catch (err) {
     const { response } = err as IAxiosError;
     throw new Error(getError(response));
