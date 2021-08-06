@@ -1,27 +1,25 @@
 import { makeAutoObservable, observable, runInAction } from "mobx";
 import { createContext } from "react";
-import { CloudClient } from "avcore/client";
 import { showErrorNotification } from "../utils/notification";
 import { GetRecordResponse, User, GetUserDataResponse } from "../shared/interfaces";
 import {
   loadNewRecordings, updateRecordingStatus, deleteRecording, updateUserStatusByID,
   loadAvailableRecordings, loadBlockRecordings, loadUsers, getRecordingByID, getUserDataByID,
 } from "../axios/routes/admin";
-import { GlobalServiceStatus } from "../interfaces/global";
 import { ADMIN_RECORDINGS_LOAD_LIMIT } from "../utils/constants";
 
 class AdminMobxService {
-  @observable serviceStatus: GlobalServiceStatus = GlobalServiceStatus.IDLE;
-
-  @observable avcoreCloudClient: CloudClient = null;
-
-  @observable recordings: Array<GetRecordResponse> = [];
-
   @observable newRecordings: Array<GetRecordResponse> = [];
+
+  @observable newRecordingCount = -1;
 
   @observable availableRecordings: Array<GetRecordResponse> = [];
 
+  @observable availableRecordingCount = -1;
+
   @observable blockRecordings: Array<GetRecordResponse> = [];
+
+  @observable blockRecordingsCount = -1;
 
   @observable searchRecordingKey = "";
 
@@ -45,7 +43,7 @@ class AdminMobxService {
     try {
       const { users } = await loadUsers({
         limit: ADMIN_RECORDINGS_LOAD_LIMIT,
-        offset: this.newRecordings.length,
+        offset: this.users.length,
         key: this.searchUserKey,
       });
 
@@ -61,20 +59,23 @@ class AdminMobxService {
 
   // functioin for get all new call recordings
   public loadNewRecordings = async () => {
-    this.onLoaded = false;
     try {
-      const { recordings } = await loadNewRecordings({
-        limit: ADMIN_RECORDINGS_LOAD_LIMIT,
-        offset: this.newRecordings.length,
-        key: this.searchRecordingKey,
-      });
+      if (this.newRecordingCount !== this.newRecordings.length) {
+        this.onLoaded = false;
+        const { recordings, amount } = await loadNewRecordings({
+          limit: ADMIN_RECORDINGS_LOAD_LIMIT,
+          offset: this.newRecordings.length,
+          key: this.searchRecordingKey,
+        });
 
-      runInAction(() => {
-        this.newRecordings.push(...recordings);
-      });
+        runInAction(() => {
+          this.newRecordings.push(...recordings);
+          this.newRecordingCount = amount;
+        });
 
-      if (recordings.length < ADMIN_RECORDINGS_LOAD_LIMIT) {
-        console.log("> All stored new recordings were loaded");
+        if (recordings.length < ADMIN_RECORDINGS_LOAD_LIMIT) {
+          console.log("> All stored new recordings were loaded");
+        }
       }
     } catch (err) {
       showErrorNotification(err.message);
@@ -85,20 +86,23 @@ class AdminMobxService {
 
   // function for get all available call recordings
   public loadAvailableRecordings = async () => {
-    this.onLoaded = false;
     try {
-      const { recordings } = await loadAvailableRecordings({
-        limit: ADMIN_RECORDINGS_LOAD_LIMIT,
-        offset: this.availableRecordings.length,
-        key: this.searchRecordingKey,
-      });
+      if (this.availableRecordingCount !== this.availableRecordings.length) {
+        this.onLoaded = false;
+        const { recordings, amount } = await loadAvailableRecordings({
+          limit: ADMIN_RECORDINGS_LOAD_LIMIT,
+          offset: this.availableRecordings.length,
+          key: this.searchRecordingKey,
+        });
 
-      runInAction(() => {
-        this.availableRecordings.push(...recordings);
-      });
+        runInAction(() => {
+          this.availableRecordings.push(...recordings);
+          this.availableRecordingCount = amount;
+        });
 
-      if (recordings.length < ADMIN_RECORDINGS_LOAD_LIMIT) {
-        console.log("> All stored available recordings were loaded");
+        if (recordings.length < ADMIN_RECORDINGS_LOAD_LIMIT) {
+          console.log("> All stored available recordings were loaded");
+        }
       }
     } catch (err) {
       showErrorNotification(err.message);
@@ -109,20 +113,23 @@ class AdminMobxService {
 
   // function for get all available call recordings
   public loadBlockRecordings = async () => {
-    this.onLoaded = false;
     try {
-      const { recordings } = await loadBlockRecordings({
-        limit: ADMIN_RECORDINGS_LOAD_LIMIT,
-        offset: this.blockRecordings.length,
-        key: this.searchRecordingKey,
-      });
+      if (this.blockRecordingsCount !== this.blockRecordings.length) {
+        this.onLoaded = false;
+        const { recordings, amount } = await loadBlockRecordings({
+          limit: ADMIN_RECORDINGS_LOAD_LIMIT,
+          offset: this.blockRecordings.length,
+          key: this.searchRecordingKey,
+        });
 
-      runInAction(() => {
-        this.blockRecordings.push(...recordings);
-      });
+        runInAction(() => {
+          this.blockRecordings.push(...recordings);
+          this.blockRecordingsCount = amount;
+        });
 
-      if (recordings.length < ADMIN_RECORDINGS_LOAD_LIMIT) {
-        console.log("> All stored blocked recordings were loaded");
+        if (recordings.length < ADMIN_RECORDINGS_LOAD_LIMIT) {
+          console.log("> All stored blocked recordings were loaded");
+        }
       }
     } catch (err) {
       showErrorNotification(err.message);
@@ -137,6 +144,7 @@ class AdminMobxService {
     status: string,
     type: string,
   ) => {
+    this.onLoaded = false;
     try {
       const { code } = await updateRecordingStatus({
         _id,
@@ -144,14 +152,26 @@ class AdminMobxService {
       });
       if (type === "new") {
         this.newRecordings = this.popupItemID(this.newRecordings, _id);
+        this.newRecordingCount -= 1;
       } else if (type === "available") {
         this.availableRecordings = this.popupItemID(this.availableRecordings, _id);
+        this.availableRecordingCount -= 1;
       } else if (type === "blocked") {
         this.blockRecordings = this.popupItemID(this.blockRecordings, _id);
+        this.blockRecordingsCount -= 1;
+      }
+
+      if (status === "public") {
+        this.newRecordings = this.popupItemID(this.newRecordings, _id);
+        this.availableRecordingCount += 1;
+      } else if (status === "block") {
+        this.availableRecordings = this.popupItemID(this.availableRecordings, _id);
+        this.blockRecordingsCount += 1;
       }
     } catch (err) {
       showErrorNotification(err.message);
     }
+    this.onLoaded = true;
   };
 
   // function for delete status of video
@@ -163,10 +183,13 @@ class AdminMobxService {
       await deleteRecording(callId);
       if (type === "new") {
         this.newRecordings = this.popupItemByCallId(this.newRecordings, callId);
+        this.newRecordingCount -= 1;
       } else if (type === "available") {
         this.availableRecordings = this.popupItemByCallId(this.availableRecordings, callId);
+        this.availableRecordingCount -= 1;
       } else if (type === "blocked") {
         this.blockRecordings = this.popupItemByCallId(this.blockRecordings, callId);
+        this.blockRecordingsCount -= 1;
       }
     } catch (err) {
       showErrorNotification(err.message);

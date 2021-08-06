@@ -46,7 +46,7 @@ export const AdminRecordingContentTitle = styled.div`
 `;
 
 export const AdminScrollContent = styled.div`
-  height: calc(100vh - 240px);
+  height: calc(100vh - 260px);
   overflow-y: auto;
   overflow-x: hidden;
   padding: 0 10px;

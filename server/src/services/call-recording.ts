@@ -241,7 +241,12 @@ export class CallRecordingService {
         select: '-password -email -firebaseToken',
       });
 
-      const amount = recordings.length;
+      const all_recordings = await CallRecording.find({
+        status: 'new',
+        name: { $regex : key, $options: 'i' },
+      });
+
+      const amount = all_recordings.length;
 
       await Promise.all(
         recordings.map(async (recordItem) => {
@@ -275,22 +280,27 @@ export class CallRecordingService {
         status: 'public',
         name: { $regex : key, $options: 'i' },
       })
-        .sort({
-          _id: 'desc',
-        })
-        .skip((offset && +offset) || 0)
-        .limit((limit && +limit) || 0)
-        .populate({
-          path: 'user',
-          select: '-password -email -firebaseToken',
-        })
-        .populate({
-          path: 'participants',
-          select: '-password -email -firebaseToken',
-        });
+      .sort({
+        _id: 'desc',
+      })
+      .skip((offset && +offset) || 0)
+      .limit((limit && +limit) || 0)
+      .populate({
+        path: 'user',
+        select: '-password -email -firebaseToken',
+      })
+      .populate({
+        path: 'participants',
+        select: '-password -email -firebaseToken',
+      });
 
-      const amount = recordings.length;
+      const all_recordings = await CallRecording.find({
+        status: 'public',
+        name: { $regex : key, $options: 'i' },
+      });
 
+      const amount = all_recordings.length;
+  
       await Promise.all(
         recordings.map(async (recordItem) => {
           const signedUrl = await StorageHandler.get().signedUrl(
@@ -330,22 +340,27 @@ export class CallRecordingService {
         status: 'block',
         name: { $regex : key, $options: 'i' },
       })
-        .sort({
-          _id: 'desc',
-        })
-        .skip((offset && +offset) || 0)
-        .limit((limit && +limit) || 0)
-        .populate({
-          path: 'user',
-          select: '-password -email -firebaseToken',
-        })
-        .populate({
-          path: 'participants',
-          select: '-password -email -firebaseToken',
-        });
+      .sort({
+        _id: 'desc',
+      })
+      .skip((offset && +offset) || 0)
+      .limit((limit && +limit) || 0)
+      .populate({
+        path: 'user',
+        select: '-password -email -firebaseToken',
+      })
+      .populate({
+        path: 'participants',
+        select: '-password -email -firebaseToken',
+      });
 
-      const amount = recordings.length;
+      const all_recordings = await CallRecording.find({
+        status: 'new',
+        name: { $regex : key, $options: 'i' },
+      });
 
+      const amount = all_recordings.length;
+  
       await Promise.all(
         recordings.map(async (recordItem) => {
           const signedUrl = await StorageHandler.get().signedUrl(

@@ -1,12 +1,13 @@
 import { useContext, useState, useEffect, useRef } from "react";
 import { observer } from "mobx-react";
-import { Input, Spin } from "antd";
+import { Input, Spin, Modal } from "antd";
 import { Utils } from "avcore/client";
 import { AdminStorageContext } from "../../../services/admin";
 import AdminHeader from "../../../components/Admin/AdminHeader";
 import AdminSideBar from "../../../components/Admin/AdminSideBar";
 import AdminRecording from "../../../components/Admin/AdminRecording";
 import { GetRecordResponse } from "../../../shared/interfaces";
+import { PUBLIC_STATUS, BLOCK_STATUS, DELETE_STATUS } from "../../../utils/constants";
 import { InputIconWrapper, LoaderWrapper } from "../../../components/styled";
 import {
   AdminPageWrapper, AdminPageContent, AdminContentWrapper, AdminRecordingContent,
@@ -22,8 +23,6 @@ interface IProps {
   onLoad: () => void;
 }
 
-const { Search } = Input;
-
 const AdminRecordingsPage = observer(({
   title, param, page, recordings, onLoad,
 }: IProps): JSX.Element => {
@@ -34,29 +33,32 @@ const AdminRecordingsPage = observer(({
     setSearchRecordingsKey,
   } = useContext(AdminStorageContext);
 
-  const [loading, setLoading] = useState(false);
+  const [changeRecordingId, setChangeRecordingId] = useState("");
+  const [recordingStatus, setRecordingStatus] = useState("");
+  const [isModal, setIsModal] = useState(false);
   const [searchKey, setSearchKey] = useState("");
 
   const changeRecordingStatus = async (id: string, status: string) => {
-    if (window.confirm(`Are you sure you wish to ${status} this call recording?`)) {
-      setLoading(true);
-      await updateRecordingStatus(id, status, param);
-      setLoading(false);
-    }
+    setIsModal(true);
+    setRecordingStatus(status);
+    setChangeRecordingId(id);
   };
 
-  const onDelete = async (id: string) => {
-    if (window.confirm("Are you sure you wish to delete this call recording?")) {
-      setLoading(true);
-      await deleteRecording(id, param);
-      setLoading(false);
+  const onConfirmChange = async () => {
+    if (recordingStatus === PUBLIC_STATUS || recordingStatus === BLOCK_STATUS) {
+      await updateRecordingStatus(changeRecordingId, recordingStatus, param);
+    } else if (recordingStatus === DELETE_STATUS) {
+      await deleteRecording(changeRecordingId, param);
     }
+    setIsModal(false);
+  };
+
+  const onCancelChange = () => {
+    setIsModal(false);
   };
 
   const onSearch = async () => {
-    setLoading(true);
     await setSearchRecordingsKey(searchKey, param);
-    setLoading(false);
   };
 
   const [scrollTop, setScrollTop] = useState(0);
@@ -83,7 +85,11 @@ const AdminRecordingsPage = observer(({
 
   useEffect(() => {
     if (scrollTop + scrollRef.current?.offsetHeight === heightRef.current?.offsetHeight) {
-      onLoad();
+      const executeScroll = async () => {
+        await onLoad();
+        scrollRef.current.scrollTo(0, scrollTop);
+      };
+      executeScroll();
     }
   }, [scrollTop]);
 
@@ -94,7 +100,7 @@ const AdminRecordingsPage = observer(({
   return (
     <AdminPageWrapper>
       {
-        (loading || !onLoaded) ? (
+        (!onLoaded) ? (
           <LoaderWrapper>
             <Spin size="large" />
           </LoaderWrapper>
@@ -133,7 +139,6 @@ const AdminRecordingsPage = observer(({
                           <AdminRecording
                             recording={item}
                             changeRecordingStatus={changeRecordingStatus}
-                            onDelete={onDelete}
                             type={param}
                             key={item._id}
                           />
@@ -144,6 +149,16 @@ const AdminRecordingsPage = observer(({
                 </AdminRecordingContent>
               </AdminContentWrapper>
             </AdminPageContent>
+            <Modal
+              title={recordingStatus.toUpperCase()}
+              visible={isModal}
+              onOk={onConfirmChange}
+              onCancel={onCancelChange}
+            >
+              <span>Are you sure you wish to </span>
+              <span>{recordingStatus}</span>
+              <span> this call recording?</span>
+            </Modal>
           </>
         )
       }

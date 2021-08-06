@@ -8,7 +8,7 @@
     <meta name="description" content="Bandwwith" />
     <meta http-equiv="ScreenOrientation" content="autoRotate:disabled">
     <link rel="apple-touch-icon" href="./assets/logoBg.png" />
-    <link rel="manifest" href="./manifest.json" />
+    <link rel="manifest" href="/manifest.json" />
     <title>Bandwwith</title>
   </head>
   <body>
@@ -16,7 +16,7 @@
     <div id="root"></div>
     <script type="application/javascript">
       if (navigator.serviceWorker) {
-        navigator.serviceWorker.register("./service-worker.js")
+        navigator.serviceWorker.register("/service-worker.js")
           .then((reg) => console.log("Service worker has been registered:", reg))
           .catch((err) => console.error("Error while registering the service worker", err));
       }

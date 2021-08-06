@@ -1,7 +1,7 @@
 import React from "react";
 import AdminUserRecordingListPlayer from "../AdminRecordingListPlayer";
 import { GetRecordResponse } from "../../../shared/interfaces";
-import { PUBLIC_STATUS, BLOCK_STATUS } from "../../../utils/constants";
+import { PUBLIC_STATUS, BLOCK_STATUS, DELETE_STATUS } from "../../../utils/constants";
 import {
   AdminRecordingList, RecordingName, TextRight, AdminRecordingListStatus, AdminRecordingprofile,
   AdminRecordingListStatusLabel, AdminRecordingListStatusInput, DeleteIcon,
@@ -12,18 +12,13 @@ interface IProps {
   recording: GetRecordResponse;
   type: string;
   changeRecordingStatus: (id: string, status: string) => void;
-  onDelete: (id: string) => void;
 }
 
 const AdminRecording = ({
-  recording, type, changeRecordingStatus, onDelete,
+  recording, type, changeRecordingStatus,
 }: IProps): JSX.Element => {
-  const onChangeRecordingStatus = (status: string) => {
-    changeRecordingStatus(recording._id, status);
-  };
-
-  const onDeleteRecording = () => {
-    onDelete(recording.callId);
+  const onChangeRecordingStatus = (id: string, status: string) => {
+    changeRecordingStatus(id, status);
   };
 
   return (
@@ -47,7 +42,7 @@ const AdminRecording = ({
               name={recording._id}
               id={recording._id}
               checked={(recording.status === PUBLIC_STATUS)}
-              onChange={() => onChangeRecordingStatus(PUBLIC_STATUS)}
+              onChange={() => onChangeRecordingStatus(recording._id, PUBLIC_STATUS)}
               disabled={(recording.authorList.length === 0)}
             />
           </TextRight>
@@ -61,7 +56,7 @@ const AdminRecording = ({
               name={recording._id}
               id={recording._id}
               checked={(recording.status === BLOCK_STATUS)}
-              onChange={() => onChangeRecordingStatus(BLOCK_STATUS)}
+              onChange={() => onChangeRecordingStatus(recording._id, BLOCK_STATUS)}
               disabled={(recording.authorList.length === 0)}
             />
           </TextRight>
@@ -72,7 +67,7 @@ const AdminRecording = ({
                   <AdminRecordingListStatusLabel htmlFor={recording._id}>
                     Delete
                   </AdminRecordingListStatusLabel>
-                  <DeleteIcon src={deleteIcon} alt="Delete" onClick={onDeleteRecording} />
+                  <DeleteIcon src={deleteIcon} alt="Delete" onClick={() => onChangeRecordingStatus(recording.callId, DELETE_STATUS)} />
                 </>
               ) : (
                 <></>

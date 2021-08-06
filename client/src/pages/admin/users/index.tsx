@@ -30,7 +30,6 @@ const AdminUsersPage = observer((): JSX.Element => {
     loadUsers,
   } = useContext(AdminStorageContext);
 
-  const [loading, setLoading] = useState(false);
   const [searchKey, setSearchKey] = useState("");
 
   const changeUserStatus = async (id: string, status: string) => {
@@ -38,9 +37,7 @@ const AdminUsersPage = observer((): JSX.Element => {
   };
 
   const onSearch = async () => {
-    setLoading(true);
     await setSearchUserKey(searchKey);
-    setLoading(false);
   };
 
   const [scrollTop, setScrollTop] = useState(0);
@@ -66,8 +63,12 @@ const AdminUsersPage = observer((): JSX.Element => {
   }, [scrollRef]);
 
   useEffect(() => {
-    if (scrollTop + scrollRef.current.offsetHeight === heightRef.current.offsetHeight) {
-      loadUsers();
+    if (scrollTop + scrollRef.current?.offsetHeight === heightRef.current?.offsetHeight) {
+      const executeScroll = async () => {
+        await loadUsers();
+        scrollRef.current.scrollTo(0, scrollTop);
+      };
+      executeScroll();
     }
   }, [scrollTop]);
 
@@ -78,7 +79,7 @@ const AdminUsersPage = observer((): JSX.Element => {
   return (
     <AdminPageWrapper>
       {
-        (loading || !onLoaded) ? (
+        (!onLoaded) ? (
           <LoaderWrapper>
             <Spin size="large" />
           </LoaderWrapper>
