@@ -5,6 +5,7 @@ import { GetRecordResponse, User, GetUserDataResponse } from "../shared/interfac
 import {
   loadNewRecordings, updateRecordingStatus, deleteRecording, updateUserStatusByID,
   loadAvailableRecordings, loadBlockRecordings, loadUsers, getRecordingByID, getUserDataByID,
+  getRecordingsByUserID,
 } from "../axios/routes/admin";
 import { ADMIN_RECORDINGS_LOAD_LIMIT, ADMIN_USERS_LOAD_LIMIT } from "../utils/constants";
 
@@ -31,6 +32,12 @@ class AdminMobxService {
 
   @observable users: Array<User> = [];
 
+  @observable userCount = -1;
+
+  @observable currentUser: User = null;
+
+  @observable currentUserRecordings: Array<GetRecordResponse> = [];
+
   @observable onLoaded = false;
 
   constructor() {
@@ -39,17 +46,26 @@ class AdminMobxService {
 
   // function for get all users
   public loadUsers = async () => {
-    this.onLoaded = false;
     try {
-      const { users } = await loadUsers({
-        limit: ADMIN_USERS_LOAD_LIMIT,
-        offset: this.users.length,
-        key: this.searchUserKey,
-      });
+      if (this.userCount !== this.users.length) {
+        this.onLoaded = false;
+        const { users, amount } = await loadUsers({
+          limit: ADMIN_USERS_LOAD_LIMIT,
+          offset: this.users.length,
+          key: this.searchUserKey,
+        });
 
-      runInAction(() => {
-        this.users.push(...users);
-      });
+        runInAction(() => {
+          this.users.push(...users);
+          this.userCount = amount;
+        });
+
+        if (this.currentUser === null) {
+          this.currentUser = this.users[0];
+          const { recordings } = await getRecordingsByUserID(this.currentUser._id);
+          this.currentUserRecordings = recordings;
+        }
+      }
     } catch (err) {
       showErrorNotification(err.message);
     } finally {
@@ -282,6 +298,14 @@ class AdminMobxService {
   private popupItemID = (items: Array<GetRecordResponse>, _id: string) => {
     const filterItems = items.filter((item) => item._id !== _id);
     return filterItems;
+  }
+
+  // function for change current user
+  public changeCurrentUser = async (id: string) => {
+    const user = this.users.filter((item) => item._id === id);
+    this.currentUser = user[0];
+    const { recordings } = await getRecordingsByUserID(this.currentUser._id);
+    this.currentUserRecordings = recordings;
   }
 }
 

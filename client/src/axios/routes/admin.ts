@@ -1,7 +1,7 @@
 import { stringify } from "query-string";
 import {
   GetAllRecordsQuery, GetAllRecordsResponse, UpdateRecordingQuery, UpdateRecordingResponse,
-  GetAllUsersResponse, GetRecordResponse, GetUserDataResponse,
+  GetAllUsersResponse, GetRecordResponse, GetUserDataResponse, GetUsersResponse,
 } from "../../shared/interfaces";
 import { IAxiosError } from "../interfaces";
 import { getError } from "../utils";
@@ -108,11 +108,11 @@ export const loadBlockRecordings = async (
 
 export const loadUsers = async (
   query: GetAllRecordsQuery,
-): Promise<GetAllUsersResponse> => {
+): Promise<GetUsersResponse> => {
   const stringified = stringify(query);
 
   try {
-    const response = await instance.post<GetAllUsersResponse>(`${API.USER}?${stringified}`);
+    const response = await instance.post<GetUsersResponse>(`${API.USER}?${stringified}`);
 
     return response.data;
   } catch (err) {
@@ -135,6 +135,17 @@ export const getRecordingByID = async (id: string): Promise<GetRecordResponse> =
 export const getUserDataByID = async (id: string): Promise<GetUserDataResponse> => {
   try {
     const response = await instance.get<GetUserDataResponse>(`${API.USER}/${id}`);
+
+    return response.data;
+  } catch (err) {
+    const { response } = err as IAxiosError;
+    throw new Error(getError(response));
+  }
+};
+
+export const getRecordingsByUserID = async (id: string): Promise<GetAllRecordsResponse> => {
+  try {
+    const response = await instance.post<GetAllRecordsResponse>(`${API.RECORD_FILTER}/${id}`);
 
     return response.data;
   } catch (err) {

@@ -64,3 +64,25 @@ export const AdminSearch = styled.div`
   margin-right: 20px;
   padding: 10px 0;
 `;
+
+export const AdminUserContent = styled.div`
+  width: 100%;
+  margin: 0 35px;
+  display: flex;
+`;
+
+export const AdminUserListContent = styled.div`
+  width: 50%;
+`;
+
+export const AdminUserList = styled.div`
+  width: 100%;
+  padding: 15px;
+  background: #1A1C1E;
+  margin: 20px;
+  align-items: center;
+  border-radius: 6px;
+  display: flex;
+  cursor: pointer;
+  position: relative;
+`;

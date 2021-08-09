@@ -188,6 +188,11 @@ export interface GetAllUsersResponse {
   users: User[];
 }
 
+export interface GetUsersResponse {
+  users: Array<User>;
+  amount: number;
+}
+
 export interface GetUserResponse {
   user: User;
 }

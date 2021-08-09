@@ -3,6 +3,8 @@ import styled from "styled-components";
 export const Profile = styled.div`
   position: relative;
   text-align: center;
+  display: flex;
+  align-items: center;
 `;
 
 export const ProfileImage = styled.img`

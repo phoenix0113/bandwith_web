@@ -26,12 +26,14 @@ const AdminUserListProfile = ({
   return (
     <Profile>
       <ProfileImage src={(imageUrl !== undefined) ? imageUrl : tempProfileIcon} />
-      <ProfileName>
-        {name}
-      </ProfileName>
-      <ProfileEmail>
-        {email}
-      </ProfileEmail>
+      <div className="margin-left-10">
+        <ProfileName>
+          {name}
+        </ProfileName>
+        <ProfileEmail>
+          {email}
+        </ProfileEmail>
+      </div>
     </Profile>
   );
 };

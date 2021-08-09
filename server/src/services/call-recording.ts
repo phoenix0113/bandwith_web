@@ -537,7 +537,6 @@ export class CallRecordingService {
 
       const recordings = await CallRecording.find({
         authorList: { $in: [_id] },
-        status: { $in: ['public', 'featured'] },
       })
         .sort({ _id: 'desc' })
         .populate({

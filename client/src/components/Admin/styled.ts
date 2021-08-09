@@ -371,7 +371,7 @@ export const AdminUserList = styled.div`
 export const AdminListActive = styled.div`
   position: absolute;
   width: 18px;
-  height: 143px;
+  height: -webkit-fill-available;
   left: 0;
   top: 0;
   background: linear-gradient(270deg, rgba(41, 67, 76, 0.268952) 3.51%, #32C5FF 179.71%);
@@ -383,7 +383,7 @@ export const AdminListActive = styled.div`
 export const AdminListActiveBar = styled.div`
   position: absolute;
   width: 4px;
-  height: 143px;
+  height: -webkit-fill-available;
   left: 0;
   top: 0;
   background: #32C5FF;
@@ -448,6 +448,21 @@ export const RecordingName = styled.div`
 export const AdminRecordingprofile = styled.div`
   display: flex;
   justify-content: space-around;
+  width: 100%;
+  padding: 15px;
+  background: #1A1C1E;
+  margin: 20px;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border-radius: 6px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  cursor: pointer;
+  position: relative;
 `;
 
 export const TextRight = styled.div`
@@ -469,7 +484,6 @@ export const AdminUserListStatus = styled.div`
   outline: none;
   margin-right: 0;
   margin-left: auto;
-  display: flex;
   justify-content: space-around;
 `;
 

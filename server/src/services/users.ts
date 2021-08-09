@@ -10,7 +10,7 @@ import {
   OAuthGoogleRequest, OAuthFacebookRequest, SetReadHintRequest, HintTypes,
   SendSMSRequest, VerifyCodeRequest, UpdatePhoneRequest, BasicResponse, NexmoResponse,
   GetVerifyCodeRequest, GetVerifyCodeResponse, OAuthAppleRequest, UpdateUserProfileRequest,
-  GetAllRecordsQuery,
+  GetAllRecordsQuery, GetUsersResponse,
 } from '../../../client/src/shared/interfaces';
 import { conf } from '../config';
 
@@ -32,7 +32,7 @@ export class UsersService {
     limit,
     offset,
     key,
-  }: GetAllRecordsQuery): Promise<GetAllUsersResponse> {
+  }: GetAllRecordsQuery): Promise<GetUsersResponse> {
     try {
       if (key === undefined) {
         key = "";
@@ -52,7 +52,13 @@ export class UsersService {
         select: '-password -email -firebaseToken',
       });;
   
-      return { users };
+      const all_users = await User.find({
+        name: { $regex : key, $options: 'i' },
+      });
+
+      const amount = all_users.length;
+
+      return { users: users, amount: amount };
     } catch (err) {
       throw err;
     }

@@ -5,15 +5,17 @@ import { Utils } from "avcore/client";
 import AdminHeader from "../../../components/Admin/AdminHeader";
 import AdminSideBar from "../../../components/Admin/AdminSideBar";
 import AdminUserListProfile from "../../../components/Admin/AdminUserListProfile";
+import AdminUsersRecording from "../../../components/Admin/AdminRecordingList";
 import { AdminStorageContext } from "../../../services/admin";
 import {
   AdminRecordingList, TextRight, AdminUserListStatus, AdminRecordingListStatusLabel,
-  AdminRecordingListStatusInput,
+  AdminRecordingListStatusInput, AdminListActiveBar, AdminListActive,
 } from "../../../components/Admin/styled";
 import { InputIconWrapper, LoaderWrapper } from "../../../components/styled";
 import {
-  AdminPageWrapper, AdminPageContent, AdminContentWrapper, AdminRecordingContent,
+  AdminPageWrapper, AdminPageContent, AdminContentWrapper, AdminUserContent,
   AdminRecordingContentTitle, AdminScrollContent, RecordingContentWrapper, AdminSearch,
+  AdminUserListContent, AdminUserList,
 } from "../styled";
 
 import { PAGE_TYPE } from "./types";
@@ -25,6 +27,10 @@ const AdminUsersPage = observer((): JSX.Element => {
   const {
     onLoaded,
     users,
+    currentUser,
+    currentUserRecordings,
+    changeCurrentUser,
+    updateRecordingStatus,
     updateUserStatus,
     setSearchUserKey,
     loadUsers,
@@ -40,37 +46,46 @@ const AdminUsersPage = observer((): JSX.Element => {
     await setSearchUserKey(searchKey);
   };
 
-  const [scrollTop, setScrollTop] = useState(0);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const heightRef = useRef<HTMLDivElement>(null);
+  const onChangeCurrentUser = (id: string) => {
+    changeCurrentUser(id);
+  };
 
-  const onScroll = () => {
-    setScrollTop(scrollRef.current.scrollTop);
+  const onChangeRecordingStatus = (id: string, status: string) => {
+    updateRecordingStatus(id, status, "");
+  };
+
+  const [userScrollTop, setUserScrollTop] = useState(0);
+  const userScrollRef = useRef<HTMLDivElement>(null);
+  const userHeightRef = useRef<HTMLDivElement>(null);
+
+  const onUserScroll = () => {
+    setUserScrollTop(userScrollRef.current.scrollTop);
   };
 
   useEffect(() => {
-    if (scrollRef.current) {
+    if (userScrollRef.current) {
       const createdObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setScrollTop(scrollRef.current.scrollTop);
+            setUserScrollTop(userScrollRef.current.scrollTop);
           } else if (Utils.isSafari) {
             console.log(`For some reason, entry is not intersecting. May need a new method. Scrolling from ${entry.target.id} to the bottom`);
           }
         });
-      }, { threshold: 0.8, root: scrollRef.current });
+      }, { threshold: 0.8, root: userScrollRef.current });
     }
-  }, [scrollRef]);
+  }, [userScrollRef]);
 
   useEffect(() => {
-    if (scrollTop + scrollRef.current?.offsetHeight === heightRef.current?.offsetHeight) {
+    if (userScrollTop + userScrollRef.current?.offsetHeight
+      === userHeightRef.current?.offsetHeight) {
       const executeScroll = async () => {
         await loadUsers();
-        scrollRef.current.scrollTo(0, scrollTop);
+        userScrollRef.current.scrollTo(0, userScrollTop);
       };
       executeScroll();
     }
-  }, [scrollTop]);
+  }, [userScrollTop]);
 
   useEffect(() => {
     setSearchUserKey("");
@@ -89,74 +104,107 @@ const AdminUsersPage = observer((): JSX.Element => {
             <AdminPageContent>
               <AdminSideBar pageType={PAGE_TYPE} />
               <AdminContentWrapper>
-                <AdminRecordingContent>
-                  <AdminRecordingContentTitle>
-                    Users List
-                  </AdminRecordingContentTitle>
-                  <AdminSearch>
-                    <Input
-                      placeholder="Search"
-                      value={searchKey}
-                      suffix={(
-                        <InputIconWrapper className="cursor-pointer" onClick={onSearch}>
-                          <img src={feedIcon} alt="Search" />
-                        </InputIconWrapper>
-                      )}
-                      onChange={(e) => setSearchKey(e.target.value)}
-                      autoFocus
-                    />
-                  </AdminSearch>
-                  <AdminScrollContent
-                    className="scrollbar-content"
-                    ref={scrollRef}
-                    onScroll={onScroll}
-                  >
-                    <RecordingContentWrapper ref={heightRef}>
-                      {
-                        users.map((user) => (
-                          <AdminRecordingList key={user?._id}>
-                            <div style={{ marginLeft: "26px", marginRight: "26px" }}>
-                              <AdminUserListProfile
-                                imageUrl={user.imageUrl}
-                                name={user.name}
-                                email={user.email}
-                                type="none"
-                              />
-                            </div>
-                            <AdminUserListStatus>
-                              <TextRight>
-                                <AdminRecordingListStatusLabel htmlFor={user?._id}>
-                                  Available
-                                </AdminRecordingListStatusLabel>
-                                <AdminRecordingListStatusInput
-                                  type="radio"
-                                  value={PUBLIC_STATUS}
-                                  name={user?._id}
-                                  id={user?._id}
-                                  checked={(user.status === APPROVED_STATUS)}
-                                  onChange={() => changeUserStatus(user?._id, APPROVED_STATUS)}
+                <AdminUserContent>
+                  <AdminUserListContent>
+                    <AdminRecordingContentTitle>
+                      Users List
+                    </AdminRecordingContentTitle>
+                    <AdminSearch>
+                      <Input
+                        placeholder="Search"
+                        value={searchKey}
+                        suffix={(
+                          <InputIconWrapper className="cursor-pointer" onClick={onSearch}>
+                            <img src={feedIcon} alt="Search" />
+                          </InputIconWrapper>
+                        )}
+                        onChange={(e) => setSearchKey(e.target.value)}
+                        autoFocus
+                      />
+                    </AdminSearch>
+                    <AdminScrollContent
+                      className="scrollbar-content"
+                      ref={userScrollRef}
+                      onScroll={onUserScroll}
+                    >
+                      <RecordingContentWrapper ref={userHeightRef} className="justify-center">
+                        {
+                          users.map((user) => (
+                            <AdminUserList
+                              key={user?._id}
+                              className={(user._id === currentUser._id) ? "user-list-active" : ""}
+                              onClick={() => onChangeCurrentUser(user?._id)}
+                            >
+                              {
+                                (user._id === currentUser._id) && (
+                                  <>
+                                    <AdminListActiveBar />
+                                    <AdminListActive />
+                                  </>
+                                )
+                              }
+                              <div className="margin-left-10">
+                                <AdminUserListProfile
+                                  imageUrl={user.imageUrl}
+                                  name={user.name}
+                                  email={user.email}
+                                  type="none"
                                 />
-                              </TextRight>
-                              <TextRight>
-                                <AdminRecordingListStatusLabel htmlFor={user?._id}>
-                                  Block
-                                </AdminRecordingListStatusLabel>
-                                <AdminRecordingListStatusInput
-                                  type="radio"
-                                  value={BLOCK_STATUS}
-                                  name={user?._id}
-                                  id={user?._id}
-                                  checked={(user.status === "block")}
-                                  onChange={() => changeUserStatus(user?._id, "block")}
-                                />
-                              </TextRight>
-                            </AdminUserListStatus>
-                          </AdminRecordingList>
-                        ))
-                      }
-                    </RecordingContentWrapper>
-                  </AdminScrollContent>
-                </AdminRecordingContent>
+                              </div>
+                              <AdminUserListStatus>
+                                <TextRight>
+                                  <AdminRecordingListStatusLabel htmlFor={user?._id}>
+                                    Available
+                                  </AdminRecordingListStatusLabel>
+                                  <AdminRecordingListStatusInput
+                                    type="radio"
+                                    value={PUBLIC_STATUS}
+                                    name={user?._id}
+                                    id={user?._id}
+                                    checked={(user.status === APPROVED_STATUS)}
+                                    onChange={() => changeUserStatus(user?._id, APPROVED_STATUS)}
+                                  />
+                                </TextRight>
+                                <TextRight>
+                                  <AdminRecordingListStatusLabel htmlFor={user?._id}>
+                                    Block
+                                  </AdminRecordingListStatusLabel>
+                                  <AdminRecordingListStatusInput
+                                    type="radio"
+                                    value={BLOCK_STATUS}
+                                    name={user?._id}
+                                    id={user?._id}
+                                    checked={(user.status === "block")}
+                                    onChange={() => changeUserStatus(user?._id, "block")}
+                                  />
+                                </TextRight>
+                              </AdminUserListStatus>
+                            </AdminUserList>
+                          ))
+                        }
+                      </RecordingContentWrapper>
+                    </AdminScrollContent>
+                  </AdminUserListContent>
+                  <AdminUserListContent>
+                    <AdminRecordingContentTitle style={{ marginBottom: 90 }}>
+                      User&apos;s Recordings List
+                    </AdminRecordingContentTitle>
+                    <AdminScrollContent className="scrollbar-content">
+                      <RecordingContentWrapper className="justify-center">
+                        {
+                          currentUserRecordings.map((item) => (
+                            <AdminUsersRecording
+                              recording={item}
+                              type="none"
+                              changeRecordingStatus={onChangeRecordingStatus}
+                              key={item._id}
+                            />
+                          ))
+                        }
+                      </RecordingContentWrapper>
+                    </AdminScrollContent>
+                  </AdminUserListContent>
+                </AdminUserContent>
               </AdminContentWrapper>
             </AdminPageContent>
           </>
