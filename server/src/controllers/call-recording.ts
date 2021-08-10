@@ -84,7 +84,7 @@ export class CallRecordingsController extends CrudController {
   static async getBlockRecords(req: Request, res: Response) {
     await CallRecordingsController.processRequest(req, res, async () => {
       res.send(
-        await CallRecordingService.getBlcokRecords(
+        await CallRecordingService.getBlockRecords(
           parseQuery(req.query) as GetAllRecordsQuery
         )
       );

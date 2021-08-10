@@ -227,6 +227,7 @@ export class CallRecordingService {
       const recordings = await CallRecording.find({
         status: 'new',
         name: { $regex : key, $options: 'i' },
+        $where:'this.list.length>0',
       }).sort({
         _id: 'desc',
       })
@@ -244,6 +245,7 @@ export class CallRecordingService {
       const all_recordings = await CallRecording.find({
         status: 'new',
         name: { $regex : key, $options: 'i' },
+        $where:'this.list.length>0',
       });
 
       const amount = all_recordings.length;
@@ -279,6 +281,7 @@ export class CallRecordingService {
       const recordings = await CallRecording.find({
         status: 'public',
         name: { $regex : key, $options: 'i' },
+        $where:'this.list.length>0',
       })
       .sort({
         _id: 'desc',
@@ -297,6 +300,7 @@ export class CallRecordingService {
       const all_recordings = await CallRecording.find({
         status: 'public',
         name: { $regex : key, $options: 'i' },
+        $where:'this.list.length>0',
       });
 
       const amount = all_recordings.length;
@@ -327,7 +331,7 @@ export class CallRecordingService {
   }
 
   // function for get blocked call recordings
-  static async getBlcokRecords({
+  static async getBlockRecords({
     limit,
     offset,
     key,
@@ -339,6 +343,7 @@ export class CallRecordingService {
       const recordings = await CallRecording.find({
         status: 'block',
         name: { $regex : key, $options: 'i' },
+        $where:'this.list.length>0',
       })
       .sort({
         _id: 'desc',
@@ -355,8 +360,9 @@ export class CallRecordingService {
       });
 
       const all_recordings = await CallRecording.find({
-        status: 'new',
+        status: 'block',
         name: { $regex : key, $options: 'i' },
+        $where:'this.list.length>0',
       });
 
       const amount = all_recordings.length;

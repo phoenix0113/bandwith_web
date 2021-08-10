@@ -26,7 +26,7 @@ const AdminRecording = ({
       <RecordingName className="text-center">
         {recording.name}
       </RecordingName>
-      <AdminRecordingprofile>
+      <AdminRecordingprofile className="magin-0">
         <AdminUserRecordingListPlayer
           type={type}
           currentRecording={recording}
