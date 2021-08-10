@@ -543,6 +543,7 @@ export class CallRecordingService {
 
       const recordings = await CallRecording.find({
         authorList: { $in: [_id] },
+        status: "public",
       })
         .sort({ _id: 'desc' })
         .populate({
