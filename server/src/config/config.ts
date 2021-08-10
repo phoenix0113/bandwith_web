@@ -1,7 +1,9 @@
 export const conf = {
   frontendPath: '../client/build',
-  port: 80,
-  mongoURI: 'mongodb://bandwith-mongodb:27017/bandwith',
+  // port: 80,
+  // mongoURI: 'mongodb://bandwith-mongodb:27017/bandwith',
+  port: 1380,
+  mongoURI: 'mongodb://localhost:27017/bandwith',
   firebaseDatabase: 'https://teleport-384a0.firebaseio.com',
   auth: {
     secret: getEnvStr('JWT_SECRET'),
