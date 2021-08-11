@@ -38,22 +38,8 @@ const IncommingCallPage = observer((): JSX.Element => {
     case IncommingCallStatus.INCOMMING:
       return <IncommingCallComponent callParticipantData={callParticipantData} />;
     case IncommingCallStatus.FINISHED:
-      return (
-        <CallContent>
-          <CallWrapper>
-            <CallDescription>The call is complete.</CallDescription>
-            <CallDescription>The caller saves the call recording.</CallDescription>
-            <CommonButton
-              margin="20% 0"
-              onClick={resetIncommingCall}
-              backgroundColor={COLORS.ALTERNATIVE}
-              color={COLORS.BLACK}
-            >
-              OK
-            </CommonButton>
-          </CallWrapper>
-        </CallContent>
-      );
+      history.push(Routes.HOME);
+      break;
     case IncommingCallStatus.ACCEPT:
       return (
         <MainCallComponent

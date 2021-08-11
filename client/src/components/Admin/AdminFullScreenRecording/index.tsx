@@ -92,7 +92,7 @@ const AdminFullScreenRecording = observer(({
           </AdminSingleVideoProfileContent>
           <AdminRecordingToolsContent>
             <AdminRecordingTools>
-              <AdminRecordingToolsMoveButton src={moveButton} />
+              {/* <AdminRecordingToolsMoveButton src={moveButton} /> */}
               <AdminRecordingStatusTools>
                 <AdminRecordingToolsPrevNextButton
                   src={prevButton}
@@ -131,7 +131,7 @@ const AdminFullScreenRecording = observer(({
                   />
                 </AdminRecordingStatus>
               </AdminRecordingActiveStatusTools>
-              <AdminRecordingToolsCloseButton src={closeButton} />
+              {/* <AdminRecordingToolsCloseButton src={closeButton} /> */}
             </AdminRecordingTools>
           </AdminRecordingToolsContent>
         </div>

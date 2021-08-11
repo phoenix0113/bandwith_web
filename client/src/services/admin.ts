@@ -5,7 +5,7 @@ import { GetRecordResponse, User, GetUserDataResponse } from "../shared/interfac
 import {
   loadNewRecordings, updateRecordingStatus, deleteRecording, updateUserStatusByID,
   loadAvailableRecordings, loadBlockRecordings, loadUsers, getRecordingByID, getUserDataByID,
-  getRecordingsByUserID,
+  getAllRecordingsByUserID,
 } from "../axios/routes/admin";
 import { ADMIN_RECORDINGS_LOAD_LIMIT, ADMIN_USERS_LOAD_LIMIT } from "../utils/constants";
 
@@ -62,7 +62,7 @@ class AdminMobxService {
 
         if (this.currentUser === null) {
           this.currentUser = this.users[0];
-          const { recordings } = await getRecordingsByUserID(this.currentUser._id);
+          const { recordings } = await getAllRecordingsByUserID(this.currentUser._id);
           this.currentUserRecordings = recordings;
         }
       }
@@ -242,12 +242,15 @@ class AdminMobxService {
     try {
       this.searchRecordingKey = key;
       if (type === "new") {
+        this.newRecordingCount -= 1;
         this.newRecordings = [];
         this.loadNewRecordings();
       } else if (type === "available") {
+        this.availableRecordingCount -= 1;
         this.availableRecordings = [];
         this.loadAvailableRecordings();
       } else if (type === "blocked") {
+        this.blockRecordingsCount -= 1;
         this.blockRecordings = [];
         this.loadBlockRecordings();
       }
@@ -262,6 +265,7 @@ class AdminMobxService {
   ) => {
     try {
       this.searchUserKey = key;
+      this.userCount = -1;
       this.users = [];
       this.loadUsers();
     } catch (err) {
@@ -304,7 +308,7 @@ class AdminMobxService {
   public changeCurrentUser = async (id: string) => {
     const user = this.users.filter((item) => item._id === id);
     this.currentUser = user[0];
-    const { recordings } = await getRecordingsByUserID(this.currentUser._id);
+    const { recordings } = await getAllRecordingsByUserID(this.currentUser._id);
     this.currentUserRecordings = recordings;
   }
 }

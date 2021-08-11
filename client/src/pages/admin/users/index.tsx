@@ -113,6 +113,11 @@ const AdminUsersPage = observer((): JSX.Element => {
                       <Input
                         placeholder="Search"
                         value={searchKey}
+                        onKeyUp={(e) => {
+                          if (e.keyCode === 13) {
+                            onSearch();
+                          }
+                        }}
                         suffix={(
                           <InputIconWrapper className="cursor-pointer" onClick={onSearch}>
                             <img src={feedIcon} alt="Search" />
@@ -190,7 +195,7 @@ const AdminUsersPage = observer((): JSX.Element => {
                       User&apos;s Recordings List
                     </AdminRecordingContentTitle>
                     <AdminScrollContent className="scrollbar-content">
-                      <RecordingContentWrapper className="justify-center">
+                      <RecordingContentWrapper className="justify-center w-full">
                         {
                           currentUserRecordings.map((item) => (
                             <AdminUsersRecording

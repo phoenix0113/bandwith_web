@@ -119,6 +119,11 @@ const AdminRecordingsPage = observer(({
                     <Input
                       placeholder="Search"
                       value={searchKey}
+                      onKeyUp={(e) => {
+                        if (e.keyCode === 13) {
+                          onSearch();
+                        }
+                      }}
                       suffix={(
                         <InputIconWrapper className="cursor-pointer" onClick={onSearch}>
                           <img src={feedIcon} alt="Search" />

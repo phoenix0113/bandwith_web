@@ -50,7 +50,7 @@ const AdminUserRecordingListPlayer = ({ currentRecording, type }:IProps):JSX.Ele
   };
 
   return (
-    <VideoPlayerContent className="admin-dashboard-video">
+    <VideoPlayerContent className="admin-dashboard-video" onClick={handleVideo}>
       {
         (showPlayBtn) ? (
           <VideoPlayerButton src={playButton} onClick={handleVideo} />

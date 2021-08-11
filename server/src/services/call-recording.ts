@@ -74,11 +74,52 @@ export class CallRecordingService {
   }
 
   static async publishRecording(
-    { callId, participants, recordingName }: PublishRecordingRequest,
+    { callId, participants }: PublishRecordingRequest,
     user: string
   ) {
     try {
-      let timestamp = Date.now();
+      const recording = await CallRecording.findOne({
+        callId,
+      });
+
+      // Convert timestamp to milliseconds
+      const date = new Date(Number(recording?.createDate));
+
+      // Year
+      const year = date.getFullYear().toString();
+
+      // Month
+      let month = "0";
+      month += date.getMonth().toString();
+
+      // Day
+      let day = "0";
+      day += date.getDate().toString();
+
+      // Hours
+      let hours = "0";
+      hours += date.getHours().toString();
+
+      // Minutes
+      let minutes = "0";
+      minutes += date.getMinutes().toString();
+
+      // Seconds
+      let seconds = "0";
+      seconds += date.getSeconds().toString();
+
+      // Display date time in MM-dd-yyyy h:m:s format
+      let formattedTime = month.substr(-2).toString();
+      formattedTime += "-";
+      formattedTime += day.substr(-2).toString();
+      formattedTime += "-";
+      formattedTime += year;
+      formattedTime += " ";
+      formattedTime += hours.substr(-2).toString();
+      formattedTime += ":";
+      formattedTime += minutes.substr(-2).toString();
+      formattedTime += ":";
+      formattedTime += seconds.substr(-2).toString();
 
       const rec = await CallRecording.findOneAndUpdate(
         { callId },
@@ -86,7 +127,7 @@ export class CallRecordingService {
           $set: {
             user,
             participants,
-            name: recordingName + ' ' + timestamp,
+            name: formattedTime,
             authorList: [user, participants[0]],
           },
         },
@@ -526,6 +567,38 @@ export class CallRecordingService {
       const recordings = await CallRecording.find({
         authorList: { $in: [_id] },
         status: 'public',
+      })
+        .sort({ _id: 'desc' })
+        .populate({
+          path: 'user',
+          select: '-password -email -firebaseToken',
+        })
+        .populate({
+          path: 'participants',
+          select: '-password -email -firebaseToken',
+        });
+
+      recordings.sort((a, b) =>
+        FeaturedService.checkFeaturedRecording(a._id) >
+        FeaturedService.checkFeaturedRecording(b._id)
+          ? 1
+          : -1
+      );
+
+      return { recordings: Object.assign([], recordings), amount };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async getAllRecordingsByUserID({
+    _id,
+  }: Document): Promise<GetAllRecordsResponse> {
+    try {
+      const amount = await CallRecording.countDocuments();
+
+      const recordings = await CallRecording.find({
+        authorList: { $in: [_id] },
       })
         .sort({ _id: 'desc' })
         .populate({

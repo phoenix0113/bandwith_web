@@ -17,3 +17,4 @@ callRecordingsRouter.post(`/${PATH.BLOCK}`, CallRecordingsController.getBlockRec
 callRecordingsRouter.post(`/${PATH.REPORT}`, CallRecordingsController.sendReport);
 callRecordingsRouter.post(`/${PATH.DELETE}`, CallRecordingsController.deleteRecord);
 callRecordingsRouter.post(`/${PATH.FILTER}/:_id`, CallRecordingsController.getRecordingsByUserID);
+callRecordingsRouter.post(`/${PATH.FILTER}/${PATH.ALL}/:_id`, CallRecordingsController.getAllRecordingsByUserID);

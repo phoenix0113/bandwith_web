@@ -153,3 +153,14 @@ export const getRecordingsByUserID = async (id: string): Promise<GetAllRecordsRe
     throw new Error(getError(response));
   }
 };
+
+export const getAllRecordingsByUserID = async (id: string): Promise<GetAllRecordsResponse> => {
+  try {
+    const response = await instance.post<GetAllRecordsResponse>(`${API.RECORD_FILTER_ALL}/${id}`);
+
+    return response.data;
+  } catch (err) {
+    const { response } = err as IAxiosError;
+    throw new Error(getError(response));
+  }
+};

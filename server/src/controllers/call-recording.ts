@@ -129,4 +129,12 @@ export class CallRecordingsController extends CrudController {
       );
     });
   }
+
+  static async getAllRecordingsByUserID(req: Request, res: Response) {
+    await CallRecordingsController.processRequest(req, res, async () => {
+      res.send(
+        await CallRecordingService.getAllRecordingsByUserID({ _id: req.params._id })
+      );
+    });
+  }
 }
