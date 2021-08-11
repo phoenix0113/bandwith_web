@@ -79,6 +79,7 @@ export class StorageHandler {
         Bucket: this.options.bucket,
         Key: key,
         ContentType: contentType,
+        ACL: 'public-read',
       })
       .promise();
     await StorageHandler.unlinkPromise(p);

@@ -325,6 +325,7 @@ export interface GetRecordResponse extends Document {
   authorList?: RecordUser[];
   user?: RecordUser;
   name?: string;
+  thumbnail: string;
 }
 
 export interface CallRecording extends Document, CreateCallRecordingRequest {
@@ -332,6 +333,7 @@ export interface CallRecording extends Document, CreateCallRecordingRequest {
   user?: string;
   participiants?: string[];
   authorList?: string[];
+  thumbnail?: string;
 }
 
 export interface BlockRecordingResponse {

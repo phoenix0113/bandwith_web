@@ -53,6 +53,7 @@ export class CallRecordingService {
       });
       await rec.save();
       await CallRecordingService.replaceRecording(rec);
+      await CallRecordingService.takeThumbnail(rec);
 
       return { _id: rec._id.toString() };
     } catch (err) {
@@ -85,10 +86,7 @@ export class CallRecordingService {
           $set: {
             user,
             participants,
-            name:
-              recordingName +
-              ' ' +
-              timestamp,
+            name: recordingName + ' ' + timestamp,
             authorList: [user, participants[0]],
           },
         },
@@ -109,6 +107,40 @@ export class CallRecordingService {
     );
 
     await api.deleteRecording({ filePath });
+  }
+
+  static async takeThumbnail(rec: ICallRecording): Promise<void> {
+    try {
+      const recordingSignedUrl = rec.list[0].url;
+
+      const d = await dir({ unsafeCleanup: true });
+      const tempOutput = `${d.path}/out.jpg`;
+      const [fileName] = rec.list[0].fullKey.split('.');
+      let thName = fileName.split('/');
+      thName[0] = conf.thumbnailPath;
+
+      const options = [
+        '-i',
+        recordingSignedUrl,
+        '-vf',
+        "select='eq(n\\,34)'",
+        '-vframes',
+        '1',
+        tempOutput,
+      ];
+
+      await CallRecordingService.excecuteProc(conf.ffmpeg.path, options);
+
+      const key = `${thName.join('/')}.jpg`;
+      await StorageHandler.get().upload(tempOutput, key, 'image/jpg');
+      d.cleanup();
+
+      rec.thumbnail = `${conf.storage.endpoint}/${conf.storage.bucket}/${key}`;
+
+      await rec.save();
+    } catch (err) {
+      throw err;
+    }
   }
 
   static async replaceRecording(rec: ICallRecording) {
@@ -134,6 +166,7 @@ export class CallRecordingService {
     const list1 = await CallRecordingService.getListRecordingByPipeId({
       pipeId: rec.pipeId,
     });
+    list1[0].url = list1[0].url.split('?')[0];
 
     rec.list = list1;
     await rec.save();
@@ -152,17 +185,19 @@ export class CallRecordingService {
       output,
     ];
 
-    await CallRecordingService.excecuteConv(conf.ffmpeg.path, options);
+    await CallRecordingService.excecuteProc(conf.ffmpeg.path, options);
   }
 
-  static async excecuteConv(ffmpeg: string, options: string[]): Promise<void> {
+  static async excecuteProc(ffmpeg: string, options: string[]): Promise<void> {
     return new Promise((resolve, reject) => {
       const p = spawn(ffmpeg, options, {
         detached: false,
       });
 
       console.log(`${p.pid}:`, conf.ffmpeg.path, options.join(' '));
-      // p.stderr.pipe(createWriteStream(`/root/server/${Date.now()}.log`));
+      // p.stderr.pipe(
+      //   createWriteStream(`/root/server/logs/${Date.now()}_${p.pid}.log`)
+      // );
 
       p.on('error', (err) => {
         console.error(err);
@@ -191,12 +226,6 @@ export class CallRecordingService {
       throw { status: 400, message: 'No such recording' };
     }
 
-    const signedUrl = await StorageHandler.get().signedUrl(
-      recording.list[0].fullKey
-    );
-
-    recording.list[0].url = signedUrl;
-
     return { ...JSON.parse(JSON.stringify(recording)) };
   }
 
@@ -222,45 +251,34 @@ export class CallRecordingService {
   }: GetAllRecordsQuery): Promise<GetAllRecordsResponse> {
     try {
       if (key === undefined) {
-        key = "";
+        key = '';
       }
       const recordings = await CallRecording.find({
         status: 'new',
-        name: { $regex : key, $options: 'i' },
-        $where:'this.list.length>0',
-      }).sort({
-        _id: 'desc',
+        name: { $regex: key, $options: 'i' },
+        $where: 'this.list.length>0',
       })
-      .skip((offset && +offset) || 0)
-      .limit((limit && +limit) || 0)
-      .populate({
-        path: 'user',
-        select: '-password -email -firebaseToken',
-      })
-      .populate({
-        path: 'participants',
-        select: '-password -email -firebaseToken',
-      });
+        .sort({
+          _id: 'desc',
+        })
+        .skip((offset && +offset) || 0)
+        .limit((limit && +limit) || 0)
+        .populate({
+          path: 'user',
+          select: '-password -email -firebaseToken',
+        })
+        .populate({
+          path: 'participants',
+          select: '-password -email -firebaseToken',
+        });
 
       const all_recordings = await CallRecording.find({
         status: 'new',
-        name: { $regex : key, $options: 'i' },
-        $where:'this.list.length>0',
+        name: { $regex: key, $options: 'i' },
+        $where: 'this.list.length>0',
       });
 
       const amount = all_recordings.length;
-
-      await Promise.all(
-        recordings.map(async (recordItem) => {
-          const signedUrl = await StorageHandler.get().signedUrl(
-            recordItem.list[0].fullKey
-          );
-
-          recordItem.list[0].url = signedUrl;
-
-          await recordItem.save();
-        })
-      );
 
       return { recordings: Object.assign([], recordings), amount };
     } catch (err) {
@@ -276,46 +294,34 @@ export class CallRecordingService {
   }: GetAllRecordsQuery): Promise<GetAllRecordsResponse> {
     try {
       if (key === undefined) {
-        key = "";
+        key = '';
       }
       const recordings = await CallRecording.find({
         status: 'public',
-        name: { $regex : key, $options: 'i' },
-        $where:'this.list.length>0',
+        name: { $regex: key, $options: 'i' },
+        $where: 'this.list.length>0',
       })
-      .sort({
-        _id: 'desc',
-      })
-      .skip((offset && +offset) || 0)
-      .limit((limit && +limit) || 0)
-      .populate({
-        path: 'user',
-        select: '-password -email -firebaseToken',
-      })
-      .populate({
-        path: 'participants',
-        select: '-password -email -firebaseToken',
-      });
+        .sort({
+          _id: 'desc',
+        })
+        .skip((offset && +offset) || 0)
+        .limit((limit && +limit) || 0)
+        .populate({
+          path: 'user',
+          select: '-password -email -firebaseToken',
+        })
+        .populate({
+          path: 'participants',
+          select: '-password -email -firebaseToken',
+        });
 
       const all_recordings = await CallRecording.find({
         status: 'public',
-        name: { $regex : key, $options: 'i' },
-        $where:'this.list.length>0',
+        name: { $regex: key, $options: 'i' },
+        $where: 'this.list.length>0',
       });
 
       const amount = all_recordings.length;
-  
-      await Promise.all(
-        recordings.map(async (recordItem) => {
-          const signedUrl = await StorageHandler.get().signedUrl(
-            recordItem.list[0].fullKey
-          );
-
-          recordItem.list[0].url = signedUrl;
-
-          await recordItem.save();
-        })
-      );
 
       recordings.sort((a, b) =>
         FeaturedService.checkFeaturedRecording(a._id) >
@@ -338,46 +344,34 @@ export class CallRecordingService {
   }: GetAllRecordsQuery): Promise<GetAllRecordsResponse> {
     try {
       if (key === undefined) {
-        key = "";
+        key = '';
       }
       const recordings = await CallRecording.find({
         status: 'block',
-        name: { $regex : key, $options: 'i' },
-        $where:'this.list.length>0',
+        name: { $regex: key, $options: 'i' },
+        $where: 'this.list.length>0',
       })
-      .sort({
-        _id: 'desc',
-      })
-      .skip((offset && +offset) || 0)
-      .limit((limit && +limit) || 0)
-      .populate({
-        path: 'user',
-        select: '-password -email -firebaseToken',
-      })
-      .populate({
-        path: 'participants',
-        select: '-password -email -firebaseToken',
-      });
+        .sort({
+          _id: 'desc',
+        })
+        .skip((offset && +offset) || 0)
+        .limit((limit && +limit) || 0)
+        .populate({
+          path: 'user',
+          select: '-password -email -firebaseToken',
+        })
+        .populate({
+          path: 'participants',
+          select: '-password -email -firebaseToken',
+        });
 
       const all_recordings = await CallRecording.find({
         status: 'block',
-        name: { $regex : key, $options: 'i' },
-        $where:'this.list.length>0',
+        name: { $regex: key, $options: 'i' },
+        $where: 'this.list.length>0',
       });
 
       const amount = all_recordings.length;
-  
-      await Promise.all(
-        recordings.map(async (recordItem) => {
-          const signedUrl = await StorageHandler.get().signedUrl(
-            recordItem.list[0].fullKey
-          );
-
-          recordItem.list[0].url = signedUrl;
-
-          await recordItem.save();
-        })
-      );
 
       recordings.sort((a, b) =>
         FeaturedService.checkFeaturedRecording(a._id) >
@@ -411,18 +405,6 @@ export class CallRecordingService {
           path: 'participants',
           select: '-password -email -firebaseToken',
         });
-
-      await Promise.all(
-        recordings.map(async (recordItem) => {
-          const signedUrl = await StorageHandler.get().signedUrl(
-            recordItem.list[0].fullKey
-          );
-
-          recordItem.list[0].url = signedUrl;
-
-          await recordItem.save();
-        })
-      );
 
       recordings.sort((a, b) =>
         FeaturedService.checkFeaturedRecording(a._id) >
@@ -543,7 +525,7 @@ export class CallRecordingService {
 
       const recordings = await CallRecording.find({
         authorList: { $in: [_id] },
-        status: "public",
+        status: 'public',
       })
         .sort({ _id: 'desc' })
         .populate({
@@ -554,18 +536,6 @@ export class CallRecordingService {
           path: 'participants',
           select: '-password -email -firebaseToken',
         });
-
-      await Promise.all(
-        recordings.map(async (recordItem) => {
-          const signedUrl = await StorageHandler.get().signedUrl(
-            recordItem.list[0].fullKey
-          );
-
-          recordItem.list[0].url = signedUrl;
-
-          await recordItem.save();
-        })
-      );
 
       recordings.sort((a, b) =>
         FeaturedService.checkFeaturedRecording(a._id) >

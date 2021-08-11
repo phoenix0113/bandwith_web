@@ -49,6 +49,7 @@ export const conf = {
     apiSecret: getEnvStr('NEXMO_API_SECRET'),
     code_length: 4,
   },
+  thumbnailPath: 'thumbnail',
 };
 
 function getEnvStr(key: string, _default?: string): string {

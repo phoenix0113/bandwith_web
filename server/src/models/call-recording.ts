@@ -20,6 +20,7 @@ const CallRecordingSchema = new Schema({
   authorList: [{ type: Schema.Types.ObjectId, ref: 'user' }],
   status: { type: String, default: 'new' },
   name: { type: String },
+  thumbnail: { type: String },
 });
 
 CallRecordingSchema.pre('remove', async function <CallRecordingSchema>(next) {
