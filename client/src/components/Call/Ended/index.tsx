@@ -1,38 +1,25 @@
 /* eslint-disable max-len */
-import { useState, useMemo } from "react";
-import { Input } from "antd";
+import { useState } from "react";
 
 import {
   COLORS, CommonButton, NavigationBar, LeftItem, CenterItem, RightItem, PageWrapper,
-  CommonPageContentWrapper, CommonContentWrapper, CommonContentTitle,
+  CommonPageContentWrapper, CommonContentTitle,
 } from "../../styled";
 import { ProfileImageWrapper } from "../../ProfileImageWrapper";
 
 import { GlobalStorage } from "../../../services/global";
 
 import { CallParticipantData } from "../../../interfaces/call";
-
 import { publishRecording } from "../../../axios/routes/feed";
 
 interface IProps {
   callParticipantData: CallParticipantData;
   resetHandler: () => void;
   callId: string;
+  type: string;
 }
 
-export const CallEndedComponent = ({ callParticipantData, resetHandler, callId }: IProps): JSX.Element => {
-  const [recordingName, setRecordingName] = useState("");
-
-  const publishHandler = () => {
-    publishRecording({
-      callId,
-      participants: [callParticipantData.id],
-      recordingName,
-    });
-
-    resetHandler();
-  };
-
+export const CallEndedComponent = ({ callParticipantData, resetHandler, callId, type }: IProps): JSX.Element => {
   const [requestSent, setRequestSent] = useState(false);
   const addToFriendsHandler = () => {
     GlobalStorage.sendAddToFriendInvitation(callParticipantData?.id, () => {
@@ -40,21 +27,19 @@ export const CallEndedComponent = ({ callParticipantData, resetHandler, callId }
     });
   };
 
-  const isSubmitDisabled = useMemo(() => {
-    let validate = true;
-    if (recordingName !== "") {
-      validate = false;
-    }
-    console.log(validate);
-    return validate;
-  }, [recordingName]);
+  if (type === "outgoing") {
+    publishRecording({
+      callId,
+      participants: [callParticipantData.id],
+    });
+  }
 
   return (
     <PageWrapper>
       <NavigationBar>
         <LeftItem />
         <CenterItem>{callParticipantData?.name || "Unknown user"}</CenterItem>
-        <RightItem />
+        <RightItem color={COLORS.ALTERNATIVE} onClick={resetHandler}>Close</RightItem>
       </NavigationBar>
       <CommonPageContentWrapper>
         <ProfileImageWrapper src={callParticipantData?.image} />
@@ -70,23 +55,6 @@ export const CallEndedComponent = ({ callParticipantData, resetHandler, callId }
             {requestSent ? "Invitation is sent" : "Add to Friends" }
           </CommonButton>
         )}
-
-        <Input
-          placeholder="Enter recording's name"
-          type="text"
-          onChange={(e) => setRecordingName(e.target.value)}
-          style={{ color: "white", backgroundColor: "#0B131A", borderColor: "white", height: 50, padding: 13, fontSize: 18, lineHeight: 25 }}
-        />
-
-        <CommonButton
-          disabled={isSubmitDisabled}
-          margin="5% 0 20px 0"
-          onClick={publishHandler}
-          backgroundColor={!isSubmitDisabled ? COLORS.ALTERNATIVE : COLORS.MAIN_LIGHT}
-          color={!isSubmitDisabled ? COLORS.BLACK : COLORS.WHITE}
-        >
-          OK
-        </CommonButton>
       </CommonPageContentWrapper>
     </PageWrapper>
   );

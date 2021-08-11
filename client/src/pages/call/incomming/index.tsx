@@ -8,9 +8,8 @@ import { IncommingCallStatus } from "../../../interfaces/call";
 import { Routes } from "../../../utils/routes";
 
 import { IncommingCallComponent } from "../../../components/Call/Incomming";
+import { CallEndedComponent } from "../../../components/Call/Ended";
 import { MainCallComponent } from "../../../components/Call/Main";
-import { COLORS, CommonButton } from "../../../components/styled";
-import { CallContent, CallWrapper, CallDescription } from "../styled";
 
 const IncommingCallPage = observer((): JSX.Element => {
   const history = useHistory();
@@ -38,8 +37,14 @@ const IncommingCallPage = observer((): JSX.Element => {
     case IncommingCallStatus.INCOMMING:
       return <IncommingCallComponent callParticipantData={callParticipantData} />;
     case IncommingCallStatus.FINISHED:
-      history.push(Routes.HOME);
-      break;
+      return (
+        <CallEndedComponent
+          callParticipantData={callParticipantData}
+          resetHandler={resetIncommingCall}
+          callId={callId}
+          type="incomming"
+        />
+      );
     case IncommingCallStatus.ACCEPT:
       return (
         <MainCallComponent

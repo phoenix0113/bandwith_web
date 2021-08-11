@@ -11,7 +11,6 @@ import { CallEndedComponent } from "../../../components/Call/Ended";
 import { MainCallComponent } from "../../../components/Call/Main";
 
 import { Routes } from "../../../utils/routes";
-import { publishRecording } from "../../../axios/routes/feed";
 
 const OutgoingCallPage = observer((): JSX.Element => {
   const history = useHistory();
@@ -39,12 +38,14 @@ const OutgoingCallPage = observer((): JSX.Element => {
     case OutgoingCallStatus.WAITING_FOR_PARTICIPANT:
       return <OutgoingCallComponent callParticipantData={callParticipantData} />;
     case OutgoingCallStatus.FINISHED:
-      publishRecording({
-        callId,
-        participants: [callParticipantData.id],
-      });
-      history.replace(Routes.HOME);
-      break;
+      return (
+        <CallEndedComponent
+          callParticipantData={callParticipantData}
+          resetHandler={resetOutgoingCall}
+          callId={callId}
+          type="outgoing"
+        />
+      );
     case OutgoingCallStatus.ANSWERED_BY_PARTICIPANT:
       return (
         <MainCallComponent
