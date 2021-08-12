@@ -154,7 +154,7 @@ export const FeedVideoComponent = observer(({
           ref={playerRef}
           src={recording.list[0].url}
           onClick={changePlaybackStatus}
-          poster={bandwithLogo}
+          poster={recording.thumbnail}
         />
       )}
 

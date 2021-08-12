@@ -58,7 +58,7 @@ const AdminUserRecordingListPlayer = ({ currentRecording, type }:IProps):JSX.Ele
           <VideoPauseButton className="admin-dashboard-video-pause-button" src={pauseButton} onClick={handleVideo} />
         )
       }
-      <VideoPlayer ref={playerRef}>
+      <VideoPlayer ref={playerRef} poster={currentRecording?.thumbnail}>
         <source src={currentRecording.list[0].url} />
         {/* <source src={tempRecordingFile} /> */}
       </VideoPlayer>

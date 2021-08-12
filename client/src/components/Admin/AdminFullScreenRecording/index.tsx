@@ -66,9 +66,10 @@ const AdminFullScreenRecording = observer(({
         controls
         autoPlay
         loop
+        poster={currentRecording?.thumbnail}
       >
-        <source src={currentRecording?.list[0].url} />
-        {/* <source src={tempRecordingFile} /> */}
+        {/* <source src={currentRecording?.list[0].url} /> */}
+        <source src={tempRecordingFile} />
       </AdminRecordingPlayer>
       <div className="dis-flex w-full padding-0-30 item-center">
         <div className="w-full">

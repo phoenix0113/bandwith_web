@@ -61,18 +61,10 @@ const AdminRecording = ({
             />
           </TextRight>
           <TextRight>
-            {
-              (recording.authorList.length !== 0) ? (
-                <>
-                  <AdminRecordingListStatusLabel htmlFor={recording._id}>
-                    Delete
-                  </AdminRecordingListStatusLabel>
-                  <DeleteIcon src={deleteIcon} alt="Delete" onClick={() => onChangeRecordingStatus(recording.callId, DELETE_STATUS)} />
-                </>
-              ) : (
-                <></>
-              )
-            }
+            <AdminRecordingListStatusLabel htmlFor={recording._id}>
+              Delete
+            </AdminRecordingListStatusLabel>
+            <DeleteIcon src={deleteIcon} alt="Delete" onClick={() => onChangeRecordingStatus(recording.callId, DELETE_STATUS)} />
           </TextRight>
         </AdminRecordingListStatus>
       </AdminRecordingprofile>
