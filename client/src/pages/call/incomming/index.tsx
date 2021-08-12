@@ -8,8 +8,9 @@ import { IncommingCallStatus } from "../../../interfaces/call";
 import { Routes } from "../../../utils/routes";
 
 import { IncommingCallComponent } from "../../../components/Call/Incomming";
-import { CallEndedComponent } from "../../../components/Call/Ended";
 import { MainCallComponent } from "../../../components/Call/Main";
+import { COLORS, CommonButton } from "../../../components/styled";
+import { CallContent, CallWrapper, CallDescription } from "../styled";
 
 const IncommingCallPage = observer((): JSX.Element => {
   const history = useHistory();
@@ -38,12 +39,20 @@ const IncommingCallPage = observer((): JSX.Element => {
       return <IncommingCallComponent callParticipantData={callParticipantData} />;
     case IncommingCallStatus.FINISHED:
       return (
-        <CallEndedComponent
-          callParticipantData={callParticipantData}
-          resetHandler={resetIncommingCall}
-          callId={callId}
-          type="incomming"
-        />
+        <CallContent>
+          <CallWrapper>
+            <CallDescription>The call is complete.</CallDescription>
+            <CallDescription>The caller saves the call recording.</CallDescription>
+            <CommonButton
+              margin="20% 0"
+              onClick={resetIncommingCall}
+              backgroundColor={COLORS.ALTERNATIVE}
+              color={COLORS.BLACK}
+            >
+              OK
+            </CommonButton>
+          </CallWrapper>
+        </CallContent>
       );
     case IncommingCallStatus.ACCEPT:
       return (

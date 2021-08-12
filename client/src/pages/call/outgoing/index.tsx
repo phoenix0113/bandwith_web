@@ -43,7 +43,6 @@ const OutgoingCallPage = observer((): JSX.Element => {
           callParticipantData={callParticipantData}
           resetHandler={resetOutgoingCall}
           callId={callId}
-          type="outgoing"
         />
       );
     case OutgoingCallStatus.ANSWERED_BY_PARTICIPANT:
