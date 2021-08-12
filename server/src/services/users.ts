@@ -53,6 +53,7 @@ export class UsersService {
       });;
   
       const all_users = await User.find({
+        role: "user",
         name: { $regex : key, $options: 'i' },
       });
 
