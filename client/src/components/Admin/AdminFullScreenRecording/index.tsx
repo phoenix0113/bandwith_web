@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react";
 import { AdminStorageContext } from "../../../services/admin";
 import AdminUserListProfile from "../AdminUserListProfile";
@@ -25,18 +25,25 @@ interface IProps {
   currentRecording: GetRecordResponse;
   onPrevPlay: (id: string) => void;
   onNextPlay: (id: string) => void;
-  disable: boolean;
+  type: string;
 }
 
 const AdminFullScreenRecording = observer(({
-  currentRecording, onPrevPlay, onNextPlay, disable,
+  currentRecording, onPrevPlay, onNextPlay, type,
 }: IProps): JSX.Element => {
   const {
+    newRecordingCount,
+    loadNewRecordings,
+    availableRecordingCount,
+    loadAvailableRecordings,
+    blockRecordingsCount,
+    loadBlockRecordings,
     currentAuthorList,
     updateRecordingStatus,
   } = useContext(AdminStorageContext);
 
   const [showPlayBtn, setShowPlayBtn] = useState(false);
+  const [recordingCount, setRecordingCount] = useState(newRecordingCount);
   const playerRef = useRef<HTMLVideoElement>(null);
 
   const onChangePlayStatus = () => {
@@ -59,6 +66,19 @@ const AdminFullScreenRecording = observer(({
   const declineRecording = (id: string) => {
     updateRecordingStatus(id, "block", currentRecording?.status);
   };
+
+  useEffect(() => {
+    if (type === "new") {
+      loadNewRecordings();
+      setRecordingCount(newRecordingCount);
+    } else if (type === "available") {
+      loadAvailableRecordings();
+      setRecordingCount(availableRecordingCount);
+    } else if (type === "blocked") {
+      loadBlockRecordings();
+      setRecordingCount(blockRecordingsCount);
+    }
+  }, []);
 
   return (
     <AdminSingleRecordingContentWrapper className="padding-30">
@@ -97,7 +117,7 @@ const AdminFullScreenRecording = observer(({
               {/* <AdminRecordingToolsMoveButton src={moveButton} /> */}
               <AdminRecordingStatusTools>
                 {
-                  (disable) && (
+                  (recordingCount > 2) && (
                     <AdminRecordingToolsPrevNextButton
                       src={prevButton}
                       onClick={() => onPrevPlay(currentRecording?._id)}
@@ -119,7 +139,7 @@ const AdminFullScreenRecording = observer(({
                   )
                 }
                 {
-                  (disable) && (
+                  (recordingCount > 2) && (
                     <AdminRecordingToolsPrevNextButton
                       src={nextButton}
                       onClick={() => onNextPlay(currentRecording?._id)}
