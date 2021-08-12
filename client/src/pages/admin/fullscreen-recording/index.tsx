@@ -96,6 +96,7 @@ const AdminFullScreenRecordingPage = observer((props): JSX.Element => {
                   currentRecording={currentRecording}
                   onPrevPlay={onPrevPlay}
                   onNextPlay={onNextPlay}
+                  disable={(recordings.length > 2)}
                 />
               </AdminContentWrapper>
             </AdminPageContent>

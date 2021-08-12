@@ -25,10 +25,11 @@ interface IProps {
   currentRecording: GetRecordResponse;
   onPrevPlay: (id: string) => void;
   onNextPlay: (id: string) => void;
+  disable: boolean;
 }
 
 const AdminFullScreenRecording = observer(({
-  currentRecording, onPrevPlay, onNextPlay,
+  currentRecording, onPrevPlay, onNextPlay, disable,
 }: IProps): JSX.Element => {
   const {
     currentAuthorList,
@@ -68,8 +69,8 @@ const AdminFullScreenRecording = observer(({
         loop
         poster={currentRecording?.thumbnail}
       >
-        {/* <source src={currentRecording?.list[0].url} /> */}
-        <source src={tempRecordingFile} />
+        <source src={currentRecording?.list[0].url} />
+        {/* <source src={tempRecordingFile} /> */}
       </AdminRecordingPlayer>
       <div className="dis-flex w-full padding-0-30 item-center">
         <div className="w-full">
@@ -95,10 +96,14 @@ const AdminFullScreenRecording = observer(({
             <AdminRecordingTools>
               {/* <AdminRecordingToolsMoveButton src={moveButton} /> */}
               <AdminRecordingStatusTools>
-                <AdminRecordingToolsPrevNextButton
-                  src={prevButton}
-                  onClick={() => onPrevPlay(currentRecording?._id)}
-                />
+                {
+                  (disable) && (
+                    <AdminRecordingToolsPrevNextButton
+                      src={prevButton}
+                      onClick={() => onPrevPlay(currentRecording?._id)}
+                    />
+                  )
+                }
                 {
                   (showPlayBtn) ? (
                     <AdminRecordingToolsPlayPauseButton
@@ -113,10 +118,14 @@ const AdminFullScreenRecording = observer(({
                     />
                   )
                 }
-                <AdminRecordingToolsPrevNextButton
-                  src={nextButton}
-                  onClick={() => onNextPlay(currentRecording?._id)}
-                />
+                {
+                  (disable) && (
+                    <AdminRecordingToolsPrevNextButton
+                      src={nextButton}
+                      onClick={() => onNextPlay(currentRecording?._id)}
+                    />
+                  )
+                }
               </AdminRecordingStatusTools>
               <AdminRecordingActiveStatusTools>
                 <AdminRecordingStatus>
