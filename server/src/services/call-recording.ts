@@ -90,7 +90,7 @@ export class CallRecordingService {
 
       // Month
       let month = "0";
-      month += date.getMonth().toString();
+      month += (date.getMonth() + 1).toString();
 
       // Day
       let day = "0";

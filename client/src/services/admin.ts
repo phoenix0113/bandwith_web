@@ -12,15 +12,15 @@ import { ADMIN_RECORDINGS_LOAD_LIMIT, ADMIN_USERS_LOAD_LIMIT } from "../utils/co
 class AdminMobxService {
   @observable newRecordings: Array<GetRecordResponse> = [];
 
-  @observable newRecordingCount = -1;
+  @observable newRecordingCount = -1.5;
 
   @observable availableRecordings: Array<GetRecordResponse> = [];
 
-  @observable availableRecordingCount = -1;
+  @observable availableRecordingCount = -1.5;
 
   @observable blockRecordings: Array<GetRecordResponse> = [];
 
-  @observable blockRecordingsCount = -1;
+  @observable blockRecordingsCount = -1.5;
 
   @observable searchRecordingKey = "";
 
@@ -32,7 +32,7 @@ class AdminMobxService {
 
   @observable users: Array<User> = [];
 
-  @observable userCount = -1;
+  @observable userCount = -1.5;
 
   @observable currentUser: User = null;
 
@@ -242,15 +242,15 @@ class AdminMobxService {
     try {
       this.searchRecordingKey = key;
       if (type === "new") {
-        this.newRecordingCount -= 1;
+        this.newRecordingCount = -1.5;
         this.newRecordings = [];
         this.loadNewRecordings();
       } else if (type === "available") {
-        this.availableRecordingCount -= 1;
+        this.availableRecordingCount = -1.5;
         this.availableRecordings = [];
         this.loadAvailableRecordings();
       } else if (type === "blocked") {
-        this.blockRecordingsCount -= 1;
+        this.blockRecordingsCount = -1.5;
         this.blockRecordings = [];
         this.loadBlockRecordings();
       }
@@ -265,7 +265,7 @@ class AdminMobxService {
   ) => {
     try {
       this.searchUserKey = key;
-      this.userCount = -1;
+      this.userCount = -1.5;
       this.users = [];
       this.loadUsers();
     } catch (err) {
